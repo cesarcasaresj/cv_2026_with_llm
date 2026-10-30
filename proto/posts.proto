@@ -1,0 +1,26 @@
+// contracts/posts.proto
+syntax = "proto3";
+
+package api.v1.posts;
+
+// Servicio de Publicaciones administrado por el Agente de Backend
+service PostService {
+  // Consulta el contador de publicaciones de forma binaria y ultra rápida a través de HTTP/2
+  rpc GetTotalPostsCount (PostCountRequest) returns (PostCountResponse);
+}
+
+// Mensaje de petición (Se mantiene estructuralmente definido aunque viaje vacío)
+message PostCountRequest {}
+
+// Contrato inmutable del Payload de Éxito enviado al Frontend
+message PostCountResponse {
+  int32 total = 1;          // Cantidad exacta de publicaciones activas en la BD
+  string last_updated = 2;  // Timestamp en formato ISO 8601 del último post registrado
+}
+
+// Estructura estándar para la transferencia de errores del sistema (A11y compatible)
+message ApiErrorResponse {
+  string code = 1;         // Código técnico para la auditoría (Ej: 'VAULT_CONNECTION_ERROR')
+  string message = 2;      // Mensaje amigable y descriptivo para el cliente (No técnico)
+  string timestamp = 3;    // Timestamp ISO 8601 del incidente para soporte técnico
+}
