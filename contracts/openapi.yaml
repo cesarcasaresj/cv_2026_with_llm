@@ -1,0 +1,443 @@
+openapi: 3.1.0
+info:
+  title: CV 2026 API
+  version: 1.3.0
+  description: Contrato único entre el agente de frontend y el agente de backend.
+
+servers:
+  - url: http://localhost:8081
+    description: Backend local
+
+paths:
+  /api/v1/posts/count:
+    get:
+      operationId: getTotalPostsCount
+      summary: Devuelve el total de artículos publicados (spec.md, HU-01).
+      tags: [posts]
+      responses:
+        '200':
+          description: Total de artículos publicados.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PostCountResponse'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/posts:
+    get:
+      operationId: listPosts
+      summary: Lista los artículos publicados, opcionalmente filtrados por categoría y/o etiqueta (spec.md, HU-07 y HU-11).
+      tags: [posts]
+      parameters:
+        - name: category
+          in: query
+          required: false
+          description: Slug de la categoría.
+          schema:
+            $ref: '#/components/schemas/Slug'
+        - name: tag
+          in: query
+          required: false
+          description: Slug de la etiqueta. Se combina con category (deben cumplirse ambos).
+          schema:
+            $ref: '#/components/schemas/Slug'
+      responses:
+        '200':
+          description: Artículos publicados, del más reciente al más antiguo.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PostSummary'
+        '404':
+          description: La categoría o la etiqueta indicada no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/posts/{slug}:
+    get:
+      operationId: getArticle
+      summary: Devuelve un artículo publicado completo (spec.md, HU-10 y HU-12).
+      tags: [posts]
+      parameters:
+        - name: slug
+          in: path
+          required: true
+          schema:
+            $ref: '#/components/schemas/Slug'
+      responses:
+        '200':
+          description: Artículo completo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleDetail'
+        '404':
+          description: El artículo no existe o es un borrador.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      summary: Inicia sesión y entrega el JWT en una cookie HttpOnly (spec.md, HU-02).
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Sesión iniciada. La cookie session llega en Set-Cookie y el token nunca viaja en el cuerpo.
+          headers:
+            Set-Cookie:
+              description: 'session=<JWT>; HttpOnly; Secure; SameSite=Strict; Path=/'
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Correo o contraseña incorrectos. El mensaje no revela cuál de los dos falló.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '422':
+          description: Datos de entrada no válidos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      summary: Cierra la sesión, la revoca en el servidor y borra la cookie (spec.md, HU-03).
+      tags: [auth]
+      responses:
+        '204':
+          description: Sesión cerrada. Set-Cookie borra la cookie session.
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/auth/me:
+    get:
+      operationId: getCurrentUser
+      summary: Devuelve el usuario de la sesión actual (spec.md, HU-04).
+      tags: [auth]
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Sesión válida.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Sin sesión, con el token vencido o con la sesión revocada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/categories:
+    get:
+      operationId: listCategories
+      summary: Lista las categorías con al menos un artículo publicado, ordenadas por nombre (spec.md, HU-06).
+      tags: [taxonomy]
+      responses:
+        '200':
+          description: Categorías con su número de artículos publicados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomySummary'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/categories/{id}:
+    get:
+      operationId: getCategory
+      summary: Devuelve una categoría con sus artículos publicados (spec.md, HU-06).
+      tags: [taxonomy]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Categoría y sus artículos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDetail'
+        '404':
+          description: La categoría no existe.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/tags:
+    get:
+      operationId: listTags
+      summary: Lista las etiquetas con al menos un artículo publicado, ordenadas por nombre (spec.md, HU-11).
+      tags: [taxonomy]
+      responses:
+        '200':
+          description: Etiquetas con su número de artículos publicados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TaxonomySummary'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /sitemap.xml:
+    get:
+      operationId: getSitemap
+      summary: Sitemap con la portada y todos los artículos publicados (spec.md, HU-12).
+      tags: [seo]
+      responses:
+        '200':
+          description: Documento XML del protocolo sitemaps.org.
+          content:
+            application/xml:
+              schema:
+                type: string
+
+  /robots.txt:
+    get:
+      operationId: getRobots
+      summary: Reglas para robots, con el enlace al sitemap (spec.md, HU-12).
+      tags: [seo]
+      responses:
+        '200':
+          description: Texto plano.
+          content:
+            text/plain:
+              schema:
+                type: string
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: session
+      description: JWT firmado con HS256 (clave en Vault, secret/cv-app/jwt). Contiene solo el id de la sesión.
+
+  responses:
+    SystemError:
+      description: Error del sistema.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          minLength: 1
+          maxLength: 200
+
+    UserResponse:
+      type: object
+      required: [id, email]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        email:
+          type: string
+          format: email
+
+    PostCountResponse:
+      type: object
+      required: [total, lastUpdated]
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          description: Cantidad de artículos publicados.
+        lastUpdated:
+          type: [string, 'null']
+          format: date-time
+          description: Fecha ISO 8601 de la última publicación, o null si no hay ninguna.
+
+    Slug:
+      type: string
+      pattern: '^[a-z0-9]+(-[a-z0-9]+)*$'
+      description: Identificador de URL, en minúsculas y con guiones. No cambia tras publicar.
+
+    TaxonomyRef:
+      type: object
+      description: Referencia a una categoría o etiqueta.
+      required: [id, name, slug]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        name:
+          type: string
+          minLength: 2
+          maxLength: 40
+        slug:
+          $ref: '#/components/schemas/Slug'
+
+    TaxonomySummary:
+      description: Categoría o etiqueta con su número de artículos publicados (siempre al menos 1 en las listas).
+      allOf:
+        - $ref: '#/components/schemas/TaxonomyRef'
+        - type: object
+          required: [postCount]
+          properties:
+            postCount:
+              type: integer
+              minimum: 1
+
+    CoverImage:
+      type: object
+      description: Portada en tres formatos para <picture> (spec.md, HU-13; constitution.md, sección 9).
+      required: [avif, webp, fallback, alt, decorative, width, height]
+      properties:
+        avif:
+          type: string
+          description: URL de la versión AVIF.
+        webp:
+          type: string
+          description: URL de la versión WebP.
+        fallback:
+          type: string
+          description: URL de la versión JPG para navegadores antiguos.
+        alt:
+          type: string
+          description: Texto alternativo. Vacío solo si decorative es true.
+        decorative:
+          type: boolean
+        width:
+          type: integer
+          minimum: 1
+        height:
+          type: integer
+          minimum: 1
+
+    PostSummary:
+      type: object
+      required: [id, slug, title, description, publishedAt, category, tags, cover]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        slug:
+          $ref: '#/components/schemas/Slug'
+        title:
+          type: string
+        description:
+          type: string
+          description: Entradilla. También es la meta description.
+        publishedAt:
+          type: string
+          format: date-time
+        category:
+          $ref: '#/components/schemas/TaxonomyRef'
+        tags:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/TaxonomyRef'
+        cover:
+          oneOf:
+            - $ref: '#/components/schemas/CoverImage'
+            - type: 'null'
+
+    ArticleDetail:
+      description: Artículo completo con todo lo necesario para la página, el SEO y el JSON-LD (spec.md, §5.1).
+      allOf:
+        - $ref: '#/components/schemas/PostSummary'
+        - type: object
+          required: [seoTitle, updatedAt, readingMinutes, bodyHtml, author]
+          properties:
+            seoTitle:
+              type: [string, 'null']
+              maxLength: 60
+              description: Título corto para <title>. Si es null se usa title.
+            updatedAt:
+              type: string
+              format: date-time
+            readingMinutes:
+              type: integer
+              minimum: 1
+            bodyHtml:
+              type: string
+              description: Cuerpo convertido desde Markdown. Los encabezados empiezan en <h2>. El frontend lo sanea al pintarlo.
+            author:
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                  description: Nombre visible del autor. Nunca se expone su correo.
+
+    CategoryDetail:
+      allOf:
+        - $ref: '#/components/schemas/TaxonomyRef'
+        - type: object
+          required: [posts]
+          properties:
+            posts:
+              type: array
+              items:
+                $ref: '#/components/schemas/PostSummary'
+
+    ApiError:
+      type: object
+      required: [code, message, timestamp]
+      properties:
+        code:
+          type: string
+          description: Código técnico para auditoría (por ejemplo INTERNAL_ERROR o NOT_FOUND).
+          examples: [INTERNAL_ERROR, NOT_FOUND]
+        message:
+          type: string
+          description: Mensaje amigable para el usuario. Nunca incluye detalles técnicos.
+        timestamp:
+          type: string
+          format: date-time
+          description: Momento del incidente, para soporte.
