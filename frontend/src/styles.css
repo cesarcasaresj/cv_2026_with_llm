@@ -1,0 +1,30 @@
+/* Estilos de accesibilidad del CDK: ocultan visualmente la región aria-live del LiveAnnouncer
+   (sigue disponible para lectores de pantalla). Sin esto, el último anuncio se ve en la página. */
+@import '@angular/cdk/a11y-prebuilt.css';
+
+/* Paleta con contraste AA (4.5:1 o más) sobre el fondo (spec.md, HU-13) */
+:root {
+  --color-background: #ffffff;
+  --color-text: #1a1a1a; /* 17.4:1 */
+  --color-text-muted: #4a4a4a; /* 8.9:1 */
+  --color-link: #0b57d0; /* 6.4:1 */
+  --color-border: #767676; /* 4.5:1: los bordes también se distinguen */
+  --color-surface-strong: #eef2f7;
+}
+
+html {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+a {
+  color: var(--color-link);
+}

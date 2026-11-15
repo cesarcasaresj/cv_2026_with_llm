@@ -1,0 +1,18 @@
+<header class="home__header">
+  <h1>CV 2026</h1>
+  <p class="home__intro">Artículos sobre arquitectura de software, seguridad, contratos de API y accesibilidad web.</p>
+</header>
+
+<app-post-counter />
+
+<div class="home__filters">
+  <app-taxonomy-filter
+    heading="Categorías"
+    endpoint="/api/v1/categories"
+    queryParam="categoria"
+    [selectedSlug]="categoria() ?? null"
+  />
+  <app-taxonomy-filter heading="Etiquetas" endpoint="/api/v1/tags" queryParam="etiqueta" [selectedSlug]="etiqueta() ?? null" />
+</div>
+
+<app-post-list [category]="categoria() ?? null" [tag]="etiqueta() ?? null" />

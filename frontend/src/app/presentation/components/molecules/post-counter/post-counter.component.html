@@ -1,0 +1,13 @@
+<section class="post-counter" aria-labelledby="post-counter-title" [attr.aria-busy]="posts.isLoading()">
+  <h2 id="post-counter-title" class="post-counter__label">Publicaciones totales</h2>
+
+  @if (posts.isLoading()) {
+    <p class="post-counter__value post-counter__value--loading">Cargando…</p>
+  } @else if (posts.error()) {
+    <p class="post-counter__value post-counter__value--error">
+      No pudimos cargar el total. Intenta de nuevo en unos minutos.
+    </p>
+  } @else if (posts.value(); as data) {
+    <p class="post-counter__value">{{ data.total }}</p>
+  }
+</section>

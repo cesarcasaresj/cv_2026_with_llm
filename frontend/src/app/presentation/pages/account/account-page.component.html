@@ -1,0 +1,7 @@
+<h1>Mi cuenta</h1>
+<app-session-info
+  [user]="user.hasValue() ? user.value() : null"
+  [pending]="loggingOut()"
+  [errorMessage]="errorMessage()"
+  (loggedOut)="logout()"
+/>
