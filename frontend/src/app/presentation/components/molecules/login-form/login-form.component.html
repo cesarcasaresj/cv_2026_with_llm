@@ -1,0 +1,39 @@
+<form class="login-form" [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="pending()">
+  <div class="login-form__field">
+    <label for="login-email">Correo electrónico</label>
+    <input
+      id="login-email"
+      type="email"
+      formControlName="email"
+      autocomplete="username"
+      [attr.aria-invalid]="form.controls.email.touched && form.controls.email.invalid"
+      [attr.aria-describedby]="form.controls.email.touched && form.controls.email.invalid ? 'login-email-hint' : null"
+    />
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <p id="login-email-hint" class="login-form__hint">Escribe un correo válido.</p>
+    }
+  </div>
+
+  <div class="login-form__field">
+    <label for="login-password">Contraseña</label>
+    <input
+      id="login-password"
+      type="password"
+      formControlName="password"
+      autocomplete="current-password"
+      [attr.aria-invalid]="form.controls.password.touched && form.controls.password.invalid"
+      [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'login-password-hint' : null"
+    />
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <p id="login-password-hint" class="login-form__hint">Escribe tu contraseña.</p>
+    }
+  </div>
+
+  @if (errorMessage(); as message) {
+    <p class="login-form__error">{{ message }}</p>
+  }
+
+  <button type="submit" class="login-form__submit" [disabled]="pending()">
+    {{ pending() ? 'Entrando…' : 'Iniciar sesión' }}
+  </button>
+</form>

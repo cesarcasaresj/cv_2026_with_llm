@@ -1,0 +1,32 @@
+<nav class="taxonomy-filter" [attr.aria-labelledby]="titleId">
+  <h2 [id]="titleId" class="taxonomy-filter__title">{{ heading() }}</h2>
+
+  @if (terms.isLoading()) {
+    <p class="taxonomy-filter__status">Cargando {{ heading().toLowerCase() }}…</p>
+  } @else if (terms.error()) {
+    <p class="taxonomy-filter__status taxonomy-filter__status--error">
+      No pudimos cargar las {{ heading().toLowerCase() }}. Intenta de nuevo en unos minutos.
+    </p>
+  } @else if (terms.value(); as list) {
+    @if (list.length === 0) {
+      <p class="taxonomy-filter__status">Todavía no hay {{ heading().toLowerCase() }}</p>
+    } @else {
+      <ul class="taxonomy-filter__items">
+        @for (term of list; track term.id) {
+          <li>
+            <a
+              class="taxonomy-filter__link"
+              routerLink="/"
+              [queryParams]="queryParamsFor(term.slug)"
+              queryParamsHandling="merge"
+              [attr.aria-current]="selectedSlug() === term.slug ? 'true' : null"
+            >
+              {{ term.name }}
+              <span class="taxonomy-filter__count">({{ term.postCount }})</span>
+            </a>
+          </li>
+        }
+      </ul>
+    }
+  }
+</nav>

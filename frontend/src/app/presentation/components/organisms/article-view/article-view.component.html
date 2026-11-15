@@ -1,0 +1,72 @@
+<div class="article-view" [attr.aria-busy]="state() === 'loading'">
+  @switch (state()) {
+    @case ('loading') {
+      <p class="article-view__status">Cargando el artículo…</p>
+    }
+    @case ('not-found') {
+      <h1>No encontramos este artículo</h1>
+      <p>Puede que la dirección esté mal escrita o que el artículo ya no exista.</p>
+      <p><a routerLink="/">Volver a la portada</a></p>
+    }
+    @case ('error') {
+      <h1>No pudimos cargar el artículo</h1>
+      <p>Intenta de nuevo en unos minutos.</p>
+      <p><a routerLink="/">Volver a la portada</a></p>
+    }
+    @case ('ready') {
+      @if (article(); as current) {
+        <article class="article">
+          <header class="article__header">
+            <p class="article__category">
+              <a routerLink="/" [queryParams]="{ categoria: current.category.slug }">{{ current.category.name }}</a>
+            </p>
+            <h1 class="article__title">{{ current.title }}</h1>
+            <p class="article__lead">{{ current.description }}</p>
+            <p class="article__meta">
+              Por {{ current.author.name }} ·
+              <!-- Las fechas de publicación son días, no instantes: se muestran en UTC para que no cambien según la zona horaria -->
+              <time [attr.datetime]="current.publishedAt">{{ current.publishedAt | date: 'longDate' : 'UTC' }}</time>
+              @if (wasUpdated()) {
+                · Actualizado el
+                <time [attr.datetime]="current.updatedAt">{{ current.updatedAt | date: 'longDate' : 'UTC' }}</time>
+              }
+              · Lectura de {{ current.readingMinutes }} {{ current.readingMinutes === 1 ? 'minuto' : 'minutos' }}
+            </p>
+          </header>
+
+          @if (current.cover; as cover) {
+            <!-- AVIF primero, WebP como alternativa y JPG de respaldo (constitution.md, sección 9) -->
+            <picture class="article__cover">
+              <source type="image/avif" [attr.srcset]="cover.avif" />
+              <source type="image/webp" [attr.srcset]="cover.webp" />
+              <img
+                [src]="cover.fallback"
+                [attr.alt]="cover.alt"
+                [attr.width]="cover.width"
+                [attr.height]="cover.height"
+                fetchpriority="high"
+                decoding="async"
+              />
+            </picture>
+          }
+
+          <div class="article__body" [innerHTML]="current.bodyHtml"></div>
+
+          @if (current.tags.length > 0) {
+            <footer class="article__footer">
+              <nav aria-label="Etiquetas del artículo">
+                <ul class="article__tags">
+                  @for (tag of current.tags; track tag.id) {
+                    <li>
+                      <a routerLink="/" [queryParams]="{ etiqueta: tag.slug }">{{ tag.name }}</a>
+                    </li>
+                  }
+                </ul>
+              </nav>
+            </footer>
+          }
+        </article>
+      }
+    }
+  }
+</div>
