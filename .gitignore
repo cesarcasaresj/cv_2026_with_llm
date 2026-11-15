@@ -1,0 +1,27 @@
+# Secretos y entorno local
+.env
+.env.*
+!.env.example
+.vault/*.json
+.vault/data/
+
+# Dependencias y compilados
+node_modules/
+dist/
+.angular/
+storybook-static/
+coverage/
+
+# Tipos generados desde el contrato (se regeneran con npm run generate:api)
+backend/src/generated/
+frontend/src/app/core/api/generated.ts
+
+# Portadas AVIF/WebP/JPG generadas por npm run load:content (la fuente está en content/articulos/imagenes/)
+frontend/public/images/articulos/
+
+# Sistema y editores
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
