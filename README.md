@@ -1,66 +1,73 @@
 # Enterprise Decoupled Architecture: Angular (Zoneless) & Node.js Monorepo
 
-Este proyecto es una muestra de arquitectura de software empresarial de alto rendimiento, diseñada bajo un modelo desacoplado y gobernado por reglas estrictas de desarrollo automático. El sistema implementa comunicación binaria mediante **gRPC**, gestión segura de secretos con **HashiCorp Vault**, reactividad moderna nativa en el cliente y un enfoque absoluto en la accesibilidad universal (**A11y**).
+Este proyecto es una muestra de arquitectura de software empresarial, diseñada bajo un modelo desacoplado y gobernado por reglas estrictas de desarrollo guiado por especificación (SDD). El sistema se comunica mediante **REST/JSON con contrato OpenAPI**, gestiona los secretos con **HashiCorp Vault**, persiste en **PostgreSQL**, usa reactividad nativa con **Signals** en el cliente y pone la accesibilidad universal (**A11y**) como requisito de entrega.
 
-## 🚀 Pilares Tecnológicos de Élite
+## 🚀 Pilares tecnológicos
 
-*   **Frontend Vanguardista:** Desarrollado en **Angular (v19+) totalmente Zoneless**, aprovechando la API declarativa de recursos asíncronos (`resource` / `httpResource`) y reactividad nativa pura basada en **Signals**.
-*   **Diseño Modular Controlado:** Interfaz de usuario estructurada bajo la metodología de **Atomic Design**, documentada, aislada y validada de forma mandatoria mediante **Storybook**.
-*   **Comunicación de Alta Velocidad (gRPC):** Contratos inmutables cross-platform definidos mediante **Protocol Buffers (proto3)** y transportados a través de **ConnectRPC** sobre HTTP/2 binario, eliminando la sobrecarga y falta de tipado de REST/JSON tradicional.
-*   **Seguridad Bancaria (Zero-Trust):** Aislamiento absoluto de credenciales y API keys. Ningún secreto reside en texto plano ni en entornos del cliente; toda la información crítica se consulta en memoria en tiempo de ejecución mapeada desde **HashiCorp Vault**.
-*   **Accesibilidad de Diseño Universal (A11y):** Cumplimiento estricto de estándares semánticos HTML5 y directrices **WAI-ARIA** para garantizar una navegación por teclado fluida, predecible y compatible con lectores de pantalla.
-
----
-
-## 📂 Estructura de Gobernanza Técnica y Arquitectura
-
-El repositorio no se rige por impulsos técnicos, sino por un marco de gobernanza explícito diseñado para entornos de desarrollo autónomos o guiados por Agentes de IA:
-
-1.  [`constitution.md`](./constitution.md) — **Leyes Mandatarias de Programación:** Define los límites de diseño de software del proyecto (Principios DRY, prohibición de sobreingeniería, blindaje del navegador frente a credenciales, veto al Shadow DOM y obligatoriedad de pruebas automatizadas).
-2.  [`references.md`](./references.md) — **Patrones y Guías de Código:** Repositorio de ejemplos técnicos exactos que los desarrolladores y agentes de IA deben clonar para implementar lógica en el Backend (Node.js) y Frontend (Angular con `resource` y ConnectRPC).
-3.  [`architecture.md`](./architecture.md) — **Mapa Físico del Monorepo:** Estructura de directorios rígida que asegura la separación física de responsabilidades entre el agente de cliente y el agente de servidor.
-4.  [`posts.proto`](./contracts/posts.proto) — **Contratos de Datos Inmutables:** Definición de gRPC que autogenera el tipado estricto extremo a extremo de la aplicación.
+* **Frontend moderno:** **Angular zoneless**, con la API declarativa `httpResource` y reactividad basada en **Signals**.
+* **Diseño modular controlado:** Interfaz organizada con **Atomic Design**, documentada y validada de forma aislada en **Storybook** (incluido el panel de accesibilidad).
+* **Contrato tipado de extremo a extremo:** La API se define en **OpenAPI 3.1** (`contracts/openapi.yaml`) y los tipos TypeScript de backend y frontend se generan desde ahí.
+* **Seguridad Zero-Trust:** Ningún secreto vive en texto plano ni llega al navegador. El backend lee las credenciales de **HashiCorp Vault** en tiempo de ejecución, y la sesión usa un JWT en cookie `HttpOnly`.
+* **Backend con Clean Architecture:** **Node.js + TypeScript + Express 5**, con dominio y casos de uso independientes de la infraestructura.
+* **Accesibilidad universal (A11y):** HTML5 semántico y directrices **WAI-ARIA** para una navegación por teclado predecible y compatible con lectores de pantalla.
 
 ---
 
-## 🛠️ Estructura Física del Monorepo
+## 📂 Gobernanza técnica
+
+El repositorio se rige por un marco explícito pensado para desarrollo guiado por agentes de IA:
+
+1. [`constitution.md`](./constitution.md) — **Leyes mandatorias:** principios de código (DRY, no sobreingeniería), seguridad con Vault, contrato de API, Atomic Design, pruebas, A11y, recursos W3C y Definition of Done.
+2. [`architecture.md`](./architecture.md) — **Mapa físico del monorepo** y decisiones técnicas.
+3. [`references.md`](./references.md) — **Patrones de código** que los agentes deben seguir en backend y frontend.
+4. [`contracts/openapi.yaml`](./contracts/openapi.yaml) — **Contrato de la API**, fuente de verdad del tipado.
+5. [`plan.md`](./plan.md) — **Plan por fases** con criterios de "listo".
+
+---
+
+## 🛠️ Estructura del monorepo
 
 ```text
-├── .vault/                 # Configuración de secretos e infraestructura local de Vault
-├── contracts/               # Contratos globales e inmutables de gRPC (.proto)
-├── backend/                # Agente de Servidor: Node.js + TypeScript (Clean Architecture)
-└── frontend/               # Agente de Cliente: Angular Workspace Zoneless (Atomic Design)
+├── .vault/            # Script de carga de secretos para el Vault local
+├── contracts/         # Contrato OpenAPI (REST/JSON)
+├── backend/           # Node.js + TypeScript + Express 5 (Clean Architecture)
+├── frontend/          # Angular zoneless (Atomic Design + Storybook)
+└── docker-compose.yml # PostgreSQL + Vault para desarrollo local
 ```
 
 ---
 
-## 💻 Requisitos de Arranque Local
+## 💻 Arranque local
 
-### 1. Inicialización de Secretos (Vault Local Mock)
-Para cumplir con la Sección 1.2 de la Constitución, levante el entorno seguro local:
+Requisitos: Docker Desktop y Node.js (versión LTS).
+
+### 1. Infraestructura (PostgreSQL + Vault)
 ```bash
-# Servidor de Vault en modo desarrollo o simulación por memoria local
-vault server -dev
+cp .env.example .env      # Cambiar los valores de ejemplo
+docker compose up -d      # Levanta Postgres, Vault y carga los secretos
 ```
 
-### 2. Compilación de Contratos gRPC (Protocol Buffers)
-Genere los stubs e interfaces TypeScript estrictas para ambos agentes:
+### 2. Generar los tipos desde el contrato
 ```bash
-npm run generate:proto
+cd backend && npm run generate:api
+cd ../frontend && npm run generate:api
 ```
 
-### 3. Ejecución del Ecosistema
+### 3. Ejecutar el ecosistema
 ```bash
-# Levantar servidor Backend
+# Backend (lee el .env de la raíz)
 cd backend && npm run dev
 
-# Levantar cliente Frontend e interfaz de diseño aislada
-cd frontend && npm run start
-# Para evaluar componentes visuales y criterios A11y:
-npm run storybook
+# Frontend (redirige /api al backend mediante proxy.conf.json)
+cd frontend && npm start
+
+# Design System y revisión de accesibilidad
+cd frontend && npm run storybook
 ```
+
+> Los scripts `generate:api`, `dev`, `start` y `storybook` se crean en las fases 2 a 4 de [`plan.md`](./plan.md).
 
 ---
 
-## 🎯 Propósito del Proyecto
-Demostrar de manera práctica que la velocidad de entrega de características (*features*) no está reñida con la rigurosidad de la arquitectura. Al delegar el desarrollo en agentes guiados bajo esta documentación, el sistema escala de manera predecible, limpia, accesible y con un rendimiento óptimo de cara al usuario final y a la infraestructura Cloud.
+## 🎯 Propósito del proyecto
+Demostrar que la velocidad de entrega no está reñida con una arquitectura rigurosa. Al desarrollar con agentes guiados por esta documentación, el sistema escala de forma predecible, limpia, segura y accesible.
