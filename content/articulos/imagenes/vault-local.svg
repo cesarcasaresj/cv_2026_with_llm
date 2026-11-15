@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <g font-family="Segoe UI, Arial, sans-serif" fill="#f8fafc">
+    <rect x="90" y="245" width="260" height="140" rx="18" fill="#1e293b" stroke="#94a3b8" stroke-width="3"/>
+    <text x="220" y="325" font-size="38" text-anchor="middle">Backend</text>
+    <rect x="470" y="245" width="260" height="140" rx="18" fill="#1e293b" stroke="#fbbf24" stroke-width="3"/>
+    <text x="600" y="325" font-size="38" text-anchor="middle">Vault</text>
+    <rect x="850" y="245" width="260" height="140" rx="18" fill="#1e293b" stroke="#38bdf8" stroke-width="3"/>
+    <text x="980" y="325" font-size="38" text-anchor="middle">PostgreSQL</text>
+    <path d="M350 300 H462" stroke="#fbbf24" stroke-width="6" marker-end="url(#flecha)"/>
+    <path d="M730 330 H842" stroke="#38bdf8" stroke-width="6" marker-end="url(#flecha)"/>
+    <text x="600" y="150" font-size="52" font-weight="700" text-anchor="middle">Secretos fuera del código</text>
+    <text x="600" y="480" font-size="30" fill="#cbd5e1" text-anchor="middle">1. Pide las credenciales a Vault · 2. Se conecta a la base</text>
+  </g>
+  <defs>
+    <marker id="flecha" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f8fafc"/>
+    </marker>
+  </defs>
+</svg>
