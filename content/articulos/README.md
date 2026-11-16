@@ -17,7 +17,7 @@ Volver a cargar un archivo lo actualiza; no lo duplica. Si algún archivo no cum
 title: Título del artículo (10 a 110 caracteres)
 seoTitle: Título corto para buscadores (opcional, máximo 60)
 description: Entradilla y meta description (50 a 160 caracteres; obligatoria para publicar)
-category: Arquitectura          # una sola, obligatoria
+category: Arquitectura          # una sola, obligatoria y de la lista fija (ver abajo)
 tags: [OpenAPI, TypeScript]     # de 0 a 10
 status: published               # draft (por defecto) o published
 publishedAt: 2026-11-15         # obligatoria para publicar
@@ -32,6 +32,13 @@ cover:                          # opcional
 
 El cuerpo va en Markdown.
 ```
+
+## Categoría
+
+Las categorías son una **lista fija** que se gestiona en la aplicación, en *Mi cuenta → Categorías* (spec.md, HU-09). El script nunca crea categorías:
+
+- **Artículo nuevo:** `category` debe coincidir con una categoría existente (se compara por su slug, así que da igual usar mayúsculas o tildes). Si no existe, no se carga nada y el script lista las disponibles.
+- **Artículo ya cargado:** manda la categoría asignada en la aplicación (HU-08). Si el archivo dice otra, el script avisa con `!` y no la cambia.
 
 ## Reglas de accesibilidad y SEO
 

@@ -16,7 +16,11 @@
   - **Contenido:** archivos Markdown en `content/articulos/` y `npm run load:content -- --author correo` (valida todo antes de escribir y genera portadas AVIF/WebP/JPG con `sharp`).
   - **Frontend con SSR** (`@angular/ssr`): portada y artículos renderizados en el servidor; login y cuenta en el navegador. `SeoService` gestiona title, description, canonical, Open Graph, Twitter y JSON-LD `BlogPosting`. Un artículo inexistente responde 404 real con `noindex`. Filtros en la URL (`/?categoria=…&etiqueta=…`) y enlace "Saltar al contenido".
   - **Verificado:** 38 pruebas del backend; 32 comprobaciones del HTML que recibe un robot sin JavaScript (en producción y en `npm start`); 59 comprobaciones en Chrome, incluido axe sin violaciones en todas las páginas y en las 27 stories.
-  - **Pendiente:** HU-08 y HU-09 (asignar y gestionar categorías desde la interfaz). Los artículos de ejemplo están a nombre de una cuenta temporal (`autor@example.com`, "Autor de ejemplo"): al crear la cuenta real, volver a ejecutar `load:content` con ese correo.
+  - Los artículos de ejemplo están a nombre de una cuenta temporal (`autor@example.com`, "Autor de ejemplo"): al crear la cuenta real, volver a ejecutar `load:content` con ese correo.
+- Fase 6, HU-08 y HU-09 (rama `feat/hu-08-09-categorias`) implementadas:
+  - **Decisión:** categorías como lista fija (spec.md, pregunta 2). Solo el autor las crea, renombra y borra en `/cuenta/categorias`; `load:content` ya no las crea y solo usa la del archivo al cargar un artículo nuevo (decisiones I y J).
+  - **Contrato 1.4.0:** rutas del autor bajo `/api/v1/author/` (categorías y categoría de cada artículo), todas con sesión.
+  - **Verificado:** 65 pruebas del backend; 23 comprobaciones de la API real (401, 404, 409, 422 y cambios en la base); 45 comprobaciones en Chrome de la nueva página (teclado, foco, anuncios, móvil y axe en la página y en las 12 stories nuevas); sin regresiones en el recorrido anterior (71/71) ni en el SSR (32/32).
 - Producción del frontend: `node dist/frontend/server/server.mjs` con `PORT`, `BACKEND_URL`, `PUBLIC_SITE_URL` y `ALLOWED_HOSTS` (dominios aceptados por la protección SSRF de Angular).
 
 ## Decisiones tomadas

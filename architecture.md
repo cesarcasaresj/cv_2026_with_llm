@@ -17,7 +17,7 @@
 │   │   │   └── usecases/   # Casos de uso puros y sus pruebas unitarias (.spec.ts)
 │   │   ├── infrastructure/ # Capa de implementación
 │   │   │   ├── content/    # Markdown → HTML (marked), con los encabezados bajados un nivel
-│   │   │   ├── controllers/# Rutas REST, sitemap/robots, presentador del contrato y manejador de errores
+│   │   │   ├── controllers/# Rutas REST públicas y del autor (/api/v1/author, con sesión), sitemap/robots y errores
 │   │   │   ├── database/   # Pool de PostgreSQL y repositorios que implementan el dominio
 │   │   │   └── security/   # Vault, scrypt y JWT
 │   │   ├── generated/      # Tipos generados desde contracts/openapi.yaml (no editar)
@@ -31,9 +31,9 @@
 │   │   │   ├── core/       # Infraestructura del cliente: sesión, SEO (SeoService), tipos generados
 │   │   │   └── presentation/ # UI basada en Atomic Design y A11y
 │   │   │       ├── components/
-│   │   │       │   ├── molecules/ # PostCounter, TaxonomyFilter, PostList, LoginForm, SessionInfo
-│   │   │       │   └── organisms/ # ArticleView (artículo completo)
-│   │   │       └── pages/         # Portada, artículo, login y cuenta, conectadas al router
+│   │   │       │   ├── molecules/ # PostCounter, TaxonomyFilter, PostList, LoginForm, SessionInfo, PostCategoryList
+│   │   │       │   └── organisms/ # ArticleView (artículo completo), CategoryManager (lista fija de categorías)
+│   │   │       └── pages/         # Portada, artículo, login, cuenta y categorías del autor, conectadas al router
 │   │   ├── app.routes.server.ts # Qué rutas se renderizan en el servidor (públicas) y cuáles en el navegador
 │   │   ├── server.ts       # Servidor SSR de producción: renderiza y reenvía /api, /sitemap.xml y /robots.txt
 │   │   └── main.ts         # Inicialización de la aplicación Angular zoneless
@@ -77,4 +77,6 @@ Vault (:8200) · PostgreSQL (:5432)
 | Pruebas backend | Vitest | Funciona con TypeScript sin configuración extra |
 | Renderizado | Angular SSR (`@angular/ssr`) en portada y artículos | Buscadores y redes sociales reciben el HTML completo sin ejecutar JavaScript (spec.md, decisión G) |
 | Contenido | Markdown en `content/articulos/` + script de carga | Formato estándar para escribir; no hace falta un editor en la aplicación todavía (spec.md, pregunta 8) |
+| Categorías | Lista fija gestionada por el autor en `/cuenta/categorias` | Una sola fuente de verdad: el script de carga no crea categorías ni pisa las asignaciones hechas en la interfaz (spec.md, decisiones I y J) |
+| Rutas del autor | Agrupadas en `/api/v1/author/*` | Un solo router exige la sesión para todas; las rutas públicas no cambian |
 | Imágenes | Archivos locales con URL base configurable (`IMAGE_BASE_URL`) | Simple ahora; pasar a un CDN solo cambia esa URL (spec.md, decisión H) |
