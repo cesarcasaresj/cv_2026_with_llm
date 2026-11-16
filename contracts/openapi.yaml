@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.3.0
+  version: 1.4.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -221,6 +221,164 @@ paths:
         default:
           $ref: '#/components/responses/SystemError'
 
+  /api/v1/author/categories:
+    get:
+      operationId: listManagedCategories
+      summary: Lista fija de categorías para el autor, incluidas las vacías (spec.md, HU-09).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Todas las categorías, ordenadas por nombre. postCount cuenta también los borradores.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ManagedCategory'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/SystemError'
+    post:
+      operationId: createCategory
+      summary: Crea una categoría en la lista fija (spec.md, HU-09).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryNameRequest'
+      responses:
+        '201':
+          description: Categoría creada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedCategory'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/author/categories/{id}:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    patch:
+      operationId: renameCategory
+      summary: Renombra una categoría. Sus artículos la conservan; el slug se recalcula desde el nombre (spec.md, HU-09).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryNameRequest'
+      responses:
+        '200':
+          description: Categoría renombrada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ManagedCategory'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        default:
+          $ref: '#/components/responses/SystemError'
+    delete:
+      operationId: deleteCategory
+      summary: Borra una categoría sin artículos (spec.md, HU-09, decisión C).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      responses:
+        '204':
+          description: Categoría borrada.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: La categoría tiene artículos (publicados o borradores). Hay que reasignarlos antes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/author/posts:
+    get:
+      operationId: listAuthorPosts
+      summary: Lista todos los artículos, borradores incluidos, con su categoría (spec.md, HU-08).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: Artículos ordenados por título.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorPost'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/author/posts/{id}/category:
+    parameters:
+      - $ref: '#/components/parameters/ResourceId'
+    put:
+      operationId: assignPostCategory
+      summary: Asigna la categoría de un artículo; reemplaza la anterior (spec.md, HU-08).
+      tags: [author]
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignCategoryRequest'
+      responses:
+        '200':
+          description: Artículo con su nueva categoría.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorPost'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          description: categoryId vacío o de una categoría que no existe. No se cambia nada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
   /sitemap.xml:
     get:
       operationId: getSitemap
@@ -255,9 +413,42 @@ components:
       name: session
       description: JWT firmado con HS256 (clave en Vault, secret/cv-app/jwt). Contiene solo el id de la sesión.
 
+  parameters:
+    ResourceId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+
   responses:
     SystemError:
       description: Error del sistema.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Unauthorized:
+      description: Sin sesión, con el token vencido o con la sesión revocada.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    NotFound:
+      description: El recurso no existe.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    Conflict:
+      description: Ya existe otra categoría con ese nombre (sin distinguir mayúsculas ni tildes).
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+    ValidationFailed:
+      description: Los datos enviados no cumplen las reglas.
       content:
         application/json:
           schema:
@@ -425,6 +616,53 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/PostSummary'
+
+    ManagedCategory:
+      description: Categoría vista por el autor. Incluye las vacías y cuenta también los borradores.
+      allOf:
+        - $ref: '#/components/schemas/TaxonomyRef'
+        - type: object
+          required: [postCount]
+          properties:
+            postCount:
+              type: integer
+              minimum: 0
+
+    CategoryNameRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: De 2 a 40 caracteres. Se guardan sin espacios sobrantes.
+          minLength: 2
+          maxLength: 40
+
+    AuthorPost:
+      type: object
+      description: Artículo en la vista del autor (spec.md, HU-08).
+      required: [id, slug, title, status, category]
+      properties:
+        id:
+          type: integer
+          minimum: 1
+        slug:
+          $ref: '#/components/schemas/Slug'
+        title:
+          type: string
+        status:
+          type: string
+          enum: [draft, published]
+        category:
+          $ref: '#/components/schemas/TaxonomyRef'
+
+    AssignCategoryRequest:
+      type: object
+      required: [categoryId]
+      properties:
+        categoryId:
+          type: integer
+          minimum: 1
 
     ApiError:
       type: object
