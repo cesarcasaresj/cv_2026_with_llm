@@ -1,0 +1,24 @@
+<p class="categories-page__back"><a routerLink="/cuenta">← Volver a Mi cuenta</a></p>
+<h1>Categorías</h1>
+<p class="categories-page__intro">
+  La lista de categorías es fija: solo cambia desde aquí. Cada artículo tiene exactamente una.
+</p>
+
+<app-category-manager
+  [categories]="categories.hasValue() ? categories.value() : null"
+  [state]="categoriesState()"
+  [busy]="busy()"
+  [errorMessage]="categoryError()"
+  (created)="create($event)"
+  (renamed)="rename($event)"
+  (deleted)="remove($event)"
+/>
+
+<app-post-category-list
+  [posts]="posts.hasValue() ? posts.value() : null"
+  [categories]="categories.hasValue() ? categories.value() : null"
+  [state]="postsState()"
+  [savingPostId]="savingPostId()"
+  [errorMessage]="assignmentError()"
+  (assigned)="assign($event)"
+/>

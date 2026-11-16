@@ -1,0 +1,70 @@
+<section class="post-category-list" aria-labelledby="post-category-title">
+  <h2 id="post-category-title">Categoría de cada artículo</h2>
+  <p class="post-category-list__hint">Cada artículo tiene una sola categoría. Elige la nueva y pulsa «Guardar».</p>
+
+  @if (errorMessage(); as message) {
+    <p class="post-category-list__error">{{ message }}</p>
+  }
+
+  @switch (state()) {
+    @case ('loading') {
+      <p>Cargando los artículos…</p>
+    }
+    @case ('error') {
+      <p>No pudimos cargar los artículos. Intenta de nuevo en unos minutos.</p>
+    }
+    @default {
+      @if (posts()?.length) {
+        <div class="post-category-list__scroll">
+          <table class="post-category-list__table" aria-labelledby="post-category-title">
+            <thead>
+              <tr>
+                <th scope="col">Artículo</th>
+                <th scope="col">Categoría</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (post of posts(); track post.id) {
+                <tr>
+                  <th scope="row" class="post-category-list__title">
+                    {{ post.title }}
+                    <span class="post-category-list__status">{{ post.status === 'published' ? 'Publicado' : 'Borrador' }}</span>
+                  </th>
+                  <td>
+                    <div class="post-category-list__assign">
+                      <label class="cdk-visually-hidden" [for]="'post-category-' + post.id">
+                        Categoría de «{{ post.title }}»
+                      </label>
+                      <select
+                        [id]="'post-category-' + post.id"
+                        [disabled]="savingPostId() === post.id"
+                        (change)="choose(post, $any($event.target).value)"
+                      >
+                        @for (category of categories() ?? []; track category.id) {
+                          <option [value]="category.id" [selected]="category.id === selectedId(post)">
+                            {{ category.name }}
+                          </option>
+                        }
+                      </select>
+                      <button
+                        type="button"
+                        class="post-category-list__save"
+                        [disabled]="!hasChange(post) || savingPostId() !== null"
+                        (click)="save(post)"
+                      >
+                        {{ savingPostId() === post.id ? 'Guardando…' : 'Guardar' }}
+                        <span class="cdk-visually-hidden"> la categoría de «{{ post.title }}»</span>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <p>Todavía no hay artículos. Cárgalos con <code>npm run load:content</code>.</p>
+      }
+    }
+  }
+</section>

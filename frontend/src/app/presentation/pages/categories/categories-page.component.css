@@ -1,0 +1,15 @@
+:host {
+  display: grid;
+  gap: 2rem;
+}
+
+h1,
+.categories-page__back,
+.categories-page__intro {
+  margin: 0;
+}
+
+.categories-page__intro {
+  margin-top: -1.25rem;
+  color: var(--color-text-muted);
+}
