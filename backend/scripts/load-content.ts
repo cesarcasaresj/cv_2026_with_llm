@@ -4,11 +4,14 @@
 // - El nombre del archivo es el slug del artículo; volver a cargar un archivo lo actualiza (no lo duplica).
 // - Si algún archivo no cumple las reglas de §5.1, no se escribe nada y se listan los errores.
 // - Las portadas se convierten a AVIF, WebP y JPG en frontend/public/images/articulos/ (decisión H).
+// - Las categorías son una lista fija que gestiona el autor desde la aplicación (HU-09): el script
+//   nunca las crea. La categoría del archivo solo se usa la primera vez que se carga un artículo;
+//   después manda la que el autor asigne en la aplicación (HU-08) y el script solo avisa si difieren.
 
 import { readdir, readFile, mkdir } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import sharp from 'sharp';
-import type { PoolClient } from 'pg';
+import type { Pool, PoolClient } from 'pg';
 import { VaultClient } from '../src/infrastructure/security/VaultClient';
 import { createDatabasePool } from '../src/infrastructure/database/DatabasePool';
 import { slugify } from '../src/core/domain/slug';
@@ -53,10 +56,10 @@ async function processCover(slug: string, sourceFile: string): Promise<Processed
   return { width: info.width, height: info.height };
 }
 
-/** Busca o crea la categoría o etiqueta por su slug, y devuelve su id. */
-async function upsertTerm(client: PoolClient, table: 'categories' | 'tags', name: string): Promise<number> {
+/** Busca o crea la etiqueta por su slug (las etiquetas son libres, decisión E), y devuelve su id. */
+async function upsertTag(client: PoolClient, name: string): Promise<number> {
   const { rows } = await client.query<{ id: number }>(
-    `INSERT INTO ${table} (name, slug) VALUES ($1, $2)
+    `INSERT INTO tags (name, slug) VALUES ($1, $2)
      ON CONFLICT (slug) DO UPDATE SET name = EXCLUDED.name
      RETURNING id`,
     [name, slugify(name)],
@@ -64,13 +67,61 @@ async function upsertTerm(client: PoolClient, table: 'categories' | 'tags', name
   return rows[0].id;
 }
 
+/**
+ * Decide la categoría de cada artículo con la lista fija (HU-08 y HU-09):
+ * - artículo nuevo: la del archivo, que debe existir; si no, es un error y no se carga nada;
+ * - artículo existente: se conserva la de la base; si el archivo dice otra, solo se avisa.
+ */
+async function resolveCategories(
+  pool: Pool,
+  articles: ArticleSource[],
+): Promise<{ categoryIds: Map<string, number>; problems: string[]; warnings: string[] }> {
+  const categories = (await pool.query<{ id: number; name: string; slug: string }>(
+    'SELECT id, name, slug FROM categories ORDER BY name',
+  )).rows;
+  const existing = new Map(
+    (await pool.query<{ slug: string; category_id: number }>(
+      'SELECT slug, category_id FROM posts WHERE slug = ANY($1)',
+      [articles.map((article) => article.slug)],
+    )).rows.map((row) => [row.slug, row.category_id]),
+  );
+
+  const categoryIds = new Map<string, number>();
+  const problems: string[] = [];
+  const warnings: string[] = [];
+  const available = categories.map((category) => category.name).join(', ') || '(ninguna)';
+
+  for (const article of articles) {
+    const wanted = categories.find((category) => category.slug === slugify(article.category));
+    const current = existing.get(article.slug);
+
+    if (current !== undefined) {
+      categoryIds.set(article.slug, current);
+      if (wanted?.id !== current) {
+        const currentName = categories.find((category) => category.id === current)?.name;
+        warnings.push(
+          `${article.slug}: el archivo dice "${article.category}", pero se conserva "${currentName}" (asignada en la aplicación).`,
+        );
+      }
+    } else if (wanted) {
+      categoryIds.set(article.slug, wanted.id);
+    } else {
+      problems.push(
+        `${article.slug}.md: la categoría "${article.category}" no existe. Créala en la aplicación (Mi cuenta → Categorías) o usa una de: ${available}.`,
+      );
+    }
+  }
+
+  return { categoryIds, problems, warnings };
+}
+
 async function saveArticle(
   client: PoolClient,
   article: ArticleSource,
+  categoryId: number,
   authorId: number,
   cover: ProcessedCover | null,
 ): Promise<void> {
-  const categoryId = await upsertTerm(client, 'categories', article.category);
 
   // Si no se indica updatedAt, se usa publishedAt: así volver a cargar no cambia la fecha del sitemap
   const updatedAt = article.updatedAt ?? article.publishedAt ?? new Date();
@@ -82,7 +133,7 @@ async function saveArticle(
      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
      ON CONFLICT (slug) DO UPDATE SET
        title = EXCLUDED.title, seo_title = EXCLUDED.seo_title, description = EXCLUDED.description,
-       body_markdown = EXCLUDED.body_markdown, category_id = EXCLUDED.category_id, author_id = EXCLUDED.author_id,
+       body_markdown = EXCLUDED.body_markdown, author_id = EXCLUDED.author_id,
        status = EXCLUDED.status, published_at = EXCLUDED.published_at, updated_at = EXCLUDED.updated_at,
        cover_image_path = EXCLUDED.cover_image_path, cover_image_alt = EXCLUDED.cover_image_alt,
        cover_is_decorative = EXCLUDED.cover_is_decorative, cover_width = EXCLUDED.cover_width,
@@ -111,7 +162,7 @@ async function saveArticle(
   // Las etiquetas del archivo reemplazan a las anteriores
   await client.query('DELETE FROM post_tags WHERE post_id = $1', [postId]);
   for (const tag of article.tags) {
-    const tagId = await upsertTerm(client, 'tags', tag);
+    const tagId = await upsertTag(client, tag);
     await client.query('INSERT INTO post_tags (post_id, tag_id) VALUES ($1, $2)', [postId, tagId]);
   }
 }
@@ -149,15 +200,22 @@ async function main(): Promise<void> {
       throw new Error('La cuenta no tiene nombre público. Vuelve a ejecutar create:user con AUTHOR_NAME definido.');
     }
 
+    // 3. Comprobar las categorías contra la lista fija, también antes de escribir nada
+    const { categoryIds, problems: categoryProblems, warnings } = await resolveCategories(pool, articles);
+    if (categoryProblems.length > 0) {
+      throw new Error(`No se cargó nada. Corrige estas categorías:\n  - ${categoryProblems.join('\n  - ')}`);
+    }
+    warnings.forEach((warning) => console.warn(`! ${warning}`));
+
     await mkdir(COVER_OUTPUT_DIR, { recursive: true });
 
-    // 3. Guardar cada artículo en su propia transacción
+    // 4. Guardar cada artículo en su propia transacción
     for (const article of articles) {
       const cover = article.cover ? await processCover(article.slug, article.cover.file) : null;
       const client = await pool.connect();
       try {
         await client.query('BEGIN');
-        await saveArticle(client, article, author.id, cover);
+        await saveArticle(client, article, categoryIds.get(article.slug)!, author.id, cover);
         await client.query('COMMIT');
         console.log(`✓ ${article.slug} (${article.status === 'published' ? 'publicado' : 'borrador'})`);
       } catch (error) {

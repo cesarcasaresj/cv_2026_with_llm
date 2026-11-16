@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { httpResource } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { firstValueFrom } from 'rxjs';
 import { AuthService, UserResponse } from '../../../core/auth/auth.service';
@@ -10,7 +10,7 @@ import { SessionInfoComponent } from '../../components/molecules/session-info/se
 const LOGOUT_ERROR = 'No pudimos cerrar la sesión. Intenta de nuevo en unos minutos.';
 
 @Component({
-  imports: [SessionInfoComponent],
+  imports: [SessionInfoComponent, RouterLink],
   selector: 'app-account-page',
   templateUrl: './account-page.component.html',
   styleUrl: './account-page.component.css',

@@ -1,6 +1,6 @@
 # Especificación funcional
 
-> Estado: **borrador**. Historias HU-01 a HU-05 (contador y autenticación), HU-06 a HU-09 (categorías) y HU-10 a HU-13 (artículo completo, etiquetas, SEO y accesibilidad). Las decisiones sin confirmar están en §7 y las preguntas abiertas en §8. Las decisiones G y H y las preguntas 6 a 8 ya están resueltas.
+> Estado: **borrador**. Historias HU-01 a HU-05 (contador y autenticación), HU-06 a HU-09 (categorías) y HU-10 a HU-13 (artículo completo, etiquetas, SEO y accesibilidad). Las decisiones sin confirmar están en §7 y las preguntas abiertas en §8. Las decisiones G y H y las preguntas 2 y 6 a 8 ya están resueltas. HU-08 y HU-09 están implementadas (decisiones I y J).
 
 ## 1. Propósito
 
@@ -97,24 +97,30 @@ Criterios de aceptación:
 ### HU-08: Asignar la categoría de una publicación (autor)
 **Como** autor, **quiero** asignar a cada publicación su categoría, **para** que los visitantes la encuentren al filtrar.
 
-**Endpoint:** `PUT /api/v1/posts/{id}/category` (requiere sesión; por añadir al contrato), con `{ "categoryId": n }`
+**Ruta:** `/cuenta/categorias` · **Endpoints:** `GET /api/v1/author/posts` (todos los artículos, borradores incluidos) y `PUT /api/v1/author/posts/{id}/category` con `{ "categoryId": n }`. Requieren sesión.
 
 Criterios de aceptación:
-- [ ] La publicación tiene exactamente una categoría: cambiarla la mueve a la nueva y la quita de la anterior.
-- [ ] Una publicación sin categoría no es válida (decisión: ver §7, punto B). Enviar `categoryId` vacío responde 422 con `ApiError`.
-- [ ] Un `categoryId` inexistente responde 422 con `ApiError`, sin cambiar nada.
-- [ ] Sin sesión, responde 401.
+- [x] La publicación tiene exactamente una categoría: cambiarla la mueve a la nueva y la quita de la anterior.
+- [x] Una publicación sin categoría no es válida (decisión: ver §7, punto B). Enviar `categoryId` vacío responde 422 con `ApiError`.
+- [x] Un `categoryId` inexistente responde 422 con `ApiError`, sin cambiar nada. Un artículo inexistente responde 404.
+- [x] Sin sesión, responde 401.
+- [x] Elegir una categoría en la lista no guarda nada; el cambio se aplica con "Guardar" (WCAG 3.2.2) y se anuncia al lector de pantalla.
+- [x] La categoría asignada aquí manda sobre la del archivo Markdown: `load:content` solo la usa al cargar un artículo por primera vez (decisión I).
 
 ### HU-09: Crear, renombrar y borrar categorías (autor)
 **Como** autor, **quiero** gestionar la lista de categorías, **para** mantenerla ordenada sin tocar la base de datos.
 
-**Endpoints:** `POST /api/v1/categories`, `PATCH /api/v1/categories/{id}`, `DELETE /api/v1/categories/{id}` (requieren sesión; por añadir al contrato)
+Las categorías son una **lista fija** (pregunta 2): solo cambian desde esta pantalla. El script de carga nunca las crea.
+
+**Ruta:** `/cuenta/categorias` · **Endpoints:** `GET` y `POST /api/v1/author/categories`, `PATCH` y `DELETE /api/v1/author/categories/{id}`. Requieren sesión.
 
 Criterios de aceptación:
-- [ ] El nombre es obligatorio, tiene entre 2 y 40 caracteres y se guarda sin espacios sobrantes.
-- [ ] Los nombres son únicos sin distinguir mayúsculas: crear "Diseño" si ya existe "diseño" responde 409 con `ApiError`.
-- [ ] Renombrar una categoría cambia el nombre en todas sus publicaciones, sin tocar las asignaciones.
-- [ ] Borrar una categoría sin publicaciones la elimina; si tiene publicaciones, responde 409 y no la borra (decisión: ver §7, punto C).
+- [x] La lista del autor incluye las categorías vacías y cuenta también los borradores (la pública, HU-06, sigue mostrando solo las que tienen artículos publicados).
+- [x] El nombre es obligatorio, tiene entre 2 y 40 caracteres y se guarda sin espacios sobrantes.
+- [x] Los nombres son únicos sin distinguir mayúsculas: crear "Diseño" si ya existe "diseño" responde 409 con `ApiError`. También responde 409 un nombre que produce el mismo slug ("Diseno").
+- [x] Renombrar una categoría cambia el nombre en todas sus publicaciones, sin tocar las asignaciones. El slug se recalcula (decisión J).
+- [x] Borrar una categoría sin publicaciones la elimina; si tiene publicaciones (también borradores), responde 409 y no la borra (decisión: ver §7, punto C). La interfaz no ofrece "Borrar" en ese caso y explica por qué.
+- [x] Borrar pide confirmación en la misma fila; el foco va al campo o botón correspondiente en cada paso y nunca se pierde.
 
 ### HU-10: Leer un artículo completo (visitante)
 **Como** visitante, **quiero** abrir una publicación y leer el artículo completo, **para** conocer el trabajo del autor en detalle.
@@ -224,7 +230,7 @@ El autor necesita un nombre visible para el artículo y el JSON-LD: se añade `d
 
 ## 6. Fuera de alcance (por ahora)
 
-- Crear, editar o borrar artículos desde la interfaz (solo se asignan categorías). Mientras tanto, los artículos se cargan con SQL (ver pregunta 8).
+- Crear, editar o borrar artículos desde la interfaz (solo se asignan categorías). Mientras tanto, los artículos se cargan desde Markdown con `load:content` (ver pregunta 8).
 - Registro público de usuarios.
 - Recuperación de contraseña.
 - Jerarquía de categorías (subcategorías).
@@ -241,12 +247,14 @@ Las tomé para poder escribir las historias. Si alguna no te gusta, dímelo y aj
 - **E.** Las etiquetas son libres (las crea el autor) y cada artículo tiene como máximo 10, para que sigan siendo útiles como filtro.
 - **F.** Los artículos tienen dos estados: `draft` (borrador) y `published`. El visitante, el contador, las listas y el sitemap solo ven los publicados.
 - **G. (confirmada)** Las páginas públicas (portada y artículos) se entregan renderizadas en el servidor con **Angular SSR** (`@angular/ssr`). Login y "Mi cuenta" siguen renderizándose en el navegador: dependen de la cookie de sesión y no aportan nada al SEO.
+- **I.** La categoría de un artículo ya cargado la decide la aplicación (HU-08), no el archivo Markdown: `load:content` usa el `category` del archivo solo la primera vez y, si después difiere, avisa sin cambiarla. Así un cambio hecho en la interfaz no se pierde al volver a cargar.
+- **J.** Renombrar una categoría recalcula su slug ("Seguridad" → "Seguridad web" pasa de `seguridad` a `seguridad-web`). Los enlaces filtrados antiguos (`/?categoria=seguridad`) dejan de funcionar; a cambio, el slug siempre coincide con el nombre. Si hace falta conservarlos, la alternativa es guardar los slugs anteriores y redirigir.
 - **H. (confirmada)** Las imágenes viven como archivos en `frontend/public/images/articulos/`. El script de carga genera AVIF, WebP y JPG desde la imagen original con `sharp` y guarda ancho y alto. Todas las rutas pasan por una URL base configurable: si más adelante se usa un CDN (Cloudinary, S3 + CloudFront), solo cambia esa URL.
 
 ## 8. Preguntas abiertas
 
 1. ~~**¿Qué es una "publicación"?**~~ **Resuelta:** es un artículo completo, con taxonomía (categoría y etiquetas), SEO y accesibilidad (HU-10 a HU-13, §5.1).
-2. **¿Las categorías las defines tú (lista cerrada) o las creas libremente?** La HU-09 asume que el autor las crea. Si es una lista fija, la HU-09 se reduce a solo lectura.
+2. ~~**¿Las categorías las defines tú (lista cerrada) o las creas libremente?**~~ **Resuelta:** lista fija. El autor la gestiona en `/cuenta/categorias` (HU-09) y en todo lo demás, incluido `load:content`, solo se elige una existente (decisión I).
 3. ~~**¿Cómo se crea la cuenta del autor?**~~ **Resuelta (Fase 5):** con el script `npm run create:user -- correo`, que lee la contraseña de la variable `AUTHOR_PASSWORD`. Puede confirmarse o cambiarse más adelante.
 4. ~~**¿Qué ve el visitante además del contador y las categorías?**~~ **Resuelta:** los artículos completos (HU-10) y sus etiquetas (HU-11).
 5. **¿Dónde se despliega?** Define si el login usa Vault con AppRole o con otro método (ver `plan.md`, decisiones pendientes), y también dónde corre el servidor de SSR (decisión G).

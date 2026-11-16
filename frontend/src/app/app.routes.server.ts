@@ -7,5 +7,6 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'articulos/:slug', renderMode: RenderMode.Server },
   { path: 'login', renderMode: RenderMode.Client },
   { path: 'cuenta', renderMode: RenderMode.Client },
+  { path: 'cuenta/categorias', renderMode: RenderMode.Client },
   { path: '**', renderMode: RenderMode.Server },
 ];

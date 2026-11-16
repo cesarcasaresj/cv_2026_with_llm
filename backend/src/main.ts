@@ -22,7 +22,12 @@ import { postRoutes } from './infrastructure/controllers/postRoutes';
 import { categoryRoutes, tagRoutes } from './infrastructure/controllers/taxonomyRoutes';
 import { seoRoutes } from './infrastructure/controllers/seoRoutes';
 import { authRoutes } from './infrastructure/controllers/authRoutes';
+import { authorRoutes } from './infrastructure/controllers/authorRoutes';
 import { errorHandler } from './infrastructure/controllers/errorHandler';
+import { PostgresCategoryCatalog } from './infrastructure/database/PostgresCategoryCatalog';
+import { PostgresAuthorPostRepository } from './infrastructure/database/PostgresAuthorPostRepository';
+import { CreateCategory, DeleteCategory, ListManagedCategories, RenameCategory } from './core/usecases/ManageCategories';
+import { AssignPostCategory, ListAuthorPosts } from './core/usecases/AssignPostCategory';
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -59,6 +64,9 @@ async function start(): Promise<void> {
   const hasher = new ScryptPasswordHasher();
   const tokens = new JoseSessionTokens(jwtSecret.signing_key);
   const presenter = new PostPresenter(imageBaseUrl);
+  const catalog = new PostgresCategoryCatalog(pool);
+  const authorPosts = new PostgresAuthorPostRepository(pool);
+  const getCurrentUser = new GetCurrentUser(users, sessions, tokens);
 
   const app = express();
   app.use(express.json());
@@ -80,9 +88,21 @@ async function start(): Promise<void> {
     '/api/v1/auth',
     authRoutes(
       new LoginUser(users, hasher, sessions, tokens),
-      new GetCurrentUser(users, sessions, tokens),
+      getCurrentUser,
       new LogoutUser(sessions, tokens),
     ),
+  );
+  app.use(
+    '/api/v1/author',
+    authorRoutes({
+      getCurrentUser,
+      listCategories: new ListManagedCategories(catalog),
+      createCategory: new CreateCategory(catalog),
+      renameCategory: new RenameCategory(catalog),
+      deleteCategory: new DeleteCategory(catalog),
+      listPosts: new ListAuthorPosts(authorPosts),
+      assignCategory: new AssignPostCategory(catalog, authorPosts),
+    }),
   );
   app.use(seoRoutes(new ListSitemapEntries(posts), siteUrl));
   app.use(errorHandler);
