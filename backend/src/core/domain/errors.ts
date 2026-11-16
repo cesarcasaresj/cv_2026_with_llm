@@ -27,6 +27,13 @@ export class UnauthorizedError extends AppError {
   }
 }
 
+/** La operación choca con el estado actual (nombre repetido, categoría en uso). */
+export class ConflictError extends AppError {
+  constructor(message: string) {
+    super(409, 'CONFLICT', message);
+  }
+}
+
 /** Los datos enviados no cumplen el contrato. */
 export class ValidationError extends AppError {
   constructor(message: string) {

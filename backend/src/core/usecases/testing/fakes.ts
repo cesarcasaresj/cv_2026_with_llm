@@ -1,6 +1,6 @@
 // Repositorios simulados para las pruebas de los casos de uso (constitution.md, sección 7).
-import type { Article, PostFilter, PostRepository, PostSummary } from '../../domain/Post';
-import type { TaxonomyRef, TaxonomyRepository } from '../../domain/Taxonomy';
+import type { Article, AuthorPost, AuthorPostRepository, PostFilter, PostRepository, PostSummary } from '../../domain/Post';
+import type { CategoryCatalog, ManagedCategory, TaxonomyRef, TaxonomyRepository } from '../../domain/Taxonomy';
 
 export const diseno: TaxonomyRef = { id: 7, name: 'Diseño', slug: 'diseno' };
 export const accesibilidad: TaxonomyRef = { id: 3, name: 'Accesibilidad', slug: 'accesibilidad' };
@@ -36,6 +36,59 @@ export function fakeTaxonomy(terms: TaxonomyRef[]): TaxonomyRepository {
     listWithPostCount: async () => terms.map((term) => ({ ...term, postCount: 1 })),
     findById: async (id) => terms.find((term) => term.id === id) ?? null,
     findBySlug: async (slug) => terms.find((term) => term.slug === slug) ?? null,
+  };
+}
+
+/**
+ * Lista fija de categorías en memoria. `postCount` indica cuántos artículos tiene cada una,
+ * para probar el bloqueo al borrar una categoría en uso.
+ */
+export function fakeCatalog(initial: ManagedCategory[]): CategoryCatalog & { items: ManagedCategory[] } {
+  const items = initial.map((category) => ({ ...category }));
+  let nextId = Math.max(0, ...items.map((category) => category.id)) + 1;
+
+  return {
+    items,
+    listAll: async () => [...items].sort((a, b) => a.name.localeCompare(b.name)),
+    findById: async (id) => items.find((category) => category.id === id) ?? null,
+    findConflict: async (name, slug, exceptId) =>
+      items.find(
+        (category) =>
+          category.id !== exceptId && (category.name.toLowerCase() === name.toLowerCase() || category.slug === slug),
+      ) ?? null,
+    create: async (name, slug) => {
+      const category = { id: nextId++, name, slug, postCount: 0 };
+      items.push(category);
+      return category;
+    },
+    rename: async (id, name, slug) => {
+      const category = items.find((item) => item.id === id);
+      if (!category) return null;
+      Object.assign(category, { name, slug });
+      return category;
+    },
+    delete: async (id) => {
+      const index = items.findIndex((category) => category.id === id);
+      if (index < 0) return 'not-found';
+      if (items[index].postCount > 0) return 'in-use';
+      items.splice(index, 1);
+      return 'deleted';
+    },
+  };
+}
+
+/** Artículos del autor en memoria; assignCategory busca la categoría en el catálogo dado. */
+export function fakeAuthorPosts(initial: AuthorPost[], catalog: CategoryCatalog): AuthorPostRepository {
+  const items = initial.map((post) => ({ ...post }));
+  return {
+    listAll: async () => [...items].sort((a, b) => a.title.localeCompare(b.title)),
+    assignCategory: async (postId, categoryId) => {
+      const post = items.find((item) => item.id === postId);
+      const category = await catalog.findById(categoryId);
+      if (!post || !category) return null;
+      post.category = { id: category.id, name: category.name, slug: category.slug };
+      return post;
+    },
   };
 }
 

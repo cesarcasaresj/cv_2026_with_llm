@@ -52,6 +52,23 @@ export interface PostRepository {
   listSitemapEntries(): Promise<SitemapEntry[]>;
 }
 
+/** Artículo en la vista del autor: incluye los borradores (spec.md, HU-08). */
+export interface AuthorPost {
+  id: number;
+  slug: string;
+  title: string;
+  status: 'draft' | 'published';
+  category: TaxonomyRef;
+}
+
+/** Puerto de la vista del autor. A diferencia de PostRepository, ve también los borradores. */
+export interface AuthorPostRepository {
+  /** Todos los artículos, ordenados por título. */
+  listAll(): Promise<AuthorPost[]>;
+  /** Cambia la categoría del artículo. null si el artículo no existe. */
+  assignCategory(postId: number, categoryId: number): Promise<AuthorPost | null>;
+}
+
 /** Puerto: convierte el Markdown del cuerpo en HTML. La implementación (marked) vive en infrastructure. */
 export interface MarkdownRenderer {
   render(markdown: string): string;
