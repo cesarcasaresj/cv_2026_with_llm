@@ -259,6 +259,8 @@ Criterios de aceptación:
 - [x] Al pulsar un enlace del menú, su texto cuenta la sección: Experiencia sube como niveles (+XP), Sobre mí nace de letras dispersas (❤), Proyectos cae como bloques ({ }), Actualidad parpadea como una señal (● EN VIVO) y Blog se escribe a máquina. Los lectores de pantalla leen el texto completo una sola vez (las letras sueltas son `aria-hidden`).
 - [x] El portal queda debajo de la cabecera y la cabecera tiene su propio grupo en las transiciones de página e idioma: sus efectos se ven vivos. Ir a un ancla de la misma página no lanza la transición de página.
 - [x] three.js se descarga cuando el puntero o el foco llegan al menú, para que el primer clic no se congele.
+- [x] En escritorio, al pasar el ratón o llegar con el teclado a un enlace, se despliega una tarjeta con una escena animada de su sección y una frase: Experiencia (los años pasan y un maletín avanza), Sobre mí (lo que inspira al autor orbita a su alrededor: música, arte, ideas y código), Proyectos (ventanas de código que se escriben solas), Actualidad (un móvil con un feed en directo) y Blog (un lápiz que escribe). Es decorativa (`aria-hidden`).
+- [x] En móvil las cinco secciones caben siempre, en columnas iguales con su icono encima del texto, sin desplazamiento horizontal.
 - [x] Portal y bandera son decorativos (`aria-hidden`): la sección de destino recibe el foco y el cambio de idioma se anuncia con texto.
 
 ---
