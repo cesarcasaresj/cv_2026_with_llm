@@ -1,0 +1,38 @@
+<section id="sobre-mi" class="about" tabindex="-1" aria-labelledby="sobre-mi-title">
+  <div class="about__glow" aria-hidden="true"></div>
+  <div class="about__inner l-container">
+    <app-section-heading index="02" [title]="t().about.title" headingId="sobre-mi-title" />
+
+    @switch (state()) {
+      @case ('loading') {
+        <p>{{ t().about.loading }}</p>
+      }
+      @case ('error') {
+        <p>{{ t().about.error }}</p>
+      }
+      @default {
+        @let current = profile()!;
+        <div class="about__layout">
+          <div class="about__text">
+            @for (paragraph of current.about; track $index) {
+              <p class="about__paragraph" [class.about__paragraph--lead]="$first" appReveal [revealDelay]="$index * 100">
+                {{ paragraph }}
+              </p>
+            }
+          </div>
+
+          @if (stats().length) {
+            <dl class="about__stats">
+              @for (stat of stats(); track stat.label) {
+                <div class="about__stat" appReveal [revealDelay]="$index * 120">
+                  <dt class="about__stat-label">{{ stat.label }}</dt>
+                  <dd class="about__stat-value">{{ stat.value }}</dd>
+                </div>
+              }
+            </dl>
+          }
+        </div>
+      }
+    }
+  </div>
+</section>

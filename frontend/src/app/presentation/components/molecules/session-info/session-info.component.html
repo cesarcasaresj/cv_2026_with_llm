@@ -1,8 +1,8 @@
 <section class="session-info" aria-labelledby="session-info-title" [attr.aria-busy]="pending()">
-  <h2 id="session-info-title" class="session-info__title">Sesión iniciada</h2>
+  <h2 id="session-info-title" class="session-info__title">{{ t().account.sessionTitle }}</h2>
 
   @if (user(); as current) {
-    <p>Has iniciado sesión como <strong>{{ current.email }}</strong>.</p>
+    <p>{{ t().account.signedInAs }} <strong>{{ current.email }}</strong>.</p>
   }
 
   @if (errorMessage(); as message) {
@@ -10,6 +10,6 @@
   }
 
   <button type="button" class="session-info__logout" [disabled]="pending()" (click)="loggedOut.emit()">
-    {{ pending() ? 'Cerrando sesión…' : 'Cerrar sesión' }}
+    {{ pending() ? t().account.loggingOut : t().account.logout }}
   </button>
 </section>

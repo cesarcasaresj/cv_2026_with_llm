@@ -1,36 +1,37 @@
 <div class="article-view" [attr.aria-busy]="state() === 'loading'">
   @switch (state()) {
     @case ('loading') {
-      <p class="article-view__status">Cargando el artículo…</p>
+      <p class="article-view__status">{{ t().article.loading }}</p>
     }
     @case ('not-found') {
-      <h1>No encontramos este artículo</h1>
-      <p>Puede que la dirección esté mal escrita o que el artículo ya no exista.</p>
-      <p><a routerLink="/">Volver a la portada</a></p>
+      <h1>{{ t().article.notFoundTitle }}</h1>
+      <p>{{ t().article.notFoundText }}</p>
+      <p><a routerLink="/blog">{{ t().article.back }}</a></p>
     }
     @case ('error') {
-      <h1>No pudimos cargar el artículo</h1>
-      <p>Intenta de nuevo en unos minutos.</p>
-      <p><a routerLink="/">Volver a la portada</a></p>
+      <h1>{{ t().article.errorTitle }}</h1>
+      <p>{{ t().article.errorText }}</p>
+      <p><a routerLink="/blog">{{ t().article.back }}</a></p>
     }
     @case ('ready') {
       @if (article(); as current) {
         <article class="article">
           <header class="article__header">
-            <p class="article__category">
-              <a routerLink="/" [queryParams]="{ categoria: current.category.slug }">{{ current.category.name }}</a>
+            <!-- El contenido del artículo está en español; la interfaz que lo rodea, en el idioma elegido (WCAG 3.1.2) -->
+            <p class="article__category" lang="es">
+              <a routerLink="/blog" [queryParams]="{ categoria: current.category.slug }">{{ current.category.name }}</a>
             </p>
-            <h1 class="article__title">{{ current.title }}</h1>
-            <p class="article__lead">{{ current.description }}</p>
+            <h1 class="article__title" lang="es">{{ current.title }}</h1>
+            <p class="article__lead" lang="es">{{ current.description }}</p>
             <p class="article__meta">
-              Por {{ current.author.name }} ·
+              {{ t().article.by }} {{ current.author.name }} ·
               <!-- Las fechas de publicación son días, no instantes: se muestran en UTC para que no cambien según la zona horaria -->
-              <time [attr.datetime]="current.publishedAt">{{ current.publishedAt | date: 'longDate' : 'UTC' }}</time>
+              <time [attr.datetime]="current.publishedAt">{{ current.publishedAt | date: 'longDate' : 'UTC' : lang() }}</time>
               @if (wasUpdated()) {
-                · Actualizado el
-                <time [attr.datetime]="current.updatedAt">{{ current.updatedAt | date: 'longDate' : 'UTC' }}</time>
+                · {{ t().article.updatedOn }}
+                <time [attr.datetime]="current.updatedAt">{{ current.updatedAt | date: 'longDate' : 'UTC' : lang() }}</time>
               }
-              · Lectura de {{ current.readingMinutes }} {{ current.readingMinutes === 1 ? 'minuto' : 'minutos' }}
+              · {{ t().article.reading(current.readingMinutes) }}
             </p>
           </header>
 
@@ -50,15 +51,15 @@
             </picture>
           }
 
-          <div class="article__body" [innerHTML]="current.bodyHtml"></div>
+          <div class="article__body" lang="es" [innerHTML]="current.bodyHtml"></div>
 
           @if (current.tags.length > 0) {
             <footer class="article__footer">
-              <nav aria-label="Etiquetas del artículo">
-                <ul class="article__tags">
+              <nav [attr.aria-label]="t().article.tagsLabel">
+                <ul class="article__tags" lang="es">
                   @for (tag of current.tags; track tag.id) {
                     <li>
-                      <a routerLink="/" [queryParams]="{ etiqueta: tag.slug }">{{ tag.name }}</a>
+                      <a routerLink="/blog" [queryParams]="{ etiqueta: tag.slug }">{{ tag.name }}</a>
                     </li>
                   }
                 </ul>

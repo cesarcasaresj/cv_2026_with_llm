@@ -1,0 +1,65 @@
+<section id="inicio" class="hero" tabindex="-1" aria-labelledby="hero-title">
+  @if (scene()) {
+    <app-staff-scene />
+  }
+  <div class="hero__veil" aria-hidden="true"></div>
+
+  <div class="hero__content l-container">
+    @switch (state()) {
+      @case ('ready') {
+        @let current = profile()!;
+        <p class="hero__eyebrow">{{ t().hero.greeting }}</p>
+        <h1 id="hero-title" class="hero__title">
+          @for (word of words(); track $index) {
+            <span class="hero__word" [style.--word-index]="$index">{{ word }}</span>&ngsp;
+          }
+        </h1>
+        <p class="hero__headline">{{ current.headline }}</p>
+        @if (current.location) {
+          <p class="hero__location"><span aria-hidden="true">◉</span> {{ current.location }}</p>
+        }
+
+        <div class="hero__actions">
+          <a class="hero__cta hero__cta--primary" routerLink="/" fragment="proyectos">{{ t().hero.projectsCta }}</a>
+          <a class="hero__cta" routerLink="/blog">{{ t().hero.blogCta }}</a>
+        </div>
+
+        @if (current.links.github || current.links.linkedin) {
+          <ul class="hero__social" [attr.aria-label]="t().hero.profilesLabel">
+            @if (current.links.github) {
+              <li><a class="hero__social-link" [href]="current.links.github" rel="me noopener">GitHub</a></li>
+            }
+            @if (current.links.linkedin) {
+              <li><a class="hero__social-link" [href]="current.links.linkedin" rel="me noopener">LinkedIn</a></li>
+            }
+          </ul>
+        }
+      }
+      @case ('loading') {
+        <h1 id="hero-title" class="hero__title">CV 2026</h1>
+        <p class="hero__headline">{{ t().hero.loading }}</p>
+      }
+      @default {
+        <h1 id="hero-title" class="hero__title">CV 2026</h1>
+        <p class="hero__headline">{{ t().hero.error }}</p>
+        <div class="hero__actions">
+          <a class="hero__cta hero__cta--primary" routerLink="/blog">{{ t().hero.blogCta }}</a>
+        </div>
+      }
+    }
+
+    <!-- La nana de las ideas: siempre disponible, también mientras carga el perfil -->
+    <app-note-pad
+      class="hero__melody"
+      [soundOn]="soundOn()"
+      [party]="party()"
+      [progress]="progress()"
+      [showStart]="showStart()"
+      (played)="play($event)"
+      (soundChange)="setSound($event)"
+      (partyEnded)="endParty()"
+    />
+  </div>
+
+  <span class="hero__scroll" aria-hidden="true"></span>
+</section>

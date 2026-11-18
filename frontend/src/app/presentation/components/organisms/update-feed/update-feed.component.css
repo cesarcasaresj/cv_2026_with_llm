@@ -1,0 +1,105 @@
+/* Fondo nocturno, como la portada: cierra la página con el mismo ambiente con el que empieza */
+.updates {
+  padding-block: 5rem 6rem;
+  background:
+    radial-gradient(50% 60% at 10% 0%, rgb(124 92 255 / 0.25), transparent 70%),
+    radial-gradient(40% 50% at 95% 100%, rgb(0 209 178 / 0.18), transparent 70%),
+    var(--color-night);
+  color: var(--color-on-night);
+  outline: none;
+}
+
+.updates__status {
+  margin: 0;
+}
+
+.updates__list {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Bloque .update-card */
+.update-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border: 1px solid rgb(245 247 255 / 0.12);
+  border-radius: var(--radius-card);
+  background: rgb(21 27 51 / 0.75);
+  backdrop-filter: blur(6px);
+  transition:
+    transform 0.45s var(--ease-spring),
+    border-color 0.3s;
+}
+
+.update-card::before {
+  content: '“';
+  position: absolute;
+  top: -0.4rem;
+  right: 1rem;
+  font-family: Georgia, serif;
+  font-size: 5rem;
+  line-height: 1;
+  color: rgb(124 92 255 / 0.35);
+  pointer-events: none;
+}
+
+.update-card:hover {
+  transform: translateY(-6px) rotate(-0.6deg);
+  border-color: rgb(0 209 178 / 0.5);
+}
+
+.update-card__date {
+  color: var(--color-teal);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.update-card__text {
+  margin: 0;
+  color: var(--color-on-night);
+  white-space: pre-line;
+  /* Las publicaciones largas se recortan a 7 líneas */
+  display: -webkit-box;
+  -webkit-line-clamp: 7;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.update-card__link,
+.updates__more-link {
+  color: var(--color-on-night);
+  font-weight: 700;
+  text-decoration-color: var(--color-teal);
+  text-underline-offset: 0.3em;
+}
+
+.update-card__link {
+  margin-top: auto;
+}
+
+.update-card__link:focus-visible,
+.updates__more-link:focus-visible {
+  outline: 3px solid var(--color-teal);
+  outline-offset: 3px;
+}
+
+.updates__more {
+  margin: 2rem 0 0;
+}
+
+@media (min-width: 48rem) {
+  .updates {
+    padding-block: 7rem 8rem;
+  }
+
+  .updates__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

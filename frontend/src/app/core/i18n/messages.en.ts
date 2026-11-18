@@ -1,0 +1,244 @@
+import type { Messages } from './messages.es';
+
+/** Interface texts in English (spec.md, HU-18). Typed as `Messages`: a missing or extra key does not compile. */
+export const en: Messages = {
+  app: {
+    skipToContent: 'Skip to content',
+  },
+
+  language: {
+    label: 'Language',
+    // Each language keeps its own name, as people look for it
+    names: { es: 'Español', en: 'English' },
+    changed: (name: string) => `Language: ${name}`,
+  },
+
+  header: {
+    brandLabel: 'CV 2026, go to the top',
+    navLabel: 'Main',
+    experience: 'Experience',
+    about: 'About me',
+    projects: 'Projects',
+    updates: 'Latest',
+    blog: 'Blog',
+  },
+
+  hero: {
+    greeting: "Hi, I'm",
+    projectsCta: 'See projects',
+    blogCta: 'Read the blog',
+    profilesLabel: 'Profiles',
+    loading: 'Loading the profile…',
+    error: "We couldn't load the profile. Please try again in a few minutes.",
+  },
+
+  melody: {
+    padLabel: 'Score: play the notes',
+    notes: { idea: 'Idea', code: 'Code', spark: 'Spark', web: 'Web', dream: 'Dream' },
+    keysHelp: 'Keys 1 to 5',
+    sound: 'Sound',
+    hint: 'There is a hidden lullaby… ✦',
+    hintStart: (glyphs: string) => `Hint: it starts like this ${glyphs} …`,
+    progress: (done: number, total: number) => `${done} of ${total} notes of the lullaby`,
+    discovered: '✦ Melody discovered: the lullaby of ideas',
+    announceDiscovered: 'Melody discovered: the lullaby of ideas! Party mode on.',
+    endParty: 'End the party',
+    announceEnded: 'Party over.',
+  },
+
+  experience: {
+    title: 'Experience',
+    loading: 'Loading experience…',
+    error: "We couldn't load the experience. Please try again in a few minutes.",
+    empty: 'No experience has been loaded yet.',
+    now: 'present',
+    dateFormat: 'MMM y',
+    /** "2 years 3 months", "8 months". */
+    duration: (years: number, months: number) =>
+      [years ? `${years} ${years === 1 ? 'year' : 'years'}` : '', months ? `${months} ${months === 1 ? 'month' : 'months'}` : '']
+        .filter(Boolean)
+        .join(' '),
+  },
+
+  journey: {
+    intro: 'A journey through my career, from today back to where it all began. Scroll or use the buttons to move.',
+    hud: (level: number, total: number) => `Level ${level} / ${total}`,
+    controlsLabel: 'Travel through the levels',
+    previous: 'Previous level',
+    next: 'Next level',
+    goTo: (level: number) => `Go to level ${level}`,
+    xp: (years: number): string => (years < 1 ? 'XP: the beginning' : `XP: ${years} ${years === 1 ? 'year' : 'years'}`),
+    start: '🏁 Where it all began',
+    backToPresent: 'Back to the present',
+    announce: (level: number, total: number, title: string, company: string) => `Level ${level} of ${total}: ${title}, ${company}`,
+  },
+
+  about: {
+    title: 'About me',
+    loading: 'Loading…',
+    error: "We couldn't load this section. Please try again in a few minutes.",
+    years: (n: number): string => (n === 1 ? 'year of experience' : 'years of experience'),
+    companies: (n: number): string => (n === 1 ? 'company' : 'companies'),
+    projects: (n: number): string => (n === 1 ? 'public project' : 'public projects'),
+  },
+
+  projects: {
+    title: 'Projects',
+    intro: "What I've been working on lately, straight from my public GitHub repositories.",
+    loading: 'Loading projects from GitHub…',
+    githubDown: "GitHub isn't responding right now.",
+    seeOnGithub: 'You can see the projects directly on',
+    githubProfile: 'my GitHub profile',
+    retry: 'Please try again in a few minutes.',
+    noDescription: 'No description on GitHub.',
+    topicsLabel: 'Topics',
+    stars: 'stars',
+    updated: 'Updated',
+    justNow: 'just now',
+    demo: 'View demo',
+    demoOf: (name: string) => ` of ${name}`,
+    all: 'All my repositories on GitHub →',
+    empty: 'No public projects yet.',
+  },
+
+  updates: {
+    title: 'Latest',
+    intro: "What I'm up to these days, from what I share on LinkedIn.",
+    loading: 'Loading posts…',
+    error: "We couldn't load the posts. Please try again in a few minutes.",
+    empty: 'No posts yet.',
+    dateFormat: 'MMMM d, y',
+    shortDateFormat: 'MMMM d',
+    viewOnLinkedin: 'View on LinkedIn',
+    postOf: (date: string) => `: the post from ${date}`,
+    follow: 'Follow me on LinkedIn →',
+  },
+
+  teaser: {
+    title: 'Want to read how all of this is built?',
+    text: 'I write about architecture, security, API contracts and accessibility on the blog.',
+    cta: 'Go to the blog',
+  },
+
+  blog: {
+    title: 'Blog',
+    intro: 'Articles about software architecture, security, API contracts and web accessibility.',
+    categories: 'Categories',
+    tags: 'Tags',
+  },
+
+  postCounter: {
+    title: 'Total posts',
+    loading: 'Loading…',
+    error: "We couldn't load the total. Please try again in a few minutes.",
+    announceLoading: 'Loading the total number of posts',
+    announceError: "Couldn't load the total number of posts",
+    announceTotal: (total: number) => `Total posts: ${total}`,
+  },
+
+  postList: {
+    title: 'Articles',
+    loading: 'Loading articles…',
+    empty: 'No articles match these filters.',
+    error: "We couldn't load the articles. Please try again in a few minutes.",
+    filterNotFound: 'That filter no longer exists. Remove it to see every article.',
+    count: (n: number): string => (n === 1 ? '1 article' : `${n} articles`),
+  },
+
+  taxonomy: {
+    loading: (label: string) => `Loading ${label}…`,
+    error: (label: string) => `We couldn't load the ${label}. Please try again in a few minutes.`,
+    empty: (label: string) => `No ${label} yet`,
+    announceError: (label: string) => `Couldn't load the ${label}`,
+  },
+
+  article: {
+    loading: 'Loading the article…',
+    notFoundTitle: "We couldn't find this article",
+    notFoundText: 'The address may be misspelled, or the article may no longer exist.',
+    errorTitle: "We couldn't load the article",
+    errorText: 'Please try again in a few minutes.',
+    back: 'Back to the blog',
+    by: 'By',
+    updatedOn: 'Updated on',
+    reading: (minutes: number) => `${minutes} min read`,
+    tagsLabel: 'Article tags',
+    announceLoading: 'Loading the article',
+    seoNotFoundTitle: 'Article not found',
+    seoNotFoundDescription: "The article you're looking for doesn't exist or is no longer available.",
+  },
+
+  login: {
+    title: 'Sign in',
+    email: 'Email',
+    emailHint: 'Enter a valid email address.',
+    password: 'Password',
+    passwordHint: 'Enter your password.',
+    submit: 'Sign in',
+    submitting: 'Signing in…',
+    genericError: "We couldn't sign you in. Please try again in a few minutes.",
+    seoDescription: 'Sign-in for the site author.',
+  },
+
+  account: {
+    title: 'My account',
+    manageLabel: 'Site management',
+    categoriesLink: 'Categories and how articles are assigned to them',
+    logoutError: "We couldn't sign you out. Please try again in a few minutes.",
+    seoDescription: "The site author's session.",
+    sessionTitle: 'Signed in',
+    signedInAs: "You're signed in as",
+    logout: 'Sign out',
+    loggingOut: 'Signing out…',
+  },
+
+  categories: {
+    back: '← Back to My account',
+    title: 'Categories',
+    intro: 'The category list is fixed: it only changes from here. Every article has exactly one.',
+    seoDescription: 'Manage the category list and the category of each article.',
+    saveError: "We couldn't save the change. Please try again in a few minutes.",
+    created: (name: string) => `Category “${name}” created.`,
+    renamed: (name: string) => `Category renamed to “${name}”.`,
+    deleted: (name: string | null): string => (name ? `Category “${name}” deleted.` : 'Category deleted.'),
+    moved: (post: string, category: string) => `“${post}” is now in “${category}”.`,
+
+    listTitle: 'Category list',
+    newLabel: 'New category',
+    create: 'Create',
+    nameHint: '2 to 40 characters. It cannot repeat another category.',
+    nameError: 'Enter a name between 2 and 40 characters.',
+    loading: 'Loading categories…',
+    error: "We couldn't load the categories. Please try again in a few minutes.",
+    empty: 'No categories yet. Create the first one.',
+    renameLabel: (name: string) => `New name for “${name}”`,
+    save: 'Save',
+    saving: 'Saving…',
+    cancel: 'Cancel',
+    renameHint: 'Its articles keep the category; its address in the filters changes too.',
+    postCount: (n: number): string => (n === 1 ? '1 article' : `${n} articles`),
+    rename: 'Rename',
+    deleteBlocked: 'To delete it, assign another category to its articles.',
+    confirmDelete: (name: string) => `Delete “${name}”?`,
+    confirmYes: 'Yes, delete',
+    delete: 'Delete',
+
+    assignTitle: 'Category of each article',
+    assignHint: 'Every article has a single category. Choose the new one and press “Save”.',
+    postsLoading: 'Loading articles…',
+    postsError: "We couldn't load the articles. Please try again in a few minutes.",
+    columnArticle: 'Article',
+    columnCategory: 'Category',
+    published: 'Published',
+    draft: 'Draft',
+    categoryOf: (title: string) => `Category of “${title}”`,
+    saveCategoryOf: (title: string) => ` the category of “${title}”`,
+    postsEmpty: 'No articles yet. Load them with',
+  },
+
+  seo: {
+    locale: 'en_US',
+    homeTitle: 'Home',
+    homeDescription: 'Portfolio: experience, GitHub projects, recent posts and a technical blog.',
+  },
+};

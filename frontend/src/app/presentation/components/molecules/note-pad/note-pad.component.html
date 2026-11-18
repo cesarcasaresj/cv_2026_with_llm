@@ -1,0 +1,43 @@
+<div class="note-pad" role="group" [attr.aria-label]="t().melody.padLabel">
+  <ul class="note-pad__notes">
+    @for (note of notes; track note.id) {
+      <li>
+        <button
+          type="button"
+          class="note-pad__note"
+          [style.--note-color]="note.color"
+          [attr.aria-keyshortcuts]="$index + 1"
+          (click)="play(note.id)"
+        >
+          <!-- La onda se crea de nuevo en cada pulsación (se sigue por el contador) para repetir la animación -->
+          @for (ring of ringing()?.id === note.id ? [ringing()!.count] : []; track ring) {
+            <span class="note-pad__ring" aria-hidden="true"></span>
+          }
+          <span class="note-pad__glyph" aria-hidden="true">{{ note.glyph }}</span>
+          <span class="cdk-visually-hidden">{{ t().melody.notes[note.id] }}</span>
+          <span class="note-pad__key" aria-hidden="true">{{ $index + 1 }}</span>
+        </button>
+      </li>
+    }
+  </ul>
+
+  <div class="note-pad__footer">
+    <button type="button" class="note-pad__button" [attr.aria-pressed]="soundOn()" (click)="soundChange.emit(!soundOn())">
+      <span aria-hidden="true">{{ soundOn() ? '🔊' : '🔇' }}</span> {{ t().melody.sound }}
+    </button>
+
+    @if (party()) {
+      <p class="note-pad__discovered">{{ t().melody.discovered }}</p>
+      <button type="button" class="note-pad__button" (click)="partyEnded.emit()">{{ t().melody.endParty }}</button>
+    } @else {
+      <p class="note-pad__hint">
+        <span class="note-pad__steps" aria-hidden="true">
+          @for (step of steps; track step) {
+            <span class="note-pad__step" [class.note-pad__step--done]="step < progress()"></span>
+          }
+        </span>
+        {{ hint() }}
+      </p>
+    }
+  </div>
+</div>

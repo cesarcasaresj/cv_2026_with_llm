@@ -1,0 +1,77 @@
+/* Bloque .language-switch: dos opciones del mismo ancho y una píldora que se desliza bajo la activa */
+.language-switch {
+  --switch-option-width: 2.6rem;
+
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--switch-option-width);
+  padding: 0.2rem;
+  border: 1px solid rgb(11 16 32 / 0.14);
+  border-radius: 999px;
+  background: rgb(11 16 32 / 0.04);
+  isolation: isolate;
+}
+
+.language-switch__pill {
+  position: absolute;
+  top: 0.2rem;
+  bottom: 0.2rem;
+  left: 0.2rem;
+  z-index: -1;
+  width: var(--switch-option-width);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-accent-bright), var(--color-teal));
+  box-shadow: 0 4px 14px -4px rgb(124 92 255 / 0.7);
+  transition: transform 0.45s var(--ease-spring);
+}
+
+.language-switch--en .language-switch__pill {
+  transform: translateX(100%);
+}
+
+.language-switch__option {
+  min-height: 2rem;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.language-switch__option[aria-pressed='true'] {
+  color: #fff;
+  cursor: default;
+}
+
+.language-switch__option:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Sobre fondo nocturno */
+.language-switch--on-night {
+  border-color: rgb(245 247 255 / 0.3);
+  background: rgb(245 247 255 / 0.06);
+}
+
+.language-switch--on-night .language-switch__option {
+  color: var(--color-on-night);
+}
+
+.language-switch--on-night .language-switch__option:focus-visible {
+  outline-color: var(--color-teal);
+}
+
+/* Con "reducir movimiento" la píldora cambia de lado con un fundido de color, sin deslizarse */
+@media (prefers-reduced-motion: reduce) {
+  .language-switch__pill {
+    transition: none;
+  }
+}

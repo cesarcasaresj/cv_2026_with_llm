@@ -1,0 +1,108 @@
+.about {
+  position: relative;
+  overflow: hidden;
+  padding-block: 5rem;
+  background: var(--color-surface-soft);
+  outline: none;
+}
+
+/* Mancha de color que flota despacio detrás del texto */
+.about__glow {
+  position: absolute;
+  top: -20%;
+  right: -30%;
+  width: 70vmax;
+  height: 70vmax;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(124 92 255 / 0.18), rgb(0 209 178 / 0.08) 45%, transparent 70%);
+  animation: about-float 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes about-float {
+  to {
+    transform: translate(-12%, 18%) rotate(40deg);
+  }
+}
+
+.about__inner {
+  position: relative;
+}
+
+.about__layout {
+  display: grid;
+  gap: 2.5rem;
+}
+
+.about__text {
+  display: grid;
+  gap: 1rem;
+  max-width: 65ch;
+}
+
+.about__paragraph {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.about__paragraph--lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+/* Cifras: el valor grande arriba aunque en el HTML vaya después de su etiqueta (dt/dd) */
+.about__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1rem;
+  margin: 0;
+  align-content: start;
+}
+
+.about__stat {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 0.25rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-card);
+  background: var(--color-background);
+  box-shadow: 0 20px 40px -28px rgb(91 63 214 / 0.55);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.about__stat:hover {
+  transform: translateY(-6px) rotate(-1.5deg);
+}
+
+.about__stat-value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: var(--color-accent);
+}
+
+.about__stat-label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+@media (min-width: 64rem) {
+  .about {
+    padding-block: 7rem;
+  }
+
+  .about__layout {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    gap: 4rem;
+  }
+
+  .about__stats {
+    grid-template-columns: 1fr;
+  }
+}

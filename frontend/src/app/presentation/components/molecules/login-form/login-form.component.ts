@@ -1,4 +1,5 @@
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, output } from '@angular/core';
+import { I18nService } from '../../../../core/i18n/i18n.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 export interface LoginCredentials {
@@ -13,6 +14,7 @@ export interface LoginCredentials {
   styleUrl: './login-form.component.css',
 })
 export class LoginFormComponent {
+  protected readonly t = inject(I18nService).t;
   /** true mientras se envían las credenciales (spec.md, HU-02). */
   readonly pending = input(false);
   /** Mensaje de error del intento anterior, o null. */

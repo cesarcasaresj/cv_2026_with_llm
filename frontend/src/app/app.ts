@@ -1,17 +1,21 @@
-import { Component, ElementRef, PLATFORM_ID, effect, inject, viewChild } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, DOCUMENT, ElementRef, PLATFORM_ID, effect, inject, viewChild } from '@angular/core';
+import { ViewportScroller, isPlatformBrowser } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, skip } from 'rxjs';
+import { SiteHeaderComponent } from './presentation/components/organisms/site-header/site-header.component';
+import { I18nService } from './core/i18n/i18n.service';
 
 @Component({
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, SiteHeaderComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',
 })
 export class App {
+  protected readonly i18n = inject(I18nService);
   private readonly router = inject(Router);
+  private readonly document = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly main = viewChild<ElementRef<HTMLElement>>('main');
 
@@ -27,12 +31,25 @@ export class App {
   );
 
   constructor() {
-    // Tras cada cambio de ruta, el foco vuelve al <main> para que el lector de pantalla anuncie la página nueva.
-    // En el servidor no hay foco que mover.
+    // El router hace scroll a las anclas con window.scrollTo, que ignora scroll-padding-top:
+    // se le indica la altura real de la cabecera fija para que no tape el título de la sección.
+    if (this.isBrowser) {
+      inject(ViewportScroller).setOffset(() => [
+        0,
+        (this.document.querySelector('.site-header')?.getBoundingClientRect().height ?? 0) + 16,
+      ]);
+    }
+
+    // Tras cada cambio de ruta, el foco va al contenido nuevo para que el lector de pantalla lo anuncie:
+    // a la sección pedida si la URL lleva ancla (/#proyectos), o al <main> si no. En el servidor no hay foco.
     effect(() => {
-      if (this.isBrowser && this.lastNavigation()) {
-        this.main()?.nativeElement.focus();
-      }
+      const navigation = this.lastNavigation();
+      if (!this.isBrowser || !navigation) return;
+
+      const fragment = this.router.parseUrl(navigation.urlAfterRedirects).fragment;
+      const target = fragment ? this.document.getElementById(fragment) : null;
+      // preventScroll: el router ya hizo el scroll hasta el ancla (withInMemoryScrolling)
+      (target ?? this.main()?.nativeElement)?.focus({ preventScroll: !!target });
     });
   }
 

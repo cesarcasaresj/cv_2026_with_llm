@@ -2,6 +2,7 @@ import { Component, RESPONSE_INIT, computed, effect, inject, input } from '@angu
 import { HttpErrorResponse, httpResource } from '@angular/common/http';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { SeoService } from '../../../core/seo/seo.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
 import {
   ArticleViewComponent,
   type ArticleDetail,
@@ -12,10 +13,12 @@ import {
   imports: [ArticleViewComponent],
   selector: 'app-article-page',
   template: `<app-article-view [state]="state()" [article]="loadedArticle()" />`,
+  host: { class: 'l-page' },
 })
 export class ArticlePageComponent {
   private readonly seo = inject(SeoService);
   private readonly announcer = inject(LiveAnnouncer);
+  private readonly t = inject(I18nService).t;
   /** Solo existe durante el render en el servidor: permite responder 404 a buscadores. */
   private readonly responseInit = inject(RESPONSE_INIT, { optional: true });
 
@@ -38,24 +41,26 @@ export class ArticlePageComponent {
     effect(() => {
       const state = this.state();
       const article = this.loadedArticle();
+      // Se lee el idioma: al cambiarlo, el título y la descripción de la página se actualizan
+      const text = this.t().article;
 
       if (state === 'ready' && article) {
         this.seo.setArticle(article);
       } else if (state === 'not-found') {
         this.seo.setPage({
-          title: 'Artículo no encontrado',
-          description: 'El artículo que buscas no existe o ya no está disponible.',
+          title: text.seoNotFoundTitle,
+          description: text.seoNotFoundDescription,
           path: `/articulos/${this.slug()}`,
           noindex: true,
         });
         // Un 404 real evita que los buscadores indexen una página "no encontrado" como si fuera contenido
         if (this.responseInit) this.responseInit.status = 404;
-        this.announcer.announce('No encontramos este artículo', 'polite');
+        this.announcer.announce(text.notFoundTitle, 'polite');
       } else if (state === 'error') {
         if (this.responseInit) this.responseInit.status = 503;
-        this.announcer.announce('No pudimos cargar el artículo', 'polite');
+        this.announcer.announce(text.errorTitle, 'polite');
       } else if (state === 'loading') {
-        this.announcer.announce('Cargando el artículo', 'polite');
+        this.announcer.announce(text.announceLoading, 'polite');
       }
     });
   }

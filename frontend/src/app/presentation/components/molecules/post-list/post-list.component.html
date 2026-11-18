@@ -1,26 +1,27 @@
 <section class="post-list" aria-labelledby="post-list-title" [attr.aria-busy]="posts.isLoading()">
-  <h2 id="post-list-title" class="post-list__title">Artículos</h2>
+  <h2 id="post-list-title" class="post-list__title">{{ t().postList.title }}</h2>
 
   @if (posts.isLoading()) {
-    <p class="post-list__status">Cargando artículos…</p>
+    <p class="post-list__status">{{ t().postList.loading }}</p>
   } @else if (posts.error()) {
     <p class="post-list__status post-list__status--error">{{ errorMessage() }}</p>
   } @else if (posts.value(); as list) {
     @if (list.length === 0) {
-      <p class="post-list__status">No hay artículos con estos filtros.</p>
+      <p class="post-list__status">{{ t().postList.empty }}</p>
     } @else {
       <ul class="post-list__items">
         @for (post of list; track post.id) {
           <li>
             <article class="post-list__item">
-              <h3 class="post-list__name">
+              <!-- Los artículos no se traducen: lang="es" para que el lector de pantalla los pronuncie en español (WCAG 3.1.2) -->
+              <h3 class="post-list__name" lang="es">
                 <a [routerLink]="['/articulos', post.slug]">{{ post.title }}</a>
               </h3>
-              <p class="post-list__description">{{ post.description }}</p>
+              <p class="post-list__description" lang="es">{{ post.description }}</p>
               <p class="post-list__meta">
                 <!-- Fecha de publicación en UTC: es un día, no debe cambiar según la zona horaria del visitante -->
-                <time [attr.datetime]="post.publishedAt">{{ post.publishedAt | date: 'longDate' : 'UTC' }}</time>
-                · {{ post.category.name }}
+                <time [attr.datetime]="post.publishedAt">{{ post.publishedAt | date: 'longDate' : 'UTC' : lang() }}</time>
+                · <span lang="es">{{ post.category.name }}</span>
               </p>
             </article>
           </li>

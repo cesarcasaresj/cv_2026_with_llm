@@ -1,0 +1,21 @@
+<!-- Nombre accesible "ES Español" / "EN English": empieza por el texto visible, como pide WCAG 2.5.3 -->
+<div
+  class="language-switch"
+  [class.language-switch--en]="lang() === 'en'"
+  [class.language-switch--on-night]="onNight()"
+  role="group"
+  [attr.aria-label]="i18n.t().language.label"
+>
+  <span class="language-switch__pill" aria-hidden="true"></span>
+  @for (option of options; track option) {
+    <button
+      type="button"
+      class="language-switch__option"
+      [attr.lang]="option"
+      [attr.aria-pressed]="lang() === option"
+      (click)="choose(option)"
+    >
+      {{ option.toUpperCase() }}<span class="cdk-visually-hidden"> {{ i18n.t().language.names[option] }}</span>
+    </button>
+  }
+</div>

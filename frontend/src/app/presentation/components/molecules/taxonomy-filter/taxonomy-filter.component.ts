@@ -1,8 +1,9 @@
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, untracked } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import type { components } from '../../../../core/api/generated';
+import { I18nService } from '../../../../core/i18n/i18n.service';
 
 type TaxonomySummary = components['schemas']['TaxonomySummary'];
 
@@ -21,6 +22,7 @@ let nextId = 0;
 })
 export class TaxonomyFilterComponent {
   private readonly announcer = inject(LiveAnnouncer);
+  protected readonly t = inject(I18nService).t;
 
   /** Título visible de la sección, por ejemplo "Categorías". */
   readonly heading = input.required<string>();
@@ -36,15 +38,18 @@ export class TaxonomyFilterComponent {
 
   protected readonly terms = httpResource<TaxonomySummary[]>(() => this.endpoint());
 
-  private readonly label = computed(() => this.heading().toLowerCase());
+  /** El título en minúsculas, para usarlo dentro de una frase: "Cargando categorías…". */
+  protected readonly label = computed(() => this.heading().toLowerCase());
 
   constructor() {
-    // Anuncia cada cambio de estado en el contenedor global aria-live="polite"
+    // Anuncia cada cambio de estado en el contenedor global aria-live="polite" (no se repite al cambiar de idioma)
     effect(() => {
+      const text = untracked(this.t).taxonomy;
+      const label = untracked(this.label);
       if (this.terms.isLoading()) {
-        this.announcer.announce(`Cargando ${this.label()}`, 'polite');
+        this.announcer.announce(text.loading(label), 'polite');
       } else if (this.terms.error()) {
-        this.announcer.announce(`No se pudieron cargar las ${this.label()}`, 'polite');
+        this.announcer.announce(text.announceError(label), 'polite');
       }
     });
   }

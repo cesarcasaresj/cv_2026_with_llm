@@ -1,0 +1,32 @@
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="site-header__brand" routerLink="/" fragment="inicio" [attr.aria-label]="t().header.brandLabel">
+      <span class="site-header__logo" aria-hidden="true">◆</span>
+      <span class="site-header__brand-text">CV 2026</span>
+    </a>
+
+    <nav class="site-header__nav" [attr.aria-label]="t().header.navLabel">
+      <ul class="site-header__list">
+        @for (item of items(); track item.fragment) {
+          <li class="site-header__item">
+            <a class="site-header__link" [routerLink]="item.path" [fragment]="item.fragment">{{ item.label }}</a>
+          </li>
+        }
+        <li class="site-header__item">
+          <a
+            class="site-header__link site-header__link--blog"
+            routerLink="/blog"
+            routerLinkActive="site-header__link--active"
+            ariaCurrentWhenActive="page"
+          >
+            {{ t().header.blog }}
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="i18n.setLang($event)" />
+  </div>
+  <!-- Barra de progreso de lectura: decorativa, solo en navegadores con animaciones ligadas al scroll -->
+  <span class="site-header__progress" aria-hidden="true"></span>
+</header>
