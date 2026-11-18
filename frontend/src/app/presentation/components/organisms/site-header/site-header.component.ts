@@ -9,6 +9,7 @@ import { prefersReducedMotion } from '../../../motion/motion';
 import { LanguageSwitchComponent } from '../../molecules/language-switch/language-switch.component';
 import { FLAG_IMAGES, LanguageFlagComponent } from '../../atoms/language-flag/language-flag.component';
 import { NavLabelComponent } from '../../atoms/nav-label/nav-label.component';
+import { NavPreviewComponent } from '../../atoms/nav-preview/nav-preview.component';
 
 /** Cuánto se ve la bandera y cuándo empieza el cambio de idioma (cuando la bandera ya entró). */
 const FLAG_MS = 1550;
@@ -29,7 +30,7 @@ interface NavItem {
  * En móvil, la lista se desplaza en horizontal debajo de la marca.
  */
 @Component({
-  imports: [RouterLink, RouterLinkActive, LanguageSwitchComponent, LanguageFlagComponent, NavLabelComponent],
+  imports: [RouterLink, RouterLinkActive, LanguageSwitchComponent, LanguageFlagComponent, NavLabelComponent, NavPreviewComponent],
   selector: 'app-site-header',
   templateUrl: './site-header.component.html',
   styleUrl: './site-header.component.css',
@@ -40,6 +41,8 @@ export class SiteHeaderComponent {
   protected readonly portals = inject(SectionPortalService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly siteName = SITE_NAME;
+  /** Icono de cada sección: en móvil va encima del texto, como en la barra de pestañas de una app. */
+  protected readonly icons: Record<PortalSection, string> = { experience: '💼', about: '🙋', projects: '💻', updates: '📡', blog: '📖' };
 
   /** Bandera en pantalla: idioma y número de cambio (0 = ninguna). */
   /** Último enlace pulsado y número de pulsación: su texto reproduce el efecto de su sección. */

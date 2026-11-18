@@ -20,7 +20,9 @@
               [fragment]="item.fragment"
               (click)="activate(item.section, $event)"
             >
+              <span class="site-header__icon" aria-hidden="true">{{ icons[item.section] }}</span>
               <app-nav-label [text]="item.label" [section]="item.section" [run]="effectRun(item.section)" />
+              <app-nav-preview class="site-header__preview" [section]="item.section" />
             </a>
           </li>
         }
@@ -32,7 +34,9 @@
             ariaCurrentWhenActive="page"
             (click)="activate('blog', $event)"
           >
+            <span class="site-header__icon" aria-hidden="true">{{ icons.blog }}</span>
             <app-nav-label [text]="t().header.blog" section="blog" [run]="effectRun('blog')" />
+            <app-nav-preview class="site-header__preview" section="blog" />
           </a>
         </li>
       </ul>

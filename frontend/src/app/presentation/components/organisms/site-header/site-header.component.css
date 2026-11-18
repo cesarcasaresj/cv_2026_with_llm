@@ -57,16 +57,12 @@
 .site-header__nav {
   order: 1;
   flex: 1 1 100%;
-  /* En móvil la lista se desplaza en horizontal dentro de la cabecera, no la página;
-     el borde derecho se difumina para insinuar que hay más enlaces */
-  overflow-x: auto;
-  scrollbar-width: none;
-  margin-inline: -0.5rem;
-  mask-image: linear-gradient(90deg, #000 88%, transparent);
 }
 
+/* Móvil: las cinco secciones siempre caben, en columnas iguales con su icono encima */
 .site-header__list {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.25rem;
   margin: 0;
   padding: 0;
@@ -76,14 +72,28 @@
 
 .site-header__link {
   position: relative;
-  display: inline-block;
-  padding: 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.3rem 0.1rem 0.45rem;
+  text-align: center;
   border-radius: 999px;
   color: var(--color-text);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   text-decoration: none;
   transition: background-color 0.2s, color 0.2s;
+}
+
+.site-header__icon {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+/* La escena de cada sección (NavPreview) solo existe en escritorio, al pasar el ratón */
+.site-header__preview {
+  display: none;
 }
 
 /* Subrayado que crece desde el centro */
@@ -152,17 +162,29 @@
     padding-block: 0;
   }
 
+  .site-header__list {
+    display: flex;
+  }
+
+  .site-header__icon {
+    display: none;
+  }
+
+  /* La escena de cada sección se despliega al pasar el ratón o llegar con el teclado */
+  .site-header__link:is(:hover, :focus-visible) .site-header__preview {
+    display: block;
+  }
+
   .site-header__nav {
     overflow: visible;
     order: 0;
     flex: 0 1 auto;
     margin-left: auto;
-    margin-inline: 0;
-    mask-image: none;
   }
 
   .site-header__link {
-    padding-inline: 0.75rem;
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
     font-size: 0.95rem;
   }
 

@@ -27,6 +27,14 @@ export const es = {
     blog: 'Blog',
     /** Distintivo del efecto de Actualidad en el menú (HU-21). */
     live: '● EN VIVO',
+    /** Frase de la escena que aparece al pasar el ratón por cada enlace (HU-21). */
+    previews: {
+      experience: 'Mi trayectoria, nivel a nivel',
+      about: 'Quién soy y qué me inspira',
+      projects: 'Lo que he construido',
+      updates: 'Lo último que comparto',
+      blog: 'Lo que escribo',
+    },
   },
 
   hero: {

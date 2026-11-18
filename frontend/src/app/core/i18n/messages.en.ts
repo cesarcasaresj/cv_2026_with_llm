@@ -22,6 +22,13 @@ export const en: Messages = {
     updates: 'Latest',
     blog: 'Blog',
     live: '● LIVE',
+    previews: {
+      experience: 'My career, level by level',
+      about: 'Who I am and what inspires me',
+      projects: 'What I have built',
+      updates: 'What I share lately',
+      blog: 'What I write about',
+    },
   },
 
   hero: {

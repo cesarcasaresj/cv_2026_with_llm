@@ -1,0 +1,340 @@
+/* Bloque .preview: tarjeta nocturna con una mini escena animada por sección (HU-21) */
+:host {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 50%;
+  z-index: 30;
+  pointer-events: none;
+  translate: -50% 0;
+}
+
+.preview {
+  display: grid;
+  gap: 0.4rem;
+  width: 190px;
+  padding: 0.6rem 0.6rem 0.55rem;
+  border: 1px solid rgb(245 247 255 / 0.15);
+  border-radius: 14px;
+  background:
+    radial-gradient(80% 70% at 30% 20%, rgb(124 92 255 / 0.35), transparent 70%),
+    var(--color-night);
+  box-shadow: 0 18px 40px -12px rgb(11 16 32 / 0.6);
+  color: var(--color-on-night);
+  animation: preview-in 0.35s var(--ease-spring) both;
+}
+
+/* Flecha que apunta al enlace */
+.preview::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border-top: 1px solid rgb(245 247 255 / 0.15);
+  border-left: 1px solid rgb(245 247 255 / 0.15);
+  background: var(--color-night);
+  rotate: 45deg;
+}
+
+@keyframes preview-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.9);
+  }
+}
+
+.preview__stage {
+  position: relative;
+  height: 74px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: rgb(245 247 255 / 0.05);
+}
+
+.preview__caption {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-on-night-muted);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.preview__item {
+  position: absolute;
+  font-size: 1.6rem;
+  line-height: 1;
+}
+
+/* ---------- Experiencia ---------- */
+.preview__road {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 18px;
+  height: 3px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(90deg, #ffd166 0 10px, transparent 10px 18px);
+  animation: road-move 0.8s linear infinite;
+}
+
+@keyframes road-move {
+  to {
+    background-position: -18px 0;
+  }
+}
+
+.preview__years {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  display: flex;
+  gap: 18px;
+  animation: years-pass 2.4s linear infinite;
+}
+
+.preview__year {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: rgb(0 209 178 / 0.2);
+  color: #5eead4;
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+@keyframes years-pass {
+  from {
+    transform: translateX(190px);
+  }
+  to {
+    transform: translateX(-260px);
+  }
+}
+
+.preview__item--hop {
+  left: 50%;
+  bottom: 22px;
+  margin-left: -0.8rem;
+  animation: hop 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes hop {
+  to {
+    transform: translateY(-10px) rotate(-8deg);
+  }
+}
+
+/* ---------- Sobre mí ---------- */
+.preview__item--center {
+  top: 50%;
+  left: 50%;
+  margin: -0.8rem 0 0 -0.8rem;
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  to {
+    scale: 1.12;
+  }
+}
+
+.preview__orbit {
+  position: absolute;
+  inset: 0;
+  animation: spin 4s linear infinite;
+}
+
+/* Cada satélite se coloca en la órbita con cos/sin y gira sobre sí mismo al revés que ella: siempre se ve derecho */
+.preview__satellite {
+  position: absolute;
+  top: calc(50% + sin(var(--k) * 90deg) * 30px);
+  left: calc(50% + cos(var(--k) * 90deg) * 30px);
+  margin: -0.55rem 0 0 -0.55rem;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.1rem;
+  color: #ffd166;
+  animation: spin 4s linear infinite reverse;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* ---------- Proyectos ---------- */
+.preview__window {
+  position: absolute;
+  top: calc(8px + var(--k) * 10px);
+  left: calc(12px + var(--k) * 46px);
+  width: 66px;
+  height: 46px;
+  padding: 5px;
+  border: 1px solid rgb(245 247 255 / 0.25);
+  border-radius: 6px;
+  background: #151b33;
+  animation: window-pop 2.4s var(--ease-spring) infinite;
+  animation-delay: calc(var(--k) * 0.3s);
+}
+
+@keyframes window-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.6);
+  }
+  15%,
+  85% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.preview__dots {
+  display: block;
+  width: 22px;
+  height: 5px;
+  margin-bottom: 5px;
+  background: radial-gradient(circle, #ff6b9a 2px, transparent 2.5px) 0 0 / 7px 5px repeat-x;
+}
+
+.preview__line {
+  display: block;
+  height: 4px;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  background: #7c5cff;
+  transform-origin: left;
+  animation: type-line 2.4s steps(6) infinite;
+  animation-delay: calc(var(--k) * 0.3s + 0.2s);
+}
+
+.preview__line--short {
+  width: 60%;
+  background: #00d1b2;
+}
+
+@keyframes type-line {
+  0% {
+    scale: 0 1;
+  }
+  40%,
+  100% {
+    scale: 1 1;
+  }
+}
+
+/* ---------- Actualidad ---------- */
+.preview__phone {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  width: 46px;
+  height: 66px;
+  margin-left: -23px;
+  overflow: hidden;
+  border: 2px solid #c3c9e6;
+  border-radius: 9px;
+  background: #151b33;
+}
+
+.preview__feed {
+  display: grid;
+  gap: 4px;
+  padding: 4px;
+  animation: feed-up 2.2s linear infinite;
+}
+
+.preview__post {
+  height: 12px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #38bdf8 0 30%, rgb(245 247 255 / 0.3) 30%);
+}
+
+@keyframes feed-up {
+  to {
+    transform: translateY(-32px);
+  }
+}
+
+.preview__live {
+  position: absolute;
+  top: 8px;
+  right: 46px;
+  color: #ef4444;
+  font-size: 0.8rem;
+  animation: blink 0.8s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.preview__item--side {
+  left: 16px;
+  bottom: 10px;
+  animation: pulse 0.8s ease-in-out infinite alternate;
+}
+
+/* ---------- Blog ---------- */
+.preview__item--book {
+  left: 18px;
+  top: 50%;
+  margin-top: -0.8rem;
+}
+
+.preview__ink {
+  position: absolute;
+  left: 70px;
+  top: 50%;
+  width: 90px;
+  height: 3px;
+  border-radius: 2px;
+  background: #ffd166;
+  transform-origin: left;
+  animation: ink 1.8s ease-in-out infinite;
+}
+
+@keyframes ink {
+  0% {
+    scale: 0 1;
+  }
+  70%,
+  100% {
+    scale: 1 1;
+  }
+}
+
+.preview__item--pencil {
+  left: 64px;
+  top: 50%;
+  margin-top: -1.2rem;
+  font-size: 1.2rem;
+  animation: pencil 1.8s ease-in-out infinite;
+}
+
+@keyframes pencil {
+  0% {
+    transform: translateX(0) rotate(0);
+  }
+  70% {
+    transform: translateX(86px) rotate(-6deg);
+  }
+  100% {
+    transform: translateX(86px) rotate(0);
+  }
+}
+
+/* "Reducir movimiento": la escena se queda quieta */
+@media (prefers-reduced-motion: reduce) {
+  .preview,
+  .preview * {
+    animation: none !important;
+  }
+}
