@@ -35,9 +35,10 @@ Al servidor solo llegan archivos listos: el backend en un único archivo (`dist/
 2. El DNS está en Namecheap, no en cPanel: **Domain List → Manage → Advanced DNS → Add New Record** →
    `A Record`, host `api`, valor = la **Shared IP Address** de cPanel (recuadro *General Information*).
 
-**HTTPS:** Namecheap no ofrece AutoSSL. El dominio principal tiene HTTPS por el interruptor **HTTPS ON** de su registro DNS.
-El subdominio `api` **no necesita certificado**: los visitantes nunca lo usan (todo pasa por `https://cesarcasares.com/api`)
-y el frontend lo llama desde el mismo servidor.
+**HTTPS:** Namecheap no tiene el botón "Run AutoSSL", pero emite solo el certificado de un subdominio nuevo unos minutos
+después de que su registro DNS apunte al servidor. Compruébalo antes de seguir: `https://api.cesarcasares.com` debe mostrar un
+certificado a nombre de `api.cesarcasares.com` (no el genérico `*.web-hosting.com`). Deja activado **Force HTTPS Redirect**.
+Los visitantes nunca usan el subdominio: todo pasa por `https://cesarcasares.com/api`, que el frontend reenvía al backend.
 
 ## 3. Base de datos PostgreSQL
 
@@ -114,7 +115,7 @@ $bytes = New-Object byte[] 48; [System.Security.Cryptography.RandomNumberGenerat
 
 | Variable | Valor |
 |---|---|
-| `BACKEND_URL` | `http://api.cesarcasares.com` (llamada interna, en el mismo servidor) |
+| `BACKEND_URL` | `https://api.cesarcasares.com` |
 | `PUBLIC_SITE_URL` | `https://cesarcasares.com` |
 | `ALLOWED_HOSTS` | `cesarcasares.com,www.cesarcasares.com` |
 

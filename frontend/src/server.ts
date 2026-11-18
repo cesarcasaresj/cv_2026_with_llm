@@ -32,6 +32,9 @@ app.use(
   createProxyMiddleware({
     target: backendUrl,
     pathFilter: ['/api', '/sitemap.xml', '/robots.txt'],
+    // El proxy presenta el nombre del backend (api.…), no el de esta petición: así el hosting,
+    // que sirve varios sitios en la misma IP, entrega la petición a la app correcta
+    changeOrigin: true,
   }),
 );
 
@@ -67,12 +70,15 @@ app.use((req, res, next) => {
 });
 
 /**
- * Arranca el servidor si este módulo es el principal, si lo lanza PM2 o si lo lanza Passenger
- * (cPanel → Setup Node.js App, que lo carga desde deploy/app.cjs y define PASSENGER_APP_ENV).
- * Escucha en `PORT` (por defecto 4000); con Passenger, el puerto lo decide Passenger.
+ * Arranca el servidor si este módulo es el principal, si lo lanza PM2 o si lo lanza el hosting
+ * (cPanel → Setup Node.js App, que lo carga desde deploy/app.cjs):
+ * - Passenger (Apache) define PASSENGER_APP_ENV;
+ * - LiteSpeed (lsnode, el de Namecheap) define LSNODE_ROOT y redirige listen() a su propio socket.
+ * Escucha en `PORT` (por defecto 4000); con Passenger o LiteSpeed, el hosting decide dónde escucha.
  */
-const startedByPassenger = Boolean(process.env['PASSENGER_APP_ENV']) || 'PhusionPassenger' in globalThis;
-if (isMainModule(import.meta.url) || process.env['pm_id'] || startedByPassenger) {
+const startedByHosting =
+  Boolean(process.env['PASSENGER_APP_ENV'] || process.env['LSNODE_ROOT']) || 'PhusionPassenger' in globalThis;
+if (isMainModule(import.meta.url) || process.env['pm_id'] || startedByHosting) {
   const port = process.env['PORT'] || 4000;
   app.listen(port, (error) => {
     if (error) {
