@@ -1,8 +1,8 @@
 import pg from 'pg';
-import type { VaultClient } from '../security/VaultClient';
+import type { SecretStore } from '../security/SecretStore';
 
-export async function createDatabasePool(vault: VaultClient, secretPath: string): Promise<pg.Pool> {
-  const credentials = await vault.readSecret(secretPath);
+export async function createDatabasePool(secrets: SecretStore, secretPath: string): Promise<pg.Pool> {
+  const credentials = await secrets.readSecret(secretPath);
 
   return new pg.Pool({
     host: credentials.host,

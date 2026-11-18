@@ -10,15 +10,9 @@
 
 import { readFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
-import { VaultClient } from '../src/infrastructure/security/VaultClient';
+import { createSecretStore, secretPaths } from '../src/infrastructure/security/SecretStore';
 import { createDatabasePool } from '../src/infrastructure/database/DatabasePool';
 import { readLinkedinExport } from './linkedin/linkedinExport';
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Falta la variable de entorno ${name}`);
-  return value;
-}
 
 function argument(name: string): string | undefined {
   const index = process.argv.indexOf(name);
@@ -53,8 +47,7 @@ async function main(): Promise<void> {
   const { profile } = result;
 
   // 2. Guardar todo en una transacción: o se reemplaza el perfil completo o no cambia nada
-  const vault = new VaultClient(requiredEnv('VAULT_ADDR'), requiredEnv('VAULT_TOKEN'));
-  const pool = await createDatabasePool(vault, requiredEnv('VAULT_POSTS_DB_PATH'));
+  const pool = await createDatabasePool(createSecretStore(), secretPaths().database);
   const client = await pool.connect();
   try {
     await client.query('BEGIN');

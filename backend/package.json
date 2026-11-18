@@ -11,7 +11,11 @@
     "load:linkedin": "node --env-file-if-exists=../.env --import tsx scripts/load-linkedin.ts",
     "load:profile": "node --env-file-if-exists=../.env --import tsx scripts/load-profile.ts",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "build": "node scripts/build.mjs",
+    "build:images": "node --import tsx scripts/load-content.ts --images-only",
+    "db:migrate": "node --env-file-if-exists=../.env --import tsx scripts/migrate.ts",
+    "prod": "node --env-file=../.env.production.local --import tsx"
   },
   "dependencies": {
     "express": "^5.3.0",
@@ -23,6 +27,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^24.0.0",
     "@types/pg": "^8.23.1",
+    "esbuild": "^0.28.2",
     "gray-matter": "^4.0.3",
     "openapi-typescript": "^7.13.0",
     "sharp": "^0.35.5",

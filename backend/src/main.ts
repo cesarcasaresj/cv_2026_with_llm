@@ -1,5 +1,7 @@
 import express from 'express';
-import { VaultClient } from './infrastructure/security/VaultClient';
+import { resolve } from 'node:path';
+import { createSecretStore, secretPaths } from './infrastructure/security/SecretStore';
+import { runMigrations } from './infrastructure/database/migrations';
 import { createDatabasePool } from './infrastructure/database/DatabasePool';
 import { PostgresPostRepository } from './infrastructure/database/PostgresPostRepository';
 import { PostgresTaxonomyRepository } from './infrastructure/database/PostgresTaxonomyRepository';
@@ -61,12 +63,20 @@ function withoutTrailingSlash(url: string): string {
 // Si Vault o la base de datos no responden, el arranque se detiene con un mensaje claro.
 // El error solo muestra la ruta o el código de estado, nunca el valor de un secreto.
 async function start(): Promise<void> {
-  const vault = new VaultClient(requiredEnv('VAULT_ADDR'), requiredEnv('VAULT_TOKEN'));
-  const pool = await createDatabasePool(vault, requiredEnv('VAULT_POSTS_DB_PATH'));
+  // Vault, o variables de entorno en un hosting sin Vault (SECRETS_PROVIDER=env, constitution.md, sección 2)
+  const secrets = createSecretStore();
+  const paths = secretPaths();
+  const pool = await createDatabasePool(secrets, paths.database);
+
+  // En un hosting sin Docker, las migraciones pendientes se aplican al arrancar (una sola vez cada una)
+  if (process.env.RUN_MIGRATIONS_ON_START === 'true') {
+    const directory = process.env.MIGRATIONS_DIR ?? resolve(import.meta.dirname, '../db/init');
+    await runMigrations(pool, directory, { log: console.log });
+  }
 
   // La clave de firma de la sesión vive en Vault (constitution.md, sección 2)
-  const jwtPath = requiredEnv('VAULT_JWT_PATH');
-  const jwtSecret = await vault.readSecret(jwtPath);
+  const jwtPath = paths.jwt;
+  const jwtSecret = await secrets.readSecret(jwtPath);
   if (!jwtSecret.signing_key) throw new Error(`Falta el campo signing_key en la ruta ${jwtPath}`);
 
   // Origen público del sitio (sitemap) y base de las imágenes (spec.md, decisión H)
