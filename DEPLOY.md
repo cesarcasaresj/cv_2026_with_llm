@@ -30,9 +30,14 @@ Al servidor solo llegan archivos listos: el backend en un único archivo (`dist/
 
 ## 2. Subdominio para la API
 
-1. cPanel → **Domains** (o **Subdomains**) → crea `api.cesarcasares.com`.
-2. cPanel → **SSL/TLS Status** → marca `cesarcasares.com`, `www.cesarcasares.com` y `api.cesarcasares.com` → **Run AutoSSL**.
-   Espera a que los tres tengan el candado verde: la cookie de sesión exige HTTPS.
+1. cPanel → **Domains** → **Create A New Domain** → `api.cesarcasares.com`.
+   **Desmarca "Share document root"**: si comparte `public_html`, cPanel lo crea como alias y las dos apps chocan.
+2. El DNS está en Namecheap, no en cPanel: **Domain List → Manage → Advanced DNS → Add New Record** →
+   `A Record`, host `api`, valor = la **Shared IP Address** de cPanel (recuadro *General Information*).
+
+**HTTPS:** Namecheap no ofrece AutoSSL. El dominio principal tiene HTTPS por el interruptor **HTTPS ON** de su registro DNS.
+El subdominio `api` **no necesita certificado**: los visitantes nunca lo usan (todo pasa por `https://cesarcasares.com/api`)
+y el frontend lo llama desde el mismo servidor.
 
 ## 3. Base de datos PostgreSQL
 
@@ -52,18 +57,20 @@ En tu PC (PowerShell), crea una llave solo para el despliegue, **sin frase de pa
 ssh-keygen -t ed25519 -f "$HOME\.ssh\cesarcasares_deploy" -C "despliegue cesarcasares.com"
 ```
 
-1. cPanel → **SSH Access** → **Manage SSH Keys** → **Import Key** → pega el contenido de `cesarcasares_deploy.pub` → **Import**.
-2. En la lista, junto a la llave → **Manage** → **Authorize**.
-3. Prueba la conexión (en Namecheap el puerto SSH es **21098**; tu usuario es el de cPanel):
+1. cPanel → **Manage Shell** → **Enable SSH Access** (en Namecheap viene apagado).
+2. cPanel → **SSH Access** → **Manage SSH Keys** → **Import Key** → pega el contenido de `cesarcasares_deploy.pub` → **Import**.
+3. En la lista, junto a la llave → **Manage** → **Authorize**.
+4. Prueba la conexión: puerto **21098**, tu usuario de cPanel y la **Shared IP Address** de cPanel.
+   No uses el dominio: pasa por el intermediario HTTPS de Namecheap, que no acepta SSH.
 
 ```powershell
-ssh -p 21098 -i "$HOME\.ssh\cesarcasares_deploy" tuusuario@cesarcasares.com
+ssh -p 21098 -i "$HOME\.ssh\cesarcasares_deploy" tuusuario@<shared-ip>
 ```
 
 Si entra, escribe `exit`. Guarda también la huella del servidor para GitHub:
 
 ```powershell
-ssh-keyscan -p 21098 cesarcasares.com
+ssh-keyscan -p 21098 <shared-ip>
 ```
 
 ## 5. Las dos apps de Node.js
@@ -107,11 +114,17 @@ $bytes = New-Object byte[] 48; [System.Security.Cryptography.RandomNumberGenerat
 
 | Variable | Valor |
 |---|---|
-| `BACKEND_URL` | `https://api.cesarcasares.com` |
+| `BACKEND_URL` | `http://api.cesarcasares.com` (llamada interna, en el mismo servidor) |
 | `PUBLIC_SITE_URL` | `https://cesarcasares.com` |
 | `ALLOWED_HOSTS` | `cesarcasares.com,www.cesarcasares.com` |
 
 Pulsa **Save** en cada una. Todavía no las arranques: aún no tienen archivos (los sube GitHub en el paso 7).
+
+**Comprueba que cada app quedó en su dominio.** Si `api.cesarcasares.com` fue alguna vez un alias, cPanel puede registrar las dos
+apps en `cesarcasares.com`. Por SSH, `cloudlinux-selector get --json --interpreter=nodejs` muestra el dominio de cada una, y
+`cloudlinux-selector set --json --interpreter=nodejs --app-root=cv-api --new-domain=api.cesarcasares.com > /dev/null` lo corrige
+(la salida se descarta porque incluye las variables de entorno). Después, `public_html/.htaccess` debe tener el bloque de **cv-web**
+y `api.cesarcasares.com/.htaccess` el de **cv-api**; si falta uno, se copia el bloque de la otra app cambiando las rutas.
 
 ## 6. Secrets en GitHub
 
@@ -121,7 +134,7 @@ En el repositorio → **Settings** → **Secrets and variables** → **Actions**
 
 | Nombre | Valor |
 |---|---|
-| `SSH_HOST` | `cesarcasares.com` |
+| `SSH_HOST` | la **Shared IP Address** de cPanel |
 | `SSH_PORT` | `21098` |
 | `SSH_USER` | tu usuario de cPanel |
 | `SSH_PRIVATE_KEY` | el contenido completo de `cesarcasares_deploy` (la llave **privada**, sin `.pub`) |
@@ -134,7 +147,6 @@ En el repositorio → **Settings** → **Secrets and variables** → **Actions**
 | Nombre | Valor |
 |---|---|
 | `SITE_URL` | `https://cesarcasares.com` |
-| `API_URL` | `https://api.cesarcasares.com` |
 
 ## 7. Primer despliegue
 
@@ -150,7 +162,7 @@ Los scripts de carga se ejecutan desde tu PC contra la base del hosting a travé
 1. Abre el túnel en una terminal y déjala abierta:
 
    ```powershell
-   ssh -p 21098 -i "$HOME\.ssh\cesarcasares_deploy" -N -L 6543:localhost:5432 tuusuario@cesarcasares.com
+   ssh -p 21098 -i "$HOME\.ssh\cesarcasares_deploy" -N -L 6543:localhost:5432 tuusuario@<shared-ip>
    ```
 
 2. En la raíz del repositorio, crea `.env.production.local` (git lo ignora; **nunca** lo subas):
