@@ -50,7 +50,8 @@ function optionalHttpsUrl(name: string): string | null {
 }
 
 function requiredEnv(name: string): string {
-  const value = process.env[name];
+  // trim(): un espacio pegado sin querer en el panel del hosting no debe romper una URL
+  const value = process.env[name]?.trim();
   if (!value) throw new Error(`Falta la variable de entorno ${name}`);
   return value;
 }
