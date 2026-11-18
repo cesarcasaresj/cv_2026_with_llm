@@ -18,7 +18,7 @@ export const es = {
   },
 
   header: {
-    brandLabel: 'CV 2026, ir al inicio',
+    brandLabel: 'Cesar Casares, ir al inicio',
     navLabel: 'Principal',
     experience: 'Experiencia',
     about: 'Sobre mí',
@@ -34,6 +34,11 @@ export const es = {
     profilesLabel: 'Perfiles',
     loading: 'Cargando el perfil…',
     error: 'No pudimos cargar el perfil. Intenta de nuevo en unos minutos.',
+  },
+
+  /** Portales entre secciones (HU-21). */
+  portal: {
+    skip: 'Clic o Esc para saltar',
   },
 
   /** La nana de las ideas (HU-19): el teclado de notas de la portada. */

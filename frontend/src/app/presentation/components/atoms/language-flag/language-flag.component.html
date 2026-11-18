@@ -1,0 +1,13 @@
+@for (play of [run()]; track play) {
+  <div class="flag" [class.flag--es]="lang() === 'es'" [style.--flag-image]="image()">
+    <span class="flag__pole"></span>
+    <span class="flag__cloth">
+      @for (slice of slices; track slice) {
+        <span class="flag__slice" [style.--i]="slice"></span>
+      }
+    </span>
+    @for (sparkle of sparkles; track sparkle) {
+      <span class="flag__sparkle" [style.--s]="sparkle">✦</span>
+    }
+  </div>
+}

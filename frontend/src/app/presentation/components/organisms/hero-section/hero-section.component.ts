@@ -4,6 +4,7 @@ import { LiveAnnouncer } from '@angular/cdk/a11y';
 import type { Profile } from '../../../../core/portfolio/portfolio.types';
 import type { ListState } from '../../../../core/http/resource-state';
 import { I18nService } from '../../../../core/i18n/i18n.service';
+import { SITE_NAME } from '../../../../core/seo/seo.service';
 import { StaffSceneComponent } from '../../../melody/staff-scene.component';
 import { NOTES, SECRET_MELODY, melodyProgress, noteById, type NoteId } from '../../../melody/melody';
 import { MelodyAudioService } from '../../../melody/melody-audio.service';
@@ -29,6 +30,8 @@ const PARTY_CLASS = 'is-party';
 })
 export class HeroSectionComponent {
   protected readonly t = inject(I18nService).t;
+  /** Mientras carga el perfil (o si falla), el título es el nombre del sitio. */
+  protected readonly siteName = SITE_NAME;
   private readonly announcer = inject(LiveAnnouncer);
   private readonly document = inject(DOCUMENT);
   private readonly audio = inject(MelodyAudioService);

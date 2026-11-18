@@ -1,0 +1,12 @@
+<!-- Decorativo: la página ya navegó por debajo y el lector de pantalla anuncia la sección de destino -->
+<div class="portal" [class.portal--open]="open()" aria-hidden="true" (click)="skip()">
+  <canvas #canvas class="portal__canvas"></canvas>
+  @if (open()) {
+    <p class="portal__label">
+      @for (letter of label(); track $index) {
+        <span class="portal__letter" [style.--i]="$index">{{ letter }}</span>
+      }
+    </p>
+    <p class="portal__hint">{{ t().portal.skip }}</p>
+  }
+</div>

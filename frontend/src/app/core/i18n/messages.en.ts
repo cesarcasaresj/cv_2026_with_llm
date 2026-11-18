@@ -14,7 +14,7 @@ export const en: Messages = {
   },
 
   header: {
-    brandLabel: 'CV 2026, go to the top',
+    brandLabel: 'Cesar Casares, go to the top',
     navLabel: 'Main',
     experience: 'Experience',
     about: 'About me',
@@ -30,6 +30,10 @@ export const en: Messages = {
     profilesLabel: 'Profiles',
     loading: 'Loading the profile…',
     error: "We couldn't load the profile. Please try again in a few minutes.",
+  },
+
+  portal: {
+    skip: 'Click or Esc to skip',
   },
 
   melody: {
