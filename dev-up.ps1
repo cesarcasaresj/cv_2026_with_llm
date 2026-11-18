@@ -40,11 +40,16 @@ if (-not $running.TcpTestSucceeded) {
 Write-Host 'Credenciales cargadas en secret/cv-app/database.'
 
 # 4b. Clave de firma de las sesiones: se genera solo si todavía no existe (nunca se imprime)
+# "No value found" sale por stderr: en PowerShell 5.1 con 'Stop' sería un error fatal, así que se tolera aquí
+$ErrorActionPreference = 'Continue'
 & $vault kv get -field=signing_key secret/cv-app/jwt *> $null
-if ($LASTEXITCODE -ne 0) {
+$jwtMissing = $LASTEXITCODE -ne 0
+$ErrorActionPreference = 'Stop'
+if ($jwtMissing) {
   $bytes = New-Object byte[] 48
   [System.Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes)
-  & $vault kv put secret/cv-app/jwt signing_key=([Convert]::ToBase64String($bytes)) | Out-Null
+  # Entre comillas: sin ellas PowerShell pasa "signing_key=" y el valor como dos argumentos distintos
+  & $vault kv put secret/cv-app/jwt "signing_key=$([Convert]::ToBase64String($bytes))" | Out-Null
   Write-Host 'Clave de firma JWT generada en secret/cv-app/jwt.'
 }
 
