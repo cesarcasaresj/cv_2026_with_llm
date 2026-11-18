@@ -1,5 +1,8 @@
 /* Mobile first: marca arriba y navegación desplazable debajo; en pantallas anchas, en una sola fila */
 .site-header {
+  /* Grupo propio en las transiciones de página e idioma: la cabecera se ve viva, sin fundido ni desenfoque,
+     y sus efectos (texto del menú, interruptor de idioma) no se congelan en la captura */
+  view-transition-name: site-header;
   position: sticky;
   top: 0;
   z-index: 20;
@@ -150,6 +153,7 @@
   }
 
   .site-header__nav {
+    overflow: visible;
     order: 0;
     flex: 0 1 auto;
     margin-left: auto;

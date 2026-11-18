@@ -1,0 +1,188 @@
+/*
+ * Bloque .nav-label: efectos del texto de los enlaces del menú (HU-21).
+ * Cada letra recibe su índice (--i) y el total (--n); sin() reparte posiciones "al azar" pero siempre iguales.
+ */
+.nav-label {
+  position: relative;
+  display: inline-block;
+  white-space: pre;
+}
+
+.nav-label__letter {
+  display: inline-block;
+}
+
+.nav-label__badge {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  translate: -50% 0;
+  padding: 0.05rem 0.4rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+  animation: badge-float 1.3s var(--ease-out) both;
+}
+
+@keyframes badge-float {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0) scale(1.1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-14px) scale(1);
+  }
+}
+
+/* ---------- Experiencia: las letras suben como niveles y brillan en dorado ---------- */
+[data-fx='experience'] .nav-label__letter {
+  animation: fx-level 0.9s var(--ease-spring) both;
+  animation-delay: calc(var(--i) * 0.05s);
+}
+
+@keyframes fx-level {
+  30% {
+    color: #e0a800;
+    transform: translateY(calc(-3px - var(--i) * 1.2px));
+    text-shadow: 0 0 10px rgb(255 209 102 / 0.9);
+  }
+}
+
+[data-fx='experience'] .nav-label__badge {
+  background: #ffd166;
+  color: #3b2a00;
+}
+
+/* ---------- Sobre mí: las letras nacen dispersas y se juntan; un corazón late ---------- */
+[data-fx='about'] .nav-label__letter {
+  animation: fx-born 0.8s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 0.03s);
+}
+
+@keyframes fx-born {
+  from {
+    opacity: 0;
+    color: #ff6b9a;
+    transform: translate(calc(sin(var(--i) * 2.3rad) * 26px), calc(cos(var(--i) * 1.7rad) * 18px)) scale(0.2) rotate(calc(var(--i) * 40deg));
+  }
+}
+
+[data-fx='about'] .nav-label__badge {
+  color: #e11d48;
+  font-size: 0.85rem;
+  animation:
+    badge-float 1.3s var(--ease-out) both,
+    fx-heartbeat 0.45s ease-in-out 3;
+}
+
+@keyframes fx-heartbeat {
+  50% {
+    scale: 1.35;
+  }
+}
+
+/* ---------- Proyectos: las letras caen como bloques y se apilan con rebote ---------- */
+[data-fx='projects'] .nav-label__letter {
+  animation: fx-drop 0.7s cubic-bezier(0.34, 1.8, 0.64, 1) both;
+  animation-delay: calc(var(--i) * 0.06s);
+}
+
+@keyframes fx-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-22px) rotate(calc(sin(var(--i) * 3rad) * 20deg));
+  }
+  60% {
+    color: var(--color-accent);
+  }
+}
+
+[data-fx='projects'] .nav-label__badge {
+  background: var(--color-accent-bright);
+  color: #fff;
+  font-family: ui-monospace, monospace;
+}
+
+/* ---------- Actualidad: señal en directo, las letras parpadean como una emisión ---------- */
+[data-fx='updates'] .nav-label__letter {
+  animation: fx-signal 0.9s steps(6) both;
+  animation-delay: calc(var(--i) * 0.02s);
+}
+
+@keyframes fx-signal {
+  0%,
+  40% {
+    opacity: 0.25;
+    color: #0f766e;
+    transform: skewX(-14deg) translateX(calc(sin(var(--i) * 5rad) * 3px));
+  }
+  20%,
+  60% {
+    opacity: 1;
+    color: #be123c;
+    transform: skewX(10deg);
+  }
+}
+
+[data-fx='updates'] .nav-label__badge {
+  background: #dc2626;
+  color: #fff;
+  animation:
+    badge-float 1.6s var(--ease-out) both,
+    fx-blink 0.4s steps(2) 4;
+}
+
+@keyframes fx-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- Blog: el texto se escribe a máquina, con su cursor ---------- */
+[data-fx='blog'] .nav-label__letter {
+  animation: fx-type 0.01s linear both;
+  animation-delay: calc(var(--i) * 0.11s);
+}
+
+@keyframes fx-type {
+  from {
+    opacity: 0;
+  }
+}
+
+[data-fx='blog'] .nav-label__badge {
+  left: auto;
+  right: -0.55em;
+  bottom: auto;
+  top: 0;
+  translate: none;
+  padding: 0;
+  color: var(--color-accent);
+  font-size: 1em;
+  animation: fx-caret 0.5s steps(2) 5 both;
+}
+
+@keyframes fx-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* "Reducir movimiento": el texto queda quieto; solo se ve el distintivo con un fundido */
+@media (prefers-reduced-motion: reduce) {
+  .nav-label__letter {
+    animation: none !important;
+  }
+
+  .nav-label__badge {
+    animation: fade-out 1.2s ease both !important;
+  }
+}

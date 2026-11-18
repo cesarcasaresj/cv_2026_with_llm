@@ -5,7 +5,12 @@
       <span class="site-header__brand-text">{{ siteName }}</span>
     </a>
 
-    <nav class="site-header__nav" [attr.aria-label]="t().header.navLabel">
+    <nav
+      class="site-header__nav"
+      [attr.aria-label]="t().header.navLabel"
+      (pointerenter)="portals.warmUp()"
+      (focusin)="portals.warmUp()"
+    >
       <ul class="site-header__list">
         @for (item of items(); track item.fragment) {
           <li class="site-header__item">
@@ -13,9 +18,9 @@
               class="site-header__link"
               [routerLink]="item.path"
               [fragment]="item.fragment"
-              (click)="portals.play(item.section, $event)"
+              (click)="activate(item.section, $event)"
             >
-              {{ item.label }}
+              <app-nav-label [text]="item.label" [section]="item.section" [run]="effectRun(item.section)" />
             </a>
           </li>
         }
@@ -25,9 +30,9 @@
             routerLink="/blog"
             routerLinkActive="site-header__link--active"
             ariaCurrentWhenActive="page"
-            (click)="portals.play('blog', $event)"
+            (click)="activate('blog', $event)"
           >
-            {{ t().header.blog }}
+            <app-nav-label [text]="t().header.blog" section="blog" [run]="effectRun('blog')" />
           </a>
         </li>
       </ul>

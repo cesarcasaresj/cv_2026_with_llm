@@ -1,0 +1,16 @@
+<!--
+  El texto completo, una sola vez, para lectores de pantalla y buscadores. Las letras sueltas son decorativas:
+  si se leyeran, un lector de pantalla diría "E x p e r i e n c i a".
+-->
+<span class="cdk-visually-hidden">{{ text() }}</span>
+<!-- Se vuelve a crear en cada `run` para repetir la animación; con run = 0 no hay efecto -->
+@for (play of [run()]; track play) {
+  <span class="nav-label" [attr.data-fx]="play ? section() : null" aria-hidden="true">
+    @for (letter of letters(); track $index) {
+      <span class="nav-label__letter" [style.--i]="$index">{{ letter }}</span>
+    }
+    @if (play) {
+      <span class="nav-label__badge">{{ badge() }}</span>
+    }
+  </span>
+}

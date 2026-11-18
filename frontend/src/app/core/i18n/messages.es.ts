@@ -25,6 +25,8 @@ export const es = {
     projects: 'Proyectos',
     updates: 'Actualidad',
     blog: 'Blog',
+    /** Distintivo del efecto de Actualidad en el menú (HU-21). */
+    live: '● EN VIVO',
   },
 
   hero: {

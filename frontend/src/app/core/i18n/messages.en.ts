@@ -21,6 +21,7 @@ export const en: Messages = {
     projects: 'Projects',
     updates: 'Latest',
     blog: 'Blog',
+    live: '● LIVE',
   },
 
   hero: {

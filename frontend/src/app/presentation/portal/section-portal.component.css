@@ -1,7 +1,8 @@
 /* Bloque .portal: capa a pantalla completa, sobre la cabecera, con el cielo nocturno del sitio */
 .portal {
   position: fixed;
-  inset: 0;
+  /* Debajo de la cabecera: el texto del enlace pulsado sigue animándose a la vista */
+  inset: var(--header-height) 0 0;
   z-index: 100;
   overflow: hidden;
   background:

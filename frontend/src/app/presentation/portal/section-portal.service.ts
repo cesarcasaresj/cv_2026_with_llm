@@ -22,6 +22,7 @@ export interface PortalRequest {
 export class SectionPortalService {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private nextId = 0;
+  private warmed = false;
 
   /** Portal que hay que reproducir ahora (null: ninguno). */
   readonly request = signal<PortalRequest | null>(null);
@@ -33,6 +34,16 @@ export class SectionPortalService {
     if (!this.isBrowser || prefersReducedMotion()) return;
     if (event && (event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return;
     this.request.set({ section, id: ++this.nextId });
+  }
+
+  /**
+   * Descarga three.js y las escenas en cuanto el puntero entra en el menú (o el foco llega a él):
+   * así el primer clic no se congela procesándolas. Quien no se acerca al menú no las descarga.
+   */
+  warmUp(): void {
+    if (this.warmed || !this.isBrowser || prefersReducedMotion()) return;
+    this.warmed = true;
+    void import('./portal-scenes');
   }
 
   close(): void {
