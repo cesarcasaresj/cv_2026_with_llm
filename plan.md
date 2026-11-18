@@ -41,6 +41,11 @@
   - **Frontend:** `ExperienceJourney` sustituye a la línea de tiempo: mapa isométrico fijo con 9 dioramas en CSS 3D, cámara que viaja, la nota ✦ que salta, HUD con nivel y XP, controles ◀ ▶ y por número. El sonido se comparte con la portada (`MelodyAudioService`).
   - **Presupuesto:** el aviso del paquete inicial sube de 500 a 550 kB (el viaje suma 5 kB comprimidos).
   - **Verificado:** 113 pruebas del backend; 18 comprobaciones en Chrome (niveles con scroll, botones y teclado, foco, anuncios, axe, HTML del servidor, móvil sin scroll horizontal y "reducir movimiento").
+- Publicación en cesarcasares.com (decisión N, `DEPLOY.md`):
+  - **Secretos:** `SecretStore` con dos implementaciones, Vault (desarrollo) y variables de entorno (`SECRETS_PROVIDER=env`, hosting compartido). Excepción escrita en la constitución.
+  - **Backend:** `npm run build` genera `dist/server.mjs` con todas las dependencias (esbuild); migraciones con `schema_migrations` al arrancar o con `npm run db:migrate`.
+  - **Despliegue:** `.github/workflows/deploy.yml` prueba y compila en cada PR; en `main` sube por SSH a las apps de cPanel (`app.cjs` para Passenger) y las reinicia. Las portadas se generan en CI (`npm run build:images`).
+  - **Verificado:** 119 pruebas del backend; el bundle aplica las 8 migraciones sobre una base vacía con secretos por variables de entorno; el paquete `release/` arranca con `node app.cjs` como en Passenger (portada SSR, proxy a la API, imágenes y blog).
 - Producción del frontend: `node dist/frontend/server/server.mjs` con `PORT`, `BACKEND_URL`, `PUBLIC_SITE_URL` y `ALLOWED_HOSTS` (dominios aceptados por la protección SSRF de Angular).
 
 ## Decisiones tomadas

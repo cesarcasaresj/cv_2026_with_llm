@@ -22,6 +22,7 @@ El repositorio se rige por un marco explícito pensado para desarrollo guiado po
 3. [`references.md`](./references.md) — **Patrones de código** que los agentes deben seguir en backend y frontend.
 4. [`contracts/openapi.yaml`](./contracts/openapi.yaml) — **Contrato de la API**, fuente de verdad del tipado.
 5. [`plan.md`](./plan.md) — **Plan por fases** con criterios de "listo".
+6. [`DEPLOY.md`](./DEPLOY.md) — **Publicación** en el hosting (cPanel) con despliegue automático desde GitHub.
 
 ---
 
