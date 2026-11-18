@@ -17,6 +17,13 @@ export const es = {
     changed: (name: string) => `Idioma: ${name}`,
   },
 
+  /** Modo claro / oscuro (HU-22). */
+  theme: {
+    toggle: 'Modo oscuro',
+    changedToDark: 'Modo oscuro activado',
+    changedToLight: 'Modo claro activado',
+  },
+
   header: {
     brandLabel: 'Cesar Casares, ir al inicio',
     navLabel: 'Principal',

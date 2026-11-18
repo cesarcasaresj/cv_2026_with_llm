@@ -2,11 +2,13 @@ import { Component, PLATFORM_ID, afterNextRender, computed, inject, signal } fro
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService } from '../../../../core/i18n/i18n.service';
+import { ThemeService } from '../../../../core/theme/theme.service';
 import { LANGS, type Lang } from '../../../../core/i18n/lang';
 import { SITE_NAME } from '../../../../core/seo/seo.service';
 import { SectionPortalService, type PortalSection } from '../../../portal/section-portal.service';
 import { prefersReducedMotion } from '../../../motion/motion';
 import { LanguageSwitchComponent } from '../../molecules/language-switch/language-switch.component';
+import { ThemeToggleComponent } from '../../molecules/theme-toggle/theme-toggle.component';
 import { FLAG_IMAGES, LanguageFlagComponent } from '../../atoms/language-flag/language-flag.component';
 import { NavLabelComponent } from '../../atoms/nav-label/nav-label.component';
 import { NavPreviewComponent } from '../../atoms/nav-preview/nav-preview.component';
@@ -24,13 +26,13 @@ interface NavItem {
 }
 
 /**
- * Cabecera fija con la navegación del sitio y el selector de idioma (spec.md, HU-14, HU-18 y HU-21).
+ * Cabecera fija con la navegación del sitio, el selector de idioma y el modo oscuro (spec.md, HU-14, HU-18, HU-21 y HU-22).
  * - Cada enlace abre un portal 3D de su sección mientras la página navega por debajo.
  * - Al cambiar de idioma aparece la bandera (EE. UU. o España) y después cambian los textos.
- * En móvil, la lista se desplaza en horizontal debajo de la marca.
+ * En móvil, las cinco secciones van en columnas debajo de la marca, con su icono encima.
  */
 @Component({
-  imports: [RouterLink, RouterLinkActive, LanguageSwitchComponent, LanguageFlagComponent, NavLabelComponent, NavPreviewComponent],
+  imports: [RouterLink, RouterLinkActive, LanguageSwitchComponent, LanguageFlagComponent, NavLabelComponent, NavPreviewComponent, ThemeToggleComponent],
   selector: 'app-site-header',
   templateUrl: './site-header.component.html',
   styleUrl: './site-header.component.css',
@@ -39,15 +41,16 @@ export class SiteHeaderComponent {
   protected readonly i18n = inject(I18nService);
   protected readonly t = this.i18n.t;
   protected readonly portals = inject(SectionPortalService);
+  protected readonly theme = inject(ThemeService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly siteName = SITE_NAME;
   /** Icono de cada sección: en móvil va encima del texto, como en la barra de pestañas de una app. */
   protected readonly icons: Record<PortalSection, string> = { experience: '💼', about: '🙋', projects: '💻', updates: '📡', blog: '📖' };
 
-  /** Bandera en pantalla: idioma y número de cambio (0 = ninguna). */
   /** Último enlace pulsado y número de pulsación: su texto reproduce el efecto de su sección. */
   private readonly effect = signal<{ section: PortalSection; run: number } | null>(null);
 
+  /** Bandera en pantalla: idioma y número de cambio (0 = ninguna). */
   protected readonly flagLang = signal<Lang>('es');
   protected readonly flagRun = signal(0);
 

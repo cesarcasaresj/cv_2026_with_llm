@@ -263,6 +263,16 @@ Criterios de aceptación:
 - [x] En móvil las cinco secciones caben siempre, en columnas iguales con su icono encima del texto, sin desplazamiento horizontal.
 - [x] Portal y bandera son decorativos (`aria-hidden`): la sección de destino recibe el foco y el cambio de idioma se anuncia con texto.
 
+### HU-22: Modo oscuro (visitante)
+**Como** visitante, **quiero** ver el sitio en modo oscuro o claro, **para** leer cómodo de noche o con poca luz.
+
+Criterios de aceptación:
+- [x] Sin elección guardada, el sitio sigue el tema del sistema (`prefers-color-scheme`) desde el primer pintado, sin parpadeo.
+- [x] Un botón en la cabecera (sol que se convierte en luna) cambia de tema; la elección se guarda en la cookie `theme` y el servidor la usa para enviar la página ya con ese tema (`<html data-theme>`).
+- [x] El nuevo tema se expande en círculo desde el botón (View Transitions); con "reducir movimiento" es un fundido; sin esa API, el cambio es inmediato.
+- [x] Todos los textos mantienen contraste AA (4.5:1 o más) en los dos temas; los controles nativos y las barras de desplazamiento siguen el tema (`color-scheme`).
+- [x] El botón es nativo, con nombre "Modo oscuro" / "Dark mode" y `aria-pressed`; el cambio se anuncia con texto.
+
 ---
 
 ## 4. Requisitos transversales

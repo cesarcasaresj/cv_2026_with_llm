@@ -13,6 +13,12 @@ export const en: Messages = {
     changed: (name: string) => `Language: ${name}`,
   },
 
+  theme: {
+    toggle: 'Dark mode',
+    changedToDark: 'Dark mode on',
+    changedToLight: 'Light mode on',
+  },
+
   header: {
     brandLabel: 'Cesar Casares, go to the top',
     navLabel: 'Main',

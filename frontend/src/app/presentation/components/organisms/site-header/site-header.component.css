@@ -6,9 +6,9 @@
   position: sticky;
   top: 0;
   z-index: 20;
-  background: rgb(255 255 255 / 0.86);
+  background: var(--color-header);
   backdrop-filter: saturate(1.6) blur(14px);
-  border-bottom: 1px solid rgb(11 16 32 / 0.08);
+  border-bottom: 1px solid var(--color-hairline);
 }
 
 .site-header__inner {
@@ -52,6 +52,10 @@
 /* En móvil el selector de idioma queda arriba a la derecha, junto a la marca, y la navegación baja a su fila */
 .site-header__language {
   margin-left: auto;
+}
+
+.site-header__theme {
+  display: inline-flex;
 }
 
 .site-header__nav {

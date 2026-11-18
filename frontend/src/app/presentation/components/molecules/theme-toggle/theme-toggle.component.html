@@ -1,0 +1,11 @@
+<button #button type="button" class="theme-toggle" [attr.aria-pressed]="dark()" (click)="press(button)">
+  <!-- Dibujo decorativo: el nombre accesible es el texto oculto -->
+  <span class="theme-toggle__art" aria-hidden="true">
+    <span class="theme-toggle__rays"></span>
+    <span class="theme-toggle__orb"></span>
+    <span class="theme-toggle__bite"></span>
+    <span class="theme-toggle__star theme-toggle__star--a">✦</span>
+    <span class="theme-toggle__star theme-toggle__star--b">✦</span>
+  </span>
+  <span class="cdk-visually-hidden">{{ t().theme.toggle }}</span>
+</button>

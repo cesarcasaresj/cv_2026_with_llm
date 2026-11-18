@@ -1,0 +1,108 @@
+/*
+ * Bloque .theme-toggle: un sol que se hace luna (HU-22).
+ * --is-dark (styles.css) vale 0 en claro y 1 en oscuro, también cuando lo decide el sistema:
+ * cada pieza se mueve con calc(), sin clases que dependan del JavaScript.
+ */
+.theme-toggle {
+  /* Fondo opaco: el mordisco de la luna se pinta del mismo color */
+  --toggle-bg: light-dark(#f4f5f8, #1c2239);
+
+  display: inline-grid;
+  place-items: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  padding: 0;
+  border: 1px solid light-dark(rgb(11 16 32 / 0.14), rgb(245 247 255 / 0.22));
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.theme-toggle:hover {
+  transform: rotate(-12deg) scale(1.08);
+}
+
+.theme-toggle:active {
+  transform: scale(0.9);
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid var(--color-link);
+  outline-offset: 2px;
+}
+
+.theme-toggle__art {
+  position: relative;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.theme-toggle__art > * {
+  position: absolute;
+  transition:
+    transform 0.6s var(--ease-spring),
+    opacity 0.4s ease,
+    background-color 0.4s ease;
+}
+
+/* Rayos: una corona cónica recortada en anillo; en oscuro giran y se encogen hasta desaparecer */
+.theme-toggle__rays {
+  inset: -0.32rem;
+  border-radius: 50%;
+  background: repeating-conic-gradient(#f59e0b 0 14deg, transparent 14deg 45deg);
+  mask: radial-gradient(circle, transparent 58%, #000 60% 72%, transparent 74%);
+  opacity: calc(1 - var(--is-dark));
+  transform: rotate(calc(var(--is-dark) * 90deg)) scale(calc(1 - var(--is-dark) * 0.6));
+}
+
+/* El astro: sol dorado o luna clara, algo más grande de noche */
+.theme-toggle__orb {
+  inset: 0.12rem;
+  border-radius: 50%;
+  background: light-dark(#f59e0b, #ffe9a8);
+  transform: scale(calc(0.86 + var(--is-dark) * 0.2));
+}
+
+/* El "mordisco" del color del botón que entra en diagonal y deja una luna creciente */
+.theme-toggle__bite {
+  inset: 0.12rem;
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  transform: translate(calc(0.9rem - var(--is-dark) * 0.55rem), calc(-0.9rem + var(--is-dark) * 0.5rem));
+  opacity: var(--is-dark);
+}
+
+.theme-toggle__star {
+  color: #ffe9a8;
+  font-size: 0.45rem;
+  line-height: 1;
+  opacity: var(--is-dark);
+  transform: scale(var(--is-dark));
+}
+
+.theme-toggle__star--a {
+  top: -0.2rem;
+  right: -0.25rem;
+  transition-delay: 0.15s;
+}
+
+.theme-toggle__star--b {
+  bottom: -0.1rem;
+  right: -0.35rem;
+  font-size: 0.35rem;
+  transition-delay: 0.25s;
+}
+
+/* "Reducir movimiento": el dibujo cambia con un fundido, sin girar ni crecer */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle__art > * {
+    transition-property: opacity, background-color;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:active {
+    transform: none;
+  }
+}

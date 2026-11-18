@@ -43,6 +43,7 @@
     </nav>
 
     <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="changeLang($event)" />
+    <app-theme-toggle class="site-header__theme" [dark]="theme.theme() === 'dark'" (toggled)="theme.toggle($event)" />
   </div>
   <!-- Barra de progreso de lectura: decorativa, solo en navegadores con animaciones ligadas al scroll -->
   <span class="site-header__progress" aria-hidden="true"></span>

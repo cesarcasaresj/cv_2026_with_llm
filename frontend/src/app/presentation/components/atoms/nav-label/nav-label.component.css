@@ -50,7 +50,7 @@
 
 @keyframes fx-level {
   30% {
-    color: #e0a800;
+    color: light-dark(#e0a800, #ffd166);
     transform: translateY(calc(-3px - var(--i) * 1.2px));
     text-shadow: 0 0 10px rgb(255 209 102 / 0.9);
   }
@@ -76,7 +76,7 @@
 }
 
 [data-fx='about'] .nav-label__badge {
-  color: #e11d48;
+  color: light-dark(#e11d48, #fb7185);
   font-size: 0.85rem;
   animation:
     badge-float 1.3s var(--ease-out) both,
@@ -121,13 +121,13 @@
   0%,
   40% {
     opacity: 0.25;
-    color: #0f766e;
+    color: light-dark(#0f766e, #5eead4);
     transform: skewX(-14deg) translateX(calc(sin(var(--i) * 5rad) * 3px));
   }
   20%,
   60% {
     opacity: 1;
-    color: #be123c;
+    color: light-dark(#be123c, #fb7185);
     transform: skewX(10deg);
   }
 }
