@@ -1,8 +1,8 @@
 <section class="category-manager" aria-labelledby="category-list-title" [attr.aria-busy]="busy()">
-  <h2 id="category-list-title" tabindex="-1">Lista de categorías</h2>
+  <h2 id="category-list-title" tabindex="-1">{{ t().categories.listTitle }}</h2>
 
   <form class="category-manager__new" [formGroup]="newForm" (ngSubmit)="submitNew()">
-    <label for="category-new">Nueva categoría</label>
+    <label for="category-new">{{ t().categories.newLabel }}</label>
     <div class="category-manager__row">
       <input
         id="category-new"
@@ -13,11 +13,11 @@
         [attr.aria-invalid]="newName.touched && newName.invalid"
         [attr.aria-describedby]="newName.touched && newName.invalid ? 'category-new-hint category-new-error' : 'category-new-hint'"
       />
-      <button type="submit" class="category-manager__button" [disabled]="busy()">Crear</button>
+      <button type="submit" class="category-manager__button" [disabled]="busy()">{{ t().categories.create }}</button>
     </div>
-    <p id="category-new-hint" class="category-manager__hint">De 2 a 40 caracteres. No puede repetir otra categoría.</p>
+    <p id="category-new-hint" class="category-manager__hint">{{ t().categories.nameHint }}</p>
     @if (newName.touched && newName.invalid) {
-      <p id="category-new-error" class="category-manager__field-error">Escribe un nombre de 2 a 40 caracteres.</p>
+      <p id="category-new-error" class="category-manager__field-error">{{ t().categories.nameError }}</p>
     }
   </form>
 
@@ -27,22 +27,22 @@
 
   @switch (state()) {
     @case ('loading') {
-      <p class="category-manager__status">Cargando las categorías…</p>
+      <p class="category-manager__status">{{ t().categories.loading }}</p>
     }
     @case ('error') {
-      <p class="category-manager__status">No pudimos cargar las categorías. Intenta de nuevo en unos minutos.</p>
+      <p class="category-manager__status">{{ t().categories.error }}</p>
     }
     @default {
       @if (categories(); as list) {
         @if (list.length === 0) {
-          <p class="category-manager__status">Todavía no hay categorías. Crea la primera.</p>
+          <p class="category-manager__status">{{ t().categories.empty }}</p>
         } @else {
           <ul class="category-manager__list">
             @for (category of list; track category.id) {
               <li class="category-manager__item">
                 @if (editingId() === category.id) {
                   <form class="category-manager__edit" [formGroup]="editForm" (ngSubmit)="submitEdit(category)">
-                    <label [for]="'category-edit-' + category.id">Nuevo nombre de «{{ category.name }}»</label>
+                    <label [for]="'category-edit-' + category.id">{{ t().categories.renameLabel(category.name) }}</label>
                     <div class="category-manager__row">
                       <input
                         type="text"
@@ -52,18 +52,18 @@
                         formControlName="name"
                         [attr.aria-invalid]="editName.touched && editName.invalid"
                       />
-                      <button type="submit" class="category-manager__button" [disabled]="busy()">Guardar</button>
+                      <button type="submit" class="category-manager__button" [disabled]="busy()">{{ t().categories.save }}</button>
                       <button type="button" class="category-manager__button" (click)="cancelEdit(category)">
-                        Cancelar
+                        {{ t().categories.cancel }}
                       </button>
                     </div>
-                    <p class="category-manager__hint">Sus artículos conservan la categoría; cambia también su dirección en los filtros.</p>
+                    <p class="category-manager__hint">{{ t().categories.renameHint }}</p>
                   </form>
                 } @else {
                   <div class="category-manager__summary">
                     <span class="category-manager__name">{{ category.name }}</span>
                     <span class="category-manager__count">
-                      {{ category.postCount === 1 ? '1 artículo' : category.postCount + ' artículos' }}
+                      {{ t().categories.postCount(category.postCount) }}
                     </span>
                   </div>
                   <div class="category-manager__actions">
@@ -74,13 +74,13 @@
                       [disabled]="busy()"
                       (click)="startEdit(category)"
                     >
-                      Renombrar<span class="cdk-visually-hidden"> «{{ category.name }}»</span>
+                      {{ t().categories.rename }}<span class="cdk-visually-hidden"> «{{ category.name }}»</span>
                     </button>
 
                     @if (category.postCount > 0) {
-                      <span class="category-manager__hint">Para borrarla, asigna otra categoría a sus artículos.</span>
+                      <span class="category-manager__hint">{{ t().categories.deleteBlocked }}</span>
                     } @else if (confirmingId() === category.id) {
-                      <span class="category-manager__confirm">¿Borrar «{{ category.name }}»?</span>
+                      <span class="category-manager__confirm">{{ t().categories.confirmDelete(category.name) }}</span>
                       <button
                         type="button"
                         class="category-manager__button category-manager__button--danger"
@@ -88,10 +88,10 @@
                         [disabled]="busy()"
                         (click)="confirmDelete(category)"
                       >
-                        Sí, borrar
+                        {{ t().categories.confirmYes }}
                       </button>
                       <button type="button" class="category-manager__button" (click)="cancelDelete(category)">
-                        Cancelar
+                        {{ t().categories.cancel }}
                       </button>
                     } @else {
                       <button
@@ -101,7 +101,7 @@
                         [disabled]="busy()"
                         (click)="askDelete(category)"
                       >
-                        Borrar<span class="cdk-visually-hidden"> «{{ category.name }}»</span>
+                        {{ t().categories.delete }}<span class="cdk-visually-hidden"> «{{ category.name }}»</span>
                       </button>
                     }
                   </div>

@@ -1,0 +1,45 @@
+<section id="actualidad" class="updates" tabindex="-1" aria-labelledby="actualidad-title">
+  <div class="updates__inner l-container">
+    <app-section-heading
+      index="04"
+      [title]="t().updates.title"
+      headingId="actualidad-title"
+      [intro]="t().updates.intro"
+      [onNight]="true"
+    />
+
+    @switch (state()) {
+      @case ('loading') {
+        <p class="updates__status">{{ t().updates.loading }}</p>
+      }
+      @case ('error') {
+        <p class="updates__status">{{ t().updates.error }}</p>
+      }
+      @default {
+        @if (updates()?.length) {
+          <ol class="updates__list">
+            @for (update of updates(); track $index) {
+              <li class="update-card" appReveal [revealDelay]="($index % 3) * 120">
+                <time class="update-card__date" [attr.datetime]="update.publishedAt">
+                  {{ update.publishedAt | date: t().updates.dateFormat : 'UTC' : lang() }}
+                </time>
+                <p class="update-card__text">{{ update.text }}</p>
+                @if (update.url) {
+                  <a class="update-card__link" [href]="update.url">
+                    {{ t().updates.viewOnLinkedin }}<span class="cdk-visually-hidden">{{ t().updates.postOf((update.publishedAt | date: t().updates.shortDateFormat : 'UTC' : lang()) ?? '') }}</span>
+                  </a>
+                }
+              </li>
+            }
+          </ol>
+        } @else {
+          <p class="updates__status">{{ t().updates.empty }}</p>
+        }
+
+        @if (linkedinUrl(); as url) {
+          <p class="updates__more"><a class="updates__more-link" [href]="url">{{ t().updates.follow }}</a></p>
+        }
+      }
+    }
+  </div>
+</section>

@@ -1,6 +1,6 @@
 <section class="post-category-list" aria-labelledby="post-category-title">
-  <h2 id="post-category-title">Categoría de cada artículo</h2>
-  <p class="post-category-list__hint">Cada artículo tiene una sola categoría. Elige la nueva y pulsa «Guardar».</p>
+  <h2 id="post-category-title">{{ t().categories.assignTitle }}</h2>
+  <p class="post-category-list__hint">{{ t().categories.assignHint }}</p>
 
   @if (errorMessage(); as message) {
     <p class="post-category-list__error">{{ message }}</p>
@@ -8,10 +8,10 @@
 
   @switch (state()) {
     @case ('loading') {
-      <p>Cargando los artículos…</p>
+      <p>{{ t().categories.postsLoading }}</p>
     }
     @case ('error') {
-      <p>No pudimos cargar los artículos. Intenta de nuevo en unos minutos.</p>
+      <p>{{ t().categories.postsError }}</p>
     }
     @default {
       @if (posts()?.length) {
@@ -19,8 +19,8 @@
           <table class="post-category-list__table" aria-labelledby="post-category-title">
             <thead>
               <tr>
-                <th scope="col">Artículo</th>
-                <th scope="col">Categoría</th>
+                <th scope="col">{{ t().categories.columnArticle }}</th>
+                <th scope="col">{{ t().categories.columnCategory }}</th>
               </tr>
             </thead>
             <tbody>
@@ -28,12 +28,12 @@
                 <tr>
                   <th scope="row" class="post-category-list__title">
                     {{ post.title }}
-                    <span class="post-category-list__status">{{ post.status === 'published' ? 'Publicado' : 'Borrador' }}</span>
+                    <span class="post-category-list__status">{{ post.status === 'published' ? t().categories.published : t().categories.draft }}</span>
                   </th>
                   <td>
                     <div class="post-category-list__assign">
                       <label class="cdk-visually-hidden" [for]="'post-category-' + post.id">
-                        Categoría de «{{ post.title }}»
+                        {{ t().categories.categoryOf(post.title) }}
                       </label>
                       <select
                         [id]="'post-category-' + post.id"
@@ -52,8 +52,8 @@
                         [disabled]="!hasChange(post) || savingPostId() !== null"
                         (click)="save(post)"
                       >
-                        {{ savingPostId() === post.id ? 'Guardando…' : 'Guardar' }}
-                        <span class="cdk-visually-hidden"> la categoría de «{{ post.title }}»</span>
+                        {{ savingPostId() === post.id ? t().categories.saving : t().categories.save }}
+                        <span class="cdk-visually-hidden">{{ t().categories.saveCategoryOf(post.title) }}</span>
                       </button>
                     </div>
                   </td>
@@ -63,7 +63,7 @@
           </table>
         </div>
       } @else {
-        <p>Todavía no hay artículos. Cárgalos con <code>npm run load:content</code>.</p>
+        <p>{{ t().categories.postsEmpty }} <code>npm run load:content</code>.</p>
       }
     }
   }

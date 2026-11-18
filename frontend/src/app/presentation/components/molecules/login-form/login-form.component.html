@@ -1,6 +1,6 @@
 <form class="login-form" [formGroup]="form" (ngSubmit)="submit()" [attr.aria-busy]="pending()">
   <div class="login-form__field">
-    <label for="login-email">Correo electrónico</label>
+    <label for="login-email">{{ t().login.email }}</label>
     <input
       id="login-email"
       type="email"
@@ -10,12 +10,12 @@
       [attr.aria-describedby]="form.controls.email.touched && form.controls.email.invalid ? 'login-email-hint' : null"
     />
     @if (form.controls.email.touched && form.controls.email.invalid) {
-      <p id="login-email-hint" class="login-form__hint">Escribe un correo válido.</p>
+      <p id="login-email-hint" class="login-form__hint">{{ t().login.emailHint }}</p>
     }
   </div>
 
   <div class="login-form__field">
-    <label for="login-password">Contraseña</label>
+    <label for="login-password">{{ t().login.password }}</label>
     <input
       id="login-password"
       type="password"
@@ -25,7 +25,7 @@
       [attr.aria-describedby]="form.controls.password.touched && form.controls.password.invalid ? 'login-password-hint' : null"
     />
     @if (form.controls.password.touched && form.controls.password.invalid) {
-      <p id="login-password-hint" class="login-form__hint">Escribe tu contraseña.</p>
+      <p id="login-password-hint" class="login-form__hint">{{ t().login.passwordHint }}</p>
     }
   </div>
 
@@ -34,6 +34,6 @@
   }
 
   <button type="submit" class="login-form__submit" [disabled]="pending()">
-    {{ pending() ? 'Entrando…' : 'Iniciar sesión' }}
+    {{ pending() ? t().login.submitting : t().login.submit }}
   </button>
 </form>

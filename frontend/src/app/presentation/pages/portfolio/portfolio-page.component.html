@@ -1,0 +1,22 @@
+<app-hero-section [profile]="loadedProfile()" [state]="profileState()" />
+
+<app-experience-journey [positions]="loadedProfile()?.experience ?? null" [state]="profileState()" />
+
+<app-about-section [profile]="loadedProfile()" [state]="profileState()" [projectCount]="loadedProjects()?.length ?? null" />
+
+<app-project-grid [projects]="loadedProjects()" [state]="projectsState()" [githubUrl]="loadedProfile()?.links?.github ?? null" />
+
+<app-update-feed
+  [updates]="updates.hasValue() ? updates.value() : null"
+  [state]="updatesState()"
+  [linkedinUrl]="loadedProfile()?.links?.linkedin ?? null"
+/>
+
+<!-- Puente al blog: también es una sección navegable, con su propio encabezado -->
+<section class="blog-teaser" aria-labelledby="blog-teaser-title">
+  <div class="blog-teaser__inner l-container" appReveal>
+    <h2 id="blog-teaser-title" class="blog-teaser__title">{{ t().teaser.title }}</h2>
+    <p class="blog-teaser__text">{{ t().teaser.text }}</p>
+    <a class="blog-teaser__cta" routerLink="/blog">{{ t().teaser.cta }} <span aria-hidden="true">→</span></a>
+  </div>
+</section>

@@ -179,13 +179,79 @@ Criterios de aceptación:
 - [ ] Cada página empieza con un enlace "Saltar al contenido" que lleva el foco al `<main>`.
 - [ ] axe no reporta violaciones en la página del artículo ni en sus stories (éxito, carga, error y "no encontrado").
 
+### HU-14: Portada del portafolio (visitante)
+**Como** visitante, **quiero** una portada que presente al autor de un vistazo, **para** saber quién es y qué hace antes de leer más.
+
+**Ruta:** `/` (el blog pasa a `/blog`) · **Endpoint:** `GET /api/v1/profile`
+
+Criterios de aceptación:
+- [x] Secciones en este orden, cada una con su ancla: inicio (`#inicio`), experiencia (`#experiencia`), acerca de mí (`#sobre-mi`), proyectos (`#proyectos`) y actualidad (`#actualidad`), más un enlace final al blog.
+- [x] Cabecera fija con la navegación; en móvil, el menú se desplaza en horizontal dentro de la cabecera. Al pulsar un ancla, la sección queda visible bajo la cabecera y recibe el foco.
+- [x] El nombre es el único `<h1>`. La portada se renderiza en el servidor con todo su contenido y añade JSON-LD `Person` (nombre, cargo, ubicación y perfiles).
+- [x] CSS propio, sin frameworks, con metodología BEM y mobile first.
+- [x] Fondo animado decorativo (`aria-hidden`): el pentagrama de luz de la HU-19, en un canvas 2D que se descarga después del primer render, solo anima mientras se ve y se libera al salir. Sin canvas queda un degradado CSS.
+- [x] Efectos: palabras del nombre escalonadas, aparición de secciones al hacer scroll, tarjetas con inclinación 3D, barra de progreso de lectura y transiciones entre páginas.
+- [x] Con "reducir movimiento" (WCAG 2.3.3) la portada usa un modo suave: el pentagrama se mueve a un cuarto de velocidad, sin seguir al puntero, sin chispas ni corcheas que suben; las entradas y apariciones solo se funden (sin desplazarse, girar ni desenfocar); no hay inclinación 3D en las tarjetas.
+
+### HU-15: Experiencia (visitante)
+- [x] Cada puesto muestra cargo, empresa, ubicación, fechas ("mar 2023 – actualidad") y duración ("2 años y 9 meses"); el puesto actual primero. Se presenta como el viaje de la HU-20.
+
+### HU-16: Proyectos de GitHub (visitante)
+**Endpoint:** `GET /api/v1/projects`
+- [x] Repositorios públicos del usuario `GITHUB_USERNAME`, sin forks ni archivados, del último actualizado al más antiguo (máximo 9).
+- [x] El backend guarda la respuesta de GitHub una hora y, si GitHub falla, sirve la última copia; sin copia responde 503 y la portada ofrece el enlace al perfil (decisión L).
+
+### HU-17: Actualidad (visitante)
+**Endpoint:** `GET /api/v1/updates`
+- [x] Las publicaciones más recientes del autor en LinkedIn (máximo 6), solo las visibles para cualquiera (decisión K).
+
+### HU-18: Elegir el idioma, español o inglés (visitante)
+**Como** visitante, **quiero** ver el sitio en español o en inglés, **para** leerlo en el idioma que entiendo mejor.
+
+**Endpoint:** `GET /api/v1/profile?lang=es|en` · **Decisión:** M
+
+Criterios de aceptación:
+- [x] Un selector ES / EN en la cabecera, en todas las páginas: dos botones nativos con `aria-pressed`, operables con teclado, cuyo nombre accesible empieza por el texto visible ("ES Español").
+- [x] El cambio es inmediato, sin recargar la página ni cambiar la URL, con un fundido suave de toda la página (View Transitions; sin esa API, el cambio es directo). Se anuncia "Idioma: English" / "Language: Español".
+- [x] La elección se recuerda un año en la cookie `lang` (no es un secreto). Sin cookie, se usa el idioma del navegador (`Accept-Language`); si no es español ni inglés, el español.
+- [x] El servidor renderiza la página ya en el idioma elegido, con `<html lang>`, `Content-Language` y `Vary: Cookie, Accept-Language`: no hay parpadeo ni errores de hidratación.
+- [x] Se traduce toda la interfaz (navegación, secciones, estados de carga y error, formularios, anuncios, fechas, `<title>`, descripción y `og:locale`) y el perfil: titular, "Acerca de mí" y experiencia. Si falta la traducción de un texto del perfil, se muestra en español y la API responde `"lang": "es"`.
+- [x] Los artículos, sus categorías y etiquetas, los proyectos de GitHub y las publicaciones de LinkedIn se muestran en su idioma original; el contenido en español lleva `lang="es"` (WCAG 3.1.2).
+- [x] `?lang=` con un idioma que no existe responde 422 con `ApiError`.
+
+### HU-19: La nana de las ideas (visitante)
+**Como** visitante, **quiero** tocar notas en la portada y descubrir una melodía escondida, **para** que el CV se recuerde y transmita la idea del autor: "el arrullo de las ideas".
+
+Criterios de aceptación:
+- [x] Sobre el cielo de la portada ondula un pentagrama de cinco líneas de luz, más tranquilo bajo el texto; el puntero lo curva como cuerdas.
+- [x] Bajo el nombre, siempre visibles, cinco notas con símbolos propios (◆ { } ⚡ </> ✦), cada una de un color y un tono de una escala pentatónica. Son `<button>` nativos con nombre accesible (Idea, Código, Chispa, Web, Sueño); con el foco dentro del teclado de notas, las teclas 1 a 5 también las tocan. Fuera de él no se captura ninguna tecla.
+- [x] Cada nota aparece en el pentagrama, lanza una onda por su línea y suelta chispas; la partitura avanza hacia la izquierda y se desvanece. La nota se anuncia por su nombre.
+- [x] Hay una melodía secreta de seis notas, original (no reproduce música de terceros). Seis puntos muestran cuántas notas seguidas van bien y esas notas brillan doradas; tras diez notas sin acertarla, la pista enseña cómo empieza.
+- [x] Al tocarla se activa el modo fiesta: el pentagrama cambia de color, suben corcheas flotando y los colores de acento de toda la página giran despacio por el arcoíris (12 s por vuelta, sin destellos; contraste mínimo 4.9:1 en cualquier tono). Se anuncia "Melodía descubierta" y un botón termina la fiesta.
+- [x] El sonido está apagado por defecto y se activa con un botón (`aria-pressed`). Es un tono de flauta sintetizado con Web Audio, sin archivos de audio ni librerías.
+- [x] El juego es un extra: ningún contenido del CV queda detrás de él.
+
+### HU-20: El viaje de la experiencia (visitante)
+**Como** visitante, **quiero** recorrer la experiencia del autor como los niveles de un videojuego, **para** que su trayectoria se entienda y se recuerde.
+
+**Endpoint:** `GET /api/v1/profile` (campo `scene` de cada puesto)
+
+Criterios de aceptación:
+- [x] Cada puesto es un nivel con su cajita 3D (diorama) hecha con CSS 3D, sin librerías: edificio, tocador, cambio de monedas, laboratorio, antena, panel publicitario, móvil, pasarela de pago o escritorio. La escena la elige el dato `scene` del puesto (`perfil.json`); sin él, el escritorio.
+- [x] El mapa en isométrico se queda fijo mientras pasan las tarjetas de texto. La tarjeta que llega al centro de la pantalla activa su nivel: la cámara viaja hasta la caja, la tapa se abre, la escena surge y la nota ✦ de la portada salta encima. El camino recorrido se ilumina.
+- [x] El orden va del presente al inicio. Un HUD muestra "Nivel N / total" y una barra de XP con los años acumulados; el último nivel dice "🏁 Aquí empezó todo" y ofrece volver al presente.
+- [x] Se puede avanzar con el scroll, con los botones ◀ ▶, con el número de cada nivel (`aria-current="step"`) y con las flechas, Inicio y Fin cuando el foco está en esos botones. El scroll de la página nunca se captura. Al usar los botones se anuncia "Nivel N de total: cargo, empresa".
+- [x] El mapa es decorativo (`aria-hidden`); todas las tarjetas están siempre en la página y en el HTML del servidor.
+- [x] Si el sonido de la HU-19 está activado, cada salto suena con una nota.
+- [x] Con "reducir movimiento" la cámara y la nota cambian de nivel sin viajar ni saltar, y las escenas no se animan. En móvil el mapa queda arriba y las tarjetas pasan por debajo, sin scroll horizontal.
+
 ---
 
 ## 4. Requisitos transversales
 
 Se aplican a todas las historias, según `constitution.md`:
 - **Errores:** toda respuesta de error usa `ApiError` (`code`, `message`, `timestamp`), sin trazas ni SQL.
-- **Accesibilidad:** navegación por teclado, estados anunciados con `aria-live`, HTML semántico, documento en español (`lang="es"`).
+- **Accesibilidad:** navegación por teclado, estados anunciados con `aria-live`, HTML semántico, documento con el idioma activo en `<html lang>` (HU-18).
 - **SEO:** toda página pública tiene `<title>` y `<meta name="description">` propios; los artículos cumplen además la HU-12.
 - **Secretos:** ninguna credencial sale del backend ni llega al navegador.
 - **Pruebas:** cada caso de uso tiene su `.spec.ts`; cada componente tiene stories de éxito, carga y error.
@@ -200,6 +266,9 @@ Se aplican a todas las historias, según `constitution.md`:
 | `post_tags` | `post_id`, `tag_id` | Muchos a muchos: un artículo tiene de 0 a 10 etiquetas |
 | `users` | `id`, `email` (único), `password_hash` | Fase 5. Solo hay cuenta del autor, creada con `npm run create:user` |
 | `sessions` | `id` (UUID), `user_id`, `expires_at`, `revoked_at` | Fase 5. Cada JWT lleva el `id` de su sesión; el logout la revoca en el servidor |
+| `profile` | una sola fila: `full_name`, `headline`, `headline_en`, `location`, `summary`, `summary_en` | HU-14 y HU-18. Lo llenan `load:profile` (español e inglés) o `load:linkedin` (solo español) |
+| `positions` | `company`, `title`, `title_en`, `location`, `description`, `description_en`, `started_on`, `finished_on`, `scene` | HU-15, HU-18 y HU-20. `finished_on` nulo = puesto actual; `*_en` nulo = se muestra en español; `scene` = diorama del viaje |
+| `profile_updates` | `published_at`, `text`, `url` | HU-17 |
 
 La categoría "lleva" sus publicaciones por la relación inversa: `categories.id` ↔ `posts.category_id`. No hace falta una tabla intermedia.
 
@@ -249,6 +318,9 @@ Las tomé para poder escribir las historias. Si alguna no te gusta, dímelo y aj
 - **G. (confirmada)** Las páginas públicas (portada y artículos) se entregan renderizadas en el servidor con **Angular SSR** (`@angular/ssr`). Login y "Mi cuenta" siguen renderizándose en el navegador: dependen de la cookie de sesión y no aportan nada al SEO.
 - **I.** La categoría de un artículo ya cargado la decide la aplicación (HU-08), no el archivo Markdown: `load:content` usa el `category` del archivo solo la primera vez y, si después difiere, avisa sin cambiarla. Así un cambio hecho en la interfaz no se pierde al volver a cargar.
 - **J.** Renombrar una categoría recalcula su slug ("Seguridad" → "Seguridad web" pasa de `seguridad` a `seguridad-web`). Los enlaces filtrados antiguos (`/?categoria=seguridad`) dejan de funcionar; a cambio, el slug siempre coincide con el nombre. Si hace falta conservarlos, la alternativa es guardar los slugs anteriores y redirigir.
+- **K.** LinkedIn no ofrece una API pública para leer perfiles ni publicaciones, y extraer los datos de su web incumple sus condiciones. El perfil, la experiencia y la actualidad se cargan con `npm run load:linkedin -- --dir <carpeta>` desde la **exportación oficial** (Ajustes → Privacidad de datos → Obtener una copia de tus datos). El script solo lee los campos públicos (nunca la fecha de nacimiento, la dirección ni el correo) y omite las publicaciones "solo para contactos". Para actualizar la portada, se exporta de nuevo y se vuelve a cargar.
+- **L.** Los proyectos se leen en vivo de la API pública de GitHub desde el backend (no desde el navegador), sin token y con una caché de una hora: muy por debajo del límite de 60 peticiones por hora.
+- **M. (confirmada)** El sitio se traduce con código propio, sin librerías ni servicios externos: dos diccionarios tipados en `frontend/src/app/core/i18n/` (el inglés no compila si le falta o le sobra una clave) y un servicio con una señal de idioma. Se descartó `@angular/localize` porque compila un sitio por idioma y no permite cambiar sin recargar. El idioma va en una cookie y la URL no cambia, así que los buscadores indexan la versión en español. El español es el idioma base de los datos: el inglés vive en columnas `*_en` opcionales.
 - **H. (confirmada)** Las imágenes viven como archivos en `frontend/public/images/articulos/`. El script de carga genera AVIF, WebP y JPG desde la imagen original con `sharp` y guarda ancho y alto. Todas las rutas pasan por una URL base configurable: si más adelante se usa un CDN (Cloudinary, S3 + CloudFront), solo cambia esa URL.
 
 ## 8. Preguntas abiertas

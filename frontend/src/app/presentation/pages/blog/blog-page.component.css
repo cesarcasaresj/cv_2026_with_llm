@@ -3,22 +3,22 @@
   gap: 2rem;
 }
 
-.home__header {
+.blog__header {
   display: grid;
   gap: 0.5rem;
 }
 
-.home__header h1 {
+.blog__header h1 {
   margin: 0;
 }
 
-.home__intro {
+.blog__intro {
   margin: 0;
   max-width: 70ch;
   color: var(--color-text-muted);
 }
 
-.home__filters {
+.blog__filters {
   display: grid;
   gap: 1.5rem;
 }

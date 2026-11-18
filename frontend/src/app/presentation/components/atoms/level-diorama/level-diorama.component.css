@@ -1,0 +1,245 @@
+/*
+ * Bloque .diorama y elemento genérico .cube (spec.md, HU-20).
+ * Un cubo recibe su posición y tamaño en variables (--x --y --z --w --d --h, en px sin unidad) y su color (--c).
+ * El escenario mira desde arriba en diagonal, así que bastan tres caras: arriba, frente (+y) y derecha (+x).
+ */
+:host {
+  display: block;
+  width: 150px;
+  height: 150px;
+  transform-style: preserve-3d;
+}
+
+.diorama {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+.cube {
+  position: absolute;
+  left: calc(var(--x) * 1px);
+  top: calc(var(--y) * 1px);
+  width: calc(var(--w) * 1px);
+  height: calc(var(--d) * 1px);
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--z) * 1px));
+}
+
+.cube__face {
+  position: absolute;
+  backface-visibility: visible;
+}
+
+/* Arriba: el color más claro */
+.cube__top {
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transform: translateZ(calc(var(--h) * 1px));
+  background: color-mix(in srgb, var(--c) 78%, white);
+}
+
+/* Frente (+y): se levanta desde el borde delantero */
+.cube__front {
+  left: 0;
+  top: calc(100% - var(--h) * 1px);
+  width: 100%;
+  height: calc(var(--h) * 1px);
+  transform-origin: bottom;
+  transform: rotateX(-90deg);
+  background: var(--c);
+}
+
+/* Derecha (+x): la más oscura */
+.cube__right {
+  left: 100%;
+  top: 0;
+  width: calc(var(--h) * 1px);
+  height: 100%;
+  transform-origin: left;
+  transform: rotateY(-90deg);
+  background: color-mix(in srgb, var(--c) 68%, black);
+}
+
+/* Monedas, engranajes y ondas: solo la cara de arriba, redonda */
+.cube--round .cube__top {
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--c) 60%, black);
+}
+
+/* El texto pintado se gira para leerse en horizontal pese al giro del escenario */
+.cube__label {
+  rotate: -45deg;
+  color: #0b1020;
+  font: 800 11px/1 var(--font-display);
+}
+
+/* ---------- Caja ---------- */
+
+.diorama__floor {
+  background: var(--floor);
+  box-shadow: inset 0 0 0 3px rgb(255 255 255 / 0.08);
+}
+
+.diorama__year {
+  display: block;
+  color: #c3c9e6;
+  font: 700 11px/22px var(--font-display);
+  letter-spacing: 0.15em;
+  text-align: center;
+}
+
+.diorama__scene {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: translateZ(22px);
+  scale: 0.001;
+  transition: scale 0.7s var(--ease-spring) 0.15s;
+}
+
+.diorama--open .diorama__scene {
+  scale: 1;
+}
+
+.diorama__lid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  border: 2px solid rgb(245 247 255 / 0.25);
+  background: linear-gradient(135deg, #2a2f6b, #1b1f45);
+  transform-origin: top;
+  transform: translateZ(22px);
+  transition: transform 0.6s var(--ease-out);
+}
+
+.diorama--open .diorama__level {
+  /* Al abrir se vería el número por detrás, al revés */
+  opacity: 0;
+}
+
+.diorama--open .diorama__lid {
+  transform: translateZ(22px) rotateX(108deg);
+  background: linear-gradient(135deg, var(--color-accent-bright), var(--color-teal));
+}
+
+.diorama__level {
+  rotate: -45deg;
+  transition: opacity 0.2s;
+  color: #f5f7ff;
+  font: 800 54px/1 var(--font-display);
+  text-shadow: 0 0 18px rgb(124 92 255 / 0.9);
+}
+
+/* ---------- Movimientos de la escena ---------- */
+
+.cube--windows .cube__front,
+.cube--windows .cube__right {
+  background-image: repeating-linear-gradient(0deg, transparent 0 7px, rgb(255 230 150 / 0.75) 7px 10px);
+  animation: cube-windows 2.4s steps(3) infinite;
+  animation-delay: inherit;
+}
+
+.cube--bob {
+  animation: cube-bob 1.6s ease-in-out infinite alternate;
+}
+
+.cube--spin {
+  animation: cube-spin 6s linear infinite;
+}
+
+.cube--spin-back {
+  animation: cube-spin 6s linear infinite reverse;
+}
+
+.cube--pulse {
+  animation: cube-pulse 1.2s ease-in-out infinite alternate;
+}
+
+.cube--grow {
+  animation: cube-grow 2.2s ease-in-out infinite alternate;
+}
+
+.cube--ripple {
+  animation: cube-ripple 2.4s ease-out infinite;
+}
+
+.cube--ripple .cube__top {
+  background: transparent;
+  box-shadow: inset 0 0 0 3px var(--c);
+}
+
+.cube--slide {
+  animation: cube-slide 1.8s ease-in-out infinite alternate;
+}
+
+/* Después de los atajos "animation" (que lo reinician) y más específico: cada cubo arranca con su retraso */
+.diorama .cube {
+  animation-delay: calc(var(--delay, 0) * 1s);
+}
+
+@keyframes cube-windows {
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes cube-bob {
+  to {
+    translate: 0 0 9px;
+  }
+}
+
+@keyframes cube-spin {
+  to {
+    rotate: z 360deg;
+  }
+}
+
+@keyframes cube-pulse {
+  to {
+    scale: 1.2;
+  }
+}
+
+@keyframes cube-grow {
+  from {
+    scale: 1 1 0.35;
+  }
+}
+
+@keyframes cube-ripple {
+  from {
+    scale: 0.3;
+    opacity: 1;
+  }
+  to {
+    scale: 1.25;
+    opacity: 0;
+  }
+}
+
+@keyframes cube-slide {
+  from {
+    translate: -16px 0 0;
+  }
+  to {
+    translate: 16px 0 0;
+  }
+}
+
+/* Con "reducir movimiento": la escena aparece quieta y la tapa se abre sin girar despacio */
+@media (prefers-reduced-motion: reduce) {
+  .cube,
+  .cube__face {
+    animation: none !important;
+  }
+
+  .diorama__scene,
+  .diorama__lid {
+    transition-duration: 0.01ms;
+  }
+}

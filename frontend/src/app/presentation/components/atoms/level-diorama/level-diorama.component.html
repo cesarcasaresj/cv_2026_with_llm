@@ -1,0 +1,35 @@
+<div class="diorama" [class.diorama--open]="open()" [style.--floor]="definition().floor">
+  <!-- Base de la caja: el suelo de la escena arriba y el año al frente -->
+  <div class="cube" [style]="baseStyle">
+    <span class="cube__face cube__top diorama__floor"></span>
+    <span class="cube__face cube__front"><span class="diorama__year">{{ year() }}</span></span>
+    <span class="cube__face cube__right"></span>
+  </div>
+
+  <!-- La escena: surge de la caja al abrirla -->
+  <div class="diorama__scene">
+    @for (item of props(); track $index) {
+      <div
+        class="cube"
+        [class.cube--round]="item.prop.round"
+        [class]="item.prop.animation ? 'cube--' + item.prop.animation : ''"
+        [style]="item.style"
+      >
+        <span class="cube__face cube__top">
+          @if (item.prop.label) {
+            <span class="cube__label">{{ item.prop.label }}</span>
+          }
+        </span>
+        @if (!item.prop.round) {
+          <span class="cube__face cube__front"></span>
+          <span class="cube__face cube__right"></span>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- Tapa con bisagra en el borde del fondo -->
+  <div class="diorama__lid">
+    <span class="diorama__level">{{ level() }}</span>
+  </div>
+</div>

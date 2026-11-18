@@ -1,4 +1,5 @@
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
+import { I18nService } from '../../../../core/i18n/i18n.service';
 import type { AuthorPost, ManagedCategory } from '../../../../core/author/author.service';
 
 export type PostCategoryState = 'loading' | 'error' | 'ready';
@@ -18,6 +19,7 @@ export interface CategoryAssignment {
   styleUrl: './post-category-list.component.css',
 })
 export class PostCategoryListComponent {
+  protected readonly t = inject(I18nService).t;
   readonly posts = input<AuthorPost[] | null>(null);
   readonly categories = input<ManagedCategory[] | null>(null);
   readonly state = input.required<PostCategoryState>();

@@ -2,7 +2,13 @@
    (sigue disponible para lectores de pantalla). Sin esto, el último anuncio se ve en la página. */
 @import '@angular/cdk/a11y-prebuilt.css';
 
-/* Paleta con contraste AA (4.5:1 o más) sobre el fondo (spec.md, HU-13) */
+/*
+ * CSS propio, sin frameworks. Metodología BEM (bloque__elemento--modificador) y mobile first:
+ * los estilos base son para móvil y los @media (min-width) amplían para pantallas mayores.
+ * Prefijos: l- para maquetación (layout); is- para estados que pone JavaScript.
+ */
+
+/* Paleta con contraste AA (4.5:1 o más) sobre su fondo (spec.md, HU-13) */
 :root {
   --color-background: #ffffff;
   --color-text: #1a1a1a; /* 17.4:1 */
@@ -10,10 +16,36 @@
   --color-link: #0b57d0; /* 6.4:1 */
   --color-border: #767676; /* 4.5:1: los bordes también se distinguen */
   --color-surface-strong: #eef2f7;
+
+  /* Portada */
+  --color-night: #0b1020;
+  --color-night-soft: #151b33;
+  --color-on-night: #f5f7ff; /* 17.9:1 sobre --color-night */
+  --color-on-night-muted: #c3c9e6; /* 11:1 sobre --color-night */
+  --color-accent: #5b3fd6; /* 6.7:1 sobre blanco: válido para texto */
+  --color-accent-bright: #7c5cff; /* solo decoración */
+  --color-teal: #00d1b2; /* solo decoración */
+  --color-pink: #ff6b9a; /* solo decoración */
+  --color-surface-soft: #f6f5ff;
+
+  --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
+  --radius-card: 1rem;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  /* En móvil la cabecera ocupa dos filas (marca y navegación); desde 48rem, una */
+  --header-height: 6rem;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --header-height: 3.5rem;
+  }
 }
 
 html {
   color-scheme: light;
+  /* Los saltos a #experiencia, #proyectos… no quedan tapados por la cabecera fija */
+  scroll-padding-top: calc(var(--header-height) + 1rem);
 }
 
 body {
@@ -27,4 +59,155 @@ body {
 
 a {
   color: var(--color-link);
+}
+
+/* Contenedor de las páginas de lectura (blog, artículo, login, cuenta) */
+.l-page {
+  display: block;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* Contenedor de las secciones de la portada */
+.l-container {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding-inline: 1.25rem;
+  box-sizing: border-box;
+}
+
+/* Aparición al hacer scroll (RevealDirective). Sin JavaScript, nada se oculta. */
+.reveal {
+  opacity: 0;
+  transform: translateY(2.5rem) rotateX(12deg) scale(0.97);
+  transform-origin: 50% 100%;
+  filter: blur(6px);
+  transition:
+    opacity 0.8s var(--ease-out),
+    transform 0.9s var(--ease-spring),
+    filter 0.8s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Transición entre páginas (View Transitions API, withViewTransitions en app.config.ts) */
+::view-transition-old(root) {
+  animation: page-out 0.28s var(--ease-out) both;
+}
+
+::view-transition-new(root) {
+  animation: page-in 0.45s var(--ease-out) both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: translateY(-1rem) scale(0.98);
+    filter: blur(4px);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(1.5rem) scale(1.01);
+    filter: blur(4px);
+  }
+}
+
+/*
+ * Modo fiesta (HU-19): al descubrir la nana de las ideas, los colores de acento de toda la página giran
+ * despacio por el arcoíris. Luminosidad alta en todos los tonos: lo que se escribe con estos colores sobre
+ * el fondo nocturno (por ejemplo "Hola, soy") sigue por encima de 4.5:1. El giro dura 12 s por vuelta:
+ * nada parpadea (WCAG 2.3.1).
+ */
+@property --party-hue {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+html.is-party {
+  --color-accent-bright: hsl(calc(250 + var(--party-hue)) 100% 74%);
+  --color-teal: hsl(calc(170 + var(--party-hue)) 100% 72%);
+  --color-pink: hsl(calc(340 + var(--party-hue)) 100% 76%);
+  animation: party-hue 12s linear infinite;
+}
+
+@keyframes party-hue {
+  to {
+    --party-hue: 360;
+  }
+}
+
+/*
+ * Cambio de idioma (HU-18, I18nService.setLang): toda la página se funde con un leve desenfoque.
+ * Es un fundido, no un desplazamiento: también vale con "reducir movimiento".
+ */
+html.is-switching-lang::view-transition-old(root) {
+  animation: lang-out 0.3s ease-in both;
+}
+
+html.is-switching-lang::view-transition-new(root) {
+  animation: lang-in 0.45s ease-out both;
+}
+
+@keyframes lang-out {
+  to {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+@keyframes lang-in {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+  }
+}
+
+/*
+ * "Reducir movimiento" (WCAG 2.3.3): modo suave, no estático.
+ * Se quitan los desplazamientos, giros, zooms y desenfoques; quedan los fundidos y el movimiento
+ * ambiental lento (escena 3D, brillos). La inclinación con el puntero y el estallido se desactivan en JS.
+ */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  ::view-transition-old(root) {
+    animation: fade-out 0.25s ease both;
+  }
+
+  ::view-transition-new(root) {
+    animation: fade-in 0.35s ease both;
+  }
+
+  /* Aparición al hacer scroll: solo fundido */
+  .reveal {
+    transform: none;
+    filter: none;
+    transition: opacity 0.8s ease;
+    transition-delay: var(--reveal-delay, 0ms);
+  }
 }

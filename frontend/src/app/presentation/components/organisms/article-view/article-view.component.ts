@@ -1,4 +1,5 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+import { I18nService } from '../../../../core/i18n/i18n.service';
 import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { components } from '../../../../core/api/generated';
@@ -17,6 +18,9 @@ export type ArticleState = 'loading' | 'error' | 'not-found' | 'ready';
   styleUrl: './article-view.component.css',
 })
 export class ArticleViewComponent {
+  private readonly i18n = inject(I18nService);
+  protected readonly t = this.i18n.t;
+  protected readonly lang = this.i18n.lang;
   readonly article = input<ArticleDetail | null>(null);
   readonly state = input.required<ArticleState>();
 

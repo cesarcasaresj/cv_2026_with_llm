@@ -1,0 +1,143 @@
+<section id="experiencia" class="journey" tabindex="-1" aria-labelledby="experiencia-title">
+  <div class="journey__inner l-container">
+    <app-section-heading
+      index="01"
+      [title]="t().experience.title"
+      headingId="experiencia-title"
+      [intro]="t().journey.intro"
+      [onNight]="true"
+    />
+
+    @switch (state()) {
+      @case ('loading') {
+        <p class="journey__status">{{ t().experience.loading }}</p>
+      }
+      @case ('error') {
+        <p class="journey__status">{{ t().experience.error }}</p>
+      }
+      @default {
+        @if (levels().length) {
+          <div class="journey__layout">
+            <!-- Mapa del viaje: se queda fijo mientras pasan las tarjetas -->
+            <div class="journey__map">
+              <div class="journey__hud" aria-hidden="true">
+                <span class="journey__hud-level">{{ t().journey.hud(active() + 1, levels().length) }}</span>
+                <span class="journey__xp"><span class="journey__xp-fill" [style.width.%]="xpPercent()"></span></span>
+                <span class="journey__hud-xp">{{ t().journey.xp(current()?.xpYears ?? 0) }}</span>
+              </div>
+
+              <div class="journey__stage" aria-hidden="true">
+                <div class="journey__board" [style]="camera()">
+                  <svg class="journey__road" [attr.width]="board().width" [attr.height]="board().height">
+                    <path class="journey__road-line" [attr.d]="road()" />
+                    <path
+                      class="journey__road-line journey__road-line--done"
+                      [attr.d]="road()"
+                      pathLength="1"
+                      [style.stroke-dashoffset]="1 - travelled()"
+                    />
+                  </svg>
+
+                  @for (level of levels(); track level.number) {
+                    <app-level-diorama
+                      class="journey__level"
+                      [style.left.px]="level.x"
+                      [style.top.px]="level.y"
+                      [scene]="level.position.scene"
+                      [level]="level.number"
+                      [year]="level.year"
+                      [open]="$index === active()"
+                    />
+                  }
+
+                  <!-- La nota ✦ de la portada: se crea de nuevo en cada nivel para repetir el salto -->
+                  <div class="journey__avatar">
+                    <span class="journey__shadow"></span>
+                    @for (step of [active()]; track step) {
+                      <span class="journey__hop">✦</span>
+                    }
+                  </div>
+                </div>
+              </div>
+
+              <div class="journey__controls" role="group" [attr.aria-label]="t().journey.controlsLabel" (keydown)="onKeydown($event)">
+                <button
+                  type="button"
+                  class="journey__arrow"
+                  [attr.aria-label]="t().journey.previous"
+                  [disabled]="active() === 0"
+                  (click)="go(active() - 1)"
+                >
+                  ◀
+                </button>
+                <ol class="journey__dots">
+                  @for (level of levels(); track level.number) {
+                    <li>
+                      <button
+                        #dot
+                        type="button"
+                        class="journey__dot"
+                        [attr.aria-label]="t().journey.goTo(level.number)"
+                        [attr.aria-current]="$index === active() ? 'step' : null"
+                        (click)="go($index)"
+                      >
+                        {{ level.number }}
+                      </button>
+                    </li>
+                  }
+                </ol>
+                <button
+                  type="button"
+                  class="journey__arrow"
+                  [attr.aria-label]="t().journey.next"
+                  [disabled]="active() === levels().length - 1"
+                  (click)="go(active() + 1)"
+                >
+                  ▶
+                </button>
+              </div>
+            </div>
+
+            <!-- Las tarjetas: el contenido real, siempre visible y en orden -->
+            <ol class="journey__cards">
+              @for (level of levels(); track level.number) {
+                @let position = level.position;
+                <li #card class="journey__card" [class.journey__card--active]="$index === active()" [attr.data-level]="$index">
+                  <article class="journey__article">
+                    <p class="journey__level-tag">{{ t().journey.hud(level.number, levels().length) }}</p>
+                    <p class="journey__dates">
+                      <time [attr.datetime]="position.startedOn">{{ toDate(position.startedOn) | date: t().experience.dateFormat : 'UTC' : lang() }}</time>
+                      –
+                      @if (position.finishedOn) {
+                        <time [attr.datetime]="position.finishedOn">{{ toDate(position.finishedOn) | date: t().experience.dateFormat : 'UTC' : lang() }}</time>
+                      } @else {
+                        <span class="journey__now">{{ t().experience.now }}</span>
+                      }
+                      <span>&nbsp;· {{ duration(position.startedOn, position.finishedOn, t().experience.duration) }}</span>
+                    </p>
+                    <h3 class="journey__title">{{ position.title }}</h3>
+                    <p class="journey__company">
+                      {{ position.company }}
+                      @if (position.location) {
+                        <span class="journey__location">· {{ position.location }}</span>
+                      }
+                    </p>
+                    @if (position.description) {
+                      <p class="journey__description">{{ position.description }}</p>
+                    }
+                    @if ($last) {
+                      <p class="journey__start">{{ t().journey.start }}</p>
+                      <button type="button" class="journey__back" (click)="go(0)">{{ t().journey.backToPresent }}</button>
+                    }
+                  </article>
+                </li>
+              }
+            </ol>
+          </div>
+        } @else {
+          <p class="journey__status">{{ t().experience.empty }}</p>
+        }
+      }
+    }
+  </div>
+</section>

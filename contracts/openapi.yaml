@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.4.0
+  version: 1.7.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -379,6 +379,76 @@ paths:
         default:
           $ref: '#/components/responses/SystemError'
 
+  /api/v1/profile:
+    get:
+      operationId: getProfile
+      summary: Perfil público del autor para la portada (spec.md, HU-14, HU-15 y HU-18).
+      tags: [portfolio]
+      parameters:
+        - name: lang
+          in: query
+          required: false
+          description: Idioma del titular, "Acerca de mí" y la experiencia. Si falta la traducción, se sirve en español.
+          schema:
+            $ref: '#/components/schemas/Lang'
+      responses:
+        '200':
+          description: Nombre, titular, "Acerca de mí", experiencia y enlaces públicos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '404':
+          description: Todavía no se cargó el perfil (npm run load:profile o npm run load:linkedin).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/projects:
+    get:
+      operationId: listProjects
+      summary: Repositorios públicos del autor en GitHub, sin forks ni archivados (spec.md, HU-16).
+      tags: [portfolio]
+      responses:
+        '200':
+          description: Del último actualizado al más antiguo. El backend guarda la respuesta de GitHub en caché.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '503':
+          description: GitHub no responde y no hay una copia en caché.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/updates:
+    get:
+      operationId: listUpdates
+      summary: Publicaciones recientes del autor, cargadas desde la exportación de LinkedIn (spec.md, HU-17).
+      tags: [portfolio]
+      responses:
+        '200':
+          description: De la más reciente a la más antigua.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProfileUpdate'
+        default:
+          $ref: '#/components/responses/SystemError'
+
   /sitemap.xml:
     get:
       operationId: getSitemap
@@ -663,6 +733,130 @@ components:
         categoryId:
           type: integer
           minimum: 1
+
+    Lang:
+      type: string
+      enum: [es, en]
+      default: es
+      description: Idioma del contenido (HU-18).
+
+    YearMonth:
+      type: string
+      pattern: '^\d{4}-(0[1-9]|1[0-2])$'
+      description: Año y mes, por ejemplo 2024-03.
+
+    LevelScene:
+      type: string
+      enum: [tower, vanity, exchange, lab, antenna, billboard, phone, payment, desk]
+      description: |
+        Diorama que representa el puesto en el viaje de la experiencia (HU-20):
+        tower (edificio corporativo), vanity (cosmética), exchange (cambio de moneda), lab (innovación),
+        antenna (telecomunicaciones), billboard (publicidad y analítica), phone (apps móviles),
+        payment (pagos), desk (escritorio, el genérico).
+
+    Position:
+      type: object
+      required: [company, title, location, startedOn, finishedOn, description, scene]
+      properties:
+        scene:
+          description: Diorama del puesto; null si no se eligió (la portada usa el escritorio).
+          oneOf:
+            - $ref: '#/components/schemas/LevelScene'
+            - type: 'null'
+        company:
+          type: string
+        title:
+          type: string
+        location:
+          type: [string, 'null']
+        startedOn:
+          $ref: '#/components/schemas/YearMonth'
+        finishedOn:
+          description: null si es el puesto actual.
+          oneOf:
+            - $ref: '#/components/schemas/YearMonth'
+            - type: 'null'
+        description:
+          type: [string, 'null']
+
+    Profile:
+      type: object
+      required: [lang, name, headline, location, about, experience, links]
+      properties:
+        lang:
+          $ref: '#/components/schemas/Lang'
+          description: Idioma en que se sirvió el contenido; es "es" si se pidió "en" y no hay traducción.
+        name:
+          type: string
+        headline:
+          type: string
+          description: Titular profesional (el de LinkedIn).
+        location:
+          type: [string, 'null']
+        about:
+          type: array
+          description: Párrafos de "Acerca de mí".
+          items:
+            type: string
+        experience:
+          type: array
+          description: Del puesto más reciente al más antiguo.
+          items:
+            $ref: '#/components/schemas/Position'
+        links:
+          type: object
+          required: [github, linkedin]
+          properties:
+            github:
+              type: [string, 'null']
+              format: uri
+            linkedin:
+              type: [string, 'null']
+              format: uri
+
+    Project:
+      type: object
+      required: [name, description, url, homepage, language, stars, forks, topics, pushedAt]
+      properties:
+        name:
+          type: string
+        description:
+          type: [string, 'null']
+        url:
+          type: string
+          format: uri
+        homepage:
+          type: [string, 'null']
+          format: uri
+        language:
+          type: [string, 'null']
+        stars:
+          type: integer
+          minimum: 0
+        forks:
+          type: integer
+          minimum: 0
+        topics:
+          type: array
+          items:
+            type: string
+        pushedAt:
+          type: string
+          format: date-time
+
+    ProfileUpdate:
+      type: object
+      required: [publishedAt, text, url]
+      properties:
+        publishedAt:
+          type: string
+          format: date-time
+        text:
+          type: string
+        url:
+          type: [string, 'null']
+          format: uri
+          description: Enlace a la publicación original en LinkedIn.
 
     ApiError:
       type: object

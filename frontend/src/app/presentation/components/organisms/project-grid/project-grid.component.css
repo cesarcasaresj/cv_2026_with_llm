@@ -1,0 +1,188 @@
+.projects {
+  padding-block: 5rem;
+  outline: none;
+}
+
+.projects__status {
+  margin: 0;
+}
+
+/* Mobile first: una columna; dos desde 40rem; tres desde 64rem */
+.projects__grid {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  perspective: 1200px;
+}
+
+.projects__cell {
+  display: flex;
+}
+
+/* Bloque .project-card: tarjeta con inclinación 3D (TiltDirective) y borde de degradado */
+.project-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(var(--color-background), var(--color-background)) padding-box,
+    linear-gradient(135deg, rgb(124 92 255 / 0.35), rgb(0 209 178 / 0.25), rgb(255 107 154 / 0.3)) border-box;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 2px rgb(11 16 32 / 0.05);
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.5s var(--ease-out),
+    box-shadow 0.4s var(--ease-out);
+  overflow: hidden;
+}
+
+.project-card.is-tilting {
+  transition: box-shadow 0.4s var(--ease-out);
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  box-shadow: 0 30px 60px -30px rgb(91 63 214 / 0.55);
+}
+
+/* Brillo que sigue al puntero */
+.project-card__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 0%), rgb(124 92 255 / 0.16), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.project-card.is-tilting .project-card__glare {
+  opacity: 1;
+}
+
+.project-card__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.25;
+  text-transform: capitalize;
+  transform: translateZ(30px);
+}
+
+/* Toda la tarjeta es clicable, pero el enlace sigue siendo solo el título (un único nombre accesible) */
+.project-card__link {
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.project-card__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.project-card__link:hover {
+  color: var(--color-accent);
+}
+
+.project-card__link:focus-visible {
+  outline: none;
+}
+
+.project-card__link:focus-visible::after {
+  outline: 3px solid var(--color-link);
+  outline-offset: -3px;
+}
+
+.project-card__description {
+  flex: 1;
+  margin: 0;
+  color: var(--color-text-muted);
+  /* Las descripciones de GitHub a veces traen URLs largas: se parten y se recortan a 4 líneas */
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card__topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card__topic {
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-accent);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.project-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.875rem;
+}
+
+.project-card__language {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.project-card__swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+}
+
+/* Por encima del enlace que cubre la tarjeta, para poder pulsarlo por separado */
+.project-card__demo {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  color: var(--color-link);
+  font-weight: 600;
+}
+
+.projects__more {
+  margin: 2rem 0 0;
+}
+
+.projects__more-link {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+@media (min-width: 40rem) {
+  .projects__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 64rem) {
+  .projects {
+    padding-block: 7rem;
+  }
+
+  .projects__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}

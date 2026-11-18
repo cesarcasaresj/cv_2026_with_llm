@@ -28,6 +28,24 @@ import { PostgresCategoryCatalog } from './infrastructure/database/PostgresCateg
 import { PostgresAuthorPostRepository } from './infrastructure/database/PostgresAuthorPostRepository';
 import { CreateCategory, DeleteCategory, ListManagedCategories, RenameCategory } from './core/usecases/ManageCategories';
 import { AssignPostCategory, ListAuthorPosts } from './core/usecases/AssignPostCategory';
+import { GetProfile, ListProjects, ListUpdates } from './core/usecases/Portfolio';
+import type { ProjectSource } from './core/domain/Profile';
+import { PostgresProfileRepository } from './infrastructure/database/PostgresProfileRepository';
+import { CachedProjectSource, GithubProjectSource } from './infrastructure/github/GithubProjectSource';
+import { portfolioRoutes } from './infrastructure/controllers/portfolioRoutes';
+
+const GITHUB_CACHE_MS = 60 * 60 * 1000; // 1 hora: muy por debajo del límite de 60 peticiones/hora sin token
+
+/** URL pública opcional; se ignora si no es https para no publicar un enlace roto o inseguro. */
+function optionalHttpsUrl(name: string): string | null {
+  const value = process.env[name]?.trim();
+  if (!value) return null;
+  if (!/^https:\/\/\S+$/.test(value)) {
+    console.warn(`${name} debe empezar por https://; se ignora`);
+    return null;
+  }
+  return value;
+}
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -67,6 +85,17 @@ async function start(): Promise<void> {
   const catalog = new PostgresCategoryCatalog(pool);
   const authorPosts = new PostgresAuthorPostRepository(pool);
   const getCurrentUser = new GetCurrentUser(users, sessions, tokens);
+  const profiles = new PostgresProfileRepository(pool);
+
+  // Portada (spec.md, HU-16): sin usuario de GitHub configurado, la sección de proyectos queda vacía
+  const githubUsername = process.env.GITHUB_USERNAME?.trim();
+  const projectSource: ProjectSource = githubUsername
+    ? new CachedProjectSource(new GithubProjectSource(githubUsername), GITHUB_CACHE_MS)
+    : { listPublicProjects: async () => [] };
+  const links = {
+    github: githubUsername ? `https://github.com/${encodeURIComponent(githubUsername)}` : null,
+    linkedin: optionalHttpsUrl('LINKEDIN_PROFILE_URL'),
+  };
 
   const app = express();
   app.use(express.json());
@@ -103,6 +132,10 @@ async function start(): Promise<void> {
       listPosts: new ListAuthorPosts(authorPosts),
       assignCategory: new AssignPostCategory(catalog, authorPosts),
     }),
+  );
+  app.use(
+    '/api/v1',
+    portfolioRoutes(new GetProfile(profiles), new ListProjects(projectSource), new ListUpdates(profiles), links),
   );
   app.use(seoRoutes(new ListSitemapEntries(posts), siteUrl));
   app.use(errorHandler);

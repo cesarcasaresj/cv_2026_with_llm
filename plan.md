@@ -21,6 +21,26 @@
   - **Decisión:** categorías como lista fija (spec.md, pregunta 2). Solo el autor las crea, renombra y borra en `/cuenta/categorias`; `load:content` ya no las crea y solo usa la del archivo al cargar un artículo nuevo (decisiones I y J).
   - **Contrato 1.4.0:** rutas del autor bajo `/api/v1/author/` (categorías y categoría de cada artículo), todas con sesión.
   - **Verificado:** 65 pruebas del backend; 23 comprobaciones de la API real (401, 404, 409, 422 y cambios en la base); 45 comprobaciones en Chrome de la nueva página (teclado, foco, anuncios, móvil y axe en la página y en las 12 stories nuevas); sin regresiones en el recorrido anterior (71/71) ni en el SSR (32/32).
+- Portada del portafolio, HU-14 a HU-17 (rama `feat/portada-portafolio`):
+  - **Contrato 1.5.0:** `GET /api/v1/profile`, `/api/v1/projects` (GitHub con caché) y `/api/v1/updates`. Migración `006_profile.sql`.
+  - **LinkedIn:** sin API pública; `npm run load:linkedin -- --dir <exportación>` carga la exportación oficial (spec.md, decisión K). `content/linkedin-ejemplo/` trae datos ficticios para probar.
+  - **Frontend:** `/` es la portada y el blog pasa a `/blog`. CSS propio con BEM y mobile first; escena 3D con three.js cargada de forma diferida; aparición al hacer scroll, inclinación 3D, transiciones de vista; todo respeta "reducir movimiento".
+  - **Configuración:** `GITHUB_USERNAME` y `LINKEDIN_PROFILE_URL` en `.env` (opcionales).
+  - **Verificado:** 98 pruebas del backend; 11 comprobaciones de la API real (GitHub en vivo y caché); 45 del HTML del servidor; 50 en Chrome de la portada (escritorio, móvil, "reducir movimiento", anclas, foco y axe en la página y en sus 21 stories); sin regresiones en el blog (92/92) ni en categorías (45/45).
+- Perfil real e idiomas, HU-18 (rama `feat/portada-portafolio`):
+  - **Contrato 1.6.0:** `GET /api/v1/profile?lang=es|en` y el campo `lang` en `Profile` (idioma servido). Migración `007_profile_i18n.sql` (columnas `*_en`).
+  - **Perfil:** `content/perfil/perfil.json` con el texto de cesarcasares.com pulido en inglés y en español; se carga con `npm run load:profile`. `load:linkedin` sigue funcionando y deja el inglés vacío.
+  - **Frontend:** traducción propia en `core/i18n/` (diccionarios tipados, `I18nService`, cookie `lang`), selector `LanguageSwitch` en la cabecera, fundido con View Transitions, fechas con el idioma activo y barra de idioma en Storybook.
+  - **Verificado:** 112 pruebas del backend; API en es/en/422; 19 comprobaciones en Chrome (SSR según `Accept-Language`, cambio sin recargar, cookie, recarga, perfil y fechas, axe en la cabecera, sin errores de hidratación).
+- La nana de las ideas, HU-19 (rama `feat/portada-portafolio`):
+  - **Portada:** el planeta de three.js se sustituye por un pentagrama de luz en canvas 2D con cinco notas para tocar, una melodía secreta original y un modo fiesta. three.js sale del proyecto (de 750 kB a 4,5 kB).
+  - **Sonido:** Web Audio nativo, apagado por defecto.
+  - **Verificado:** 7 pruebas de la lógica de la melodía; 23 comprobaciones en Chrome (notas con ratón y teclado, pista, melodía, fiesta, anuncios, axe, "reducir movimiento", móvil y sin errores en consola).
+- El viaje de la experiencia, HU-20 (rama `feat/portada-portafolio`):
+  - **Contrato 1.7.0:** `LevelScene` y el campo `scene` en `Position`. Migración `008_position_scene.sql`; `perfil.json` elige la escena de cada puesto.
+  - **Frontend:** `ExperienceJourney` sustituye a la línea de tiempo: mapa isométrico fijo con 9 dioramas en CSS 3D, cámara que viaja, la nota ✦ que salta, HUD con nivel y XP, controles ◀ ▶ y por número. El sonido se comparte con la portada (`MelodyAudioService`).
+  - **Presupuesto:** el aviso del paquete inicial sube de 500 a 550 kB (el viaje suma 5 kB comprimidos).
+  - **Verificado:** 113 pruebas del backend; 18 comprobaciones en Chrome (niveles con scroll, botones y teclado, foco, anuncios, axe, HTML del servidor, móvil sin scroll horizontal y "reducir movimiento").
 - Producción del frontend: `node dist/frontend/server/server.mjs` con `PORT`, `BACKEND_URL`, `PUBLIC_SITE_URL` y `ALLOWED_HOSTS` (dominios aceptados por la protección SSRF de Angular).
 
 ## Decisiones tomadas

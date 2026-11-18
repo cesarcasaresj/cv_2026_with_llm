@@ -34,6 +34,13 @@ export class ConflictError extends AppError {
   }
 }
 
+/** Un servicio externo (por ejemplo GitHub) no responde y no hay datos de respaldo. */
+export class ServiceUnavailableError extends AppError {
+  constructor(message: string) {
+    super(503, 'SERVICE_UNAVAILABLE', message);
+  }
+}
+
 /** Los datos enviados no cumplen el contrato. */
 export class ValidationError extends AppError {
   constructor(message: string) {

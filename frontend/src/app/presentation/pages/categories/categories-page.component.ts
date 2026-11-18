@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, effect, inject, signal, viewChild } from '@angular/core';
 import { httpResource } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
@@ -10,6 +10,8 @@ import {
   type ManagedCategory,
 } from '../../../core/author/author.service';
 import { SeoService } from '../../../core/seo/seo.service';
+import { I18nService } from '../../../core/i18n/i18n.service';
+import { stateOf } from '../../../core/http/resource-state';
 import {
   CategoryManagerComponent,
   type CategoryRename,
@@ -20,18 +22,19 @@ import {
   type CategoryAssignment,
 } from '../../components/molecules/post-category-list/post-category-list.component';
 
-const SAVE_ERROR = 'No pudimos guardar el cambio. Intenta de nuevo en unos minutos.';
-
 /** Gestión de categorías del autor (spec.md, HU-08 y HU-09). Ruta protegida: /cuenta/categorias. */
 @Component({
   imports: [RouterLink, CategoryManagerComponent, PostCategoryListComponent],
   selector: 'app-categories-page',
   templateUrl: './categories-page.component.html',
   styleUrl: './categories-page.component.css',
+  host: { class: 'l-page' },
 })
 export class CategoriesPageComponent {
   private readonly author = inject(AuthorService);
   private readonly announcer = inject(LiveAnnouncer);
+  private readonly seo = inject(SeoService);
+  protected readonly t = inject(I18nService).t;
 
   private readonly manager = viewChild.required(CategoryManagerComponent);
   private readonly postList = viewChild.required(PostCategoryListComponent);
@@ -52,11 +55,9 @@ export class CategoriesPageComponent {
   protected readonly assignmentError = signal<string | null>(null);
 
   constructor() {
-    inject(SeoService).setPage({
-      title: 'Categorías',
-      description: 'Gestión de la lista de categorías y de la categoría de cada artículo.',
-      path: '/cuenta/categorias',
-      noindex: true,
+    effect(() => {
+      const text = this.t().categories;
+      this.seo.setPage({ title: text.title, description: text.seoDescription, path: '/cuenta/categorias', noindex: true });
     });
   }
 
@@ -64,7 +65,7 @@ export class CategoriesPageComponent {
     await this.runCategoryAction(async () => {
       const created = await firstValueFrom(this.author.createCategory(name));
       this.manager().createSucceeded();
-      return `Categoría «${created.name}» creada.`;
+      return this.t().categories.created(created.name);
     });
   }
 
@@ -72,7 +73,7 @@ export class CategoriesPageComponent {
     await this.runCategoryAction(async () => {
       const renamed = await firstValueFrom(this.author.renameCategory(id, name));
       this.manager().renameSucceeded(id);
-      return `Categoría renombrada a «${renamed.name}».`;
+      return this.t().categories.renamed(renamed.name);
     });
   }
 
@@ -81,7 +82,7 @@ export class CategoriesPageComponent {
     await this.runCategoryAction(async () => {
       await firstValueFrom(this.author.deleteCategory(id));
       this.manager().deleteSucceeded();
-      return name ? `Categoría «${name}» borrada.` : 'Categoría borrada.';
+      return this.t().categories.deleted(name ?? null);
     });
   }
 
@@ -94,9 +95,9 @@ export class CategoriesPageComponent {
       // Los contadores de la lista de categorías cambian: se recargan las dos listas
       this.posts.reload();
       this.categories.reload();
-      this.announcer.announce(`«${updated.title}» ahora está en «${updated.category.name}».`, 'polite');
+      this.announcer.announce(this.t().categories.moved(updated.title, updated.category.name), 'polite');
     } catch (error) {
-      const message = apiErrorMessage(error, SAVE_ERROR);
+      const message = apiErrorMessage(error, this.t().categories.saveError);
       this.assignmentError.set(message);
       this.announcer.announce(message, 'assertive');
     } finally {
@@ -114,17 +115,11 @@ export class CategoriesPageComponent {
       this.posts.reload();
       this.announcer.announce(success, 'polite');
     } catch (error) {
-      const message = apiErrorMessage(error, SAVE_ERROR);
+      const message = apiErrorMessage(error, this.t().categories.saveError);
       this.categoryError.set(message);
       this.announcer.announce(message, 'assertive');
     } finally {
       this.busy.set(false);
     }
   }
-}
-
-/** Estado de un httpResource para los componentes. Nunca lee value() en error (lanzaría en Angular 22). */
-function stateOf(resource: { hasValue(): boolean; error(): unknown }): ListState {
-  if (resource.hasValue()) return 'ready';
-  return resource.error() ? 'error' : 'loading';
 }

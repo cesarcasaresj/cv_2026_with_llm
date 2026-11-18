@@ -1,7 +1,7 @@
-<p class="categories-page__back"><a routerLink="/cuenta">← Volver a Mi cuenta</a></p>
-<h1>Categorías</h1>
+<p class="categories-page__back"><a routerLink="/cuenta">{{ t().categories.back }}</a></p>
+<h1>{{ t().categories.title }}</h1>
 <p class="categories-page__intro">
-  La lista de categorías es fija: solo cambia desde aquí. Cada artículo tiene exactamente una.
+  {{ t().categories.intro }}
 </p>
 
 <app-category-manager

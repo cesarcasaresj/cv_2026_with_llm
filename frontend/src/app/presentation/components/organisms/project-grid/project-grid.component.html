@@ -1,0 +1,76 @@
+<section id="proyectos" class="projects l-container" tabindex="-1" aria-labelledby="proyectos-title">
+  <app-section-heading
+    index="03"
+    [title]="t().projects.title"
+    headingId="proyectos-title"
+    [intro]="t().projects.intro"
+  />
+
+  @switch (state()) {
+    @case ('loading') {
+      <p class="projects__status">{{ t().projects.loading }}</p>
+    }
+    @case ('error') {
+      <p class="projects__status">
+        {{ t().projects.githubDown }}
+        @if (githubUrl(); as url) {
+          {{ t().projects.seeOnGithub }} <a [href]="url">{{ t().projects.githubProfile }}</a>.
+        } @else {
+          {{ t().projects.retry }}
+        }
+      </p>
+    }
+    @default {
+      @if (projects()?.length) {
+        <ul class="projects__grid">
+          @for (project of projects(); track project.url) {
+            <li class="projects__cell" appReveal [revealDelay]="($index % 3) * 110">
+              <article class="project-card" appTilt>
+                <span class="project-card__glare" aria-hidden="true"></span>
+                <h3 class="project-card__title">
+                  <a class="project-card__link" [href]="project.url">{{ displayName(project.name) }}</a>
+                </h3>
+                <p class="project-card__description">
+                  {{ project.description ?? t().projects.noDescription }}
+                </p>
+
+                @if (project.topics.length) {
+                  <ul class="project-card__topics" [attr.aria-label]="t().projects.topicsLabel">
+                    @for (topic of project.topics.slice(0, 4); track topic) {
+                      <li class="project-card__topic">{{ topic }}</li>
+                    }
+                  </ul>
+                }
+
+                <p class="project-card__meta">
+                  @if (project.language) {
+                    <span class="project-card__language">
+                      <span class="project-card__swatch" [style.background]="languageColor(project.language)" aria-hidden="true"></span>
+                      {{ project.language }}
+                    </span>
+                  }
+                  @if (project.stars) {
+                    <span>★ {{ project.stars }} <span class="cdk-visually-hidden">{{ t().projects.stars }}</span></span>
+                  }
+                  <span>{{ t().projects.updated }} <time [attr.datetime]="project.pushedAt">{{ updatedAgo(project.pushedAt, lang(), t().projects.justNow) }}</time></span>
+                </p>
+
+                @if (project.homepage) {
+                  <a class="project-card__demo" [href]="project.homepage">
+                    {{ t().projects.demo }}<span class="cdk-visually-hidden">{{ t().projects.demoOf(displayName(project.name)) }}</span>
+                  </a>
+                }
+              </article>
+            </li>
+          }
+        </ul>
+
+        @if (githubUrl(); as url) {
+          <p class="projects__more"><a class="projects__more-link" [href]="url">{{ t().projects.all }}</a></p>
+        }
+      } @else {
+        <p class="projects__status">{{ t().projects.empty }}</p>
+      }
+    }
+  }
+</section>

@@ -3,7 +3,7 @@
   position: absolute;
   top: 0.5rem;
   left: 0.5rem;
-  z-index: 10;
+  z-index: 30;
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
   background: var(--color-text);
@@ -18,10 +18,9 @@
   outline-offset: 2px;
 }
 
+/* Cada página decide su ancho: la portada ocupa toda la pantalla y el resto usa .l-page */
 main {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 2rem 1.25rem 4rem;
+  display: block;
 }
 
 /* El foco programático del <main> no necesita un contorno visible: no es un control */

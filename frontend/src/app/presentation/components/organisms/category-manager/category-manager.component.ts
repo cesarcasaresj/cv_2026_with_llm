@@ -1,6 +1,7 @@
 import { Component, ElementRef, afterNextRender, inject, Injector, input, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import type { ManagedCategory } from '../../../../core/author/author.service';
+import { I18nService } from '../../../../core/i18n/i18n.service';
 
 export type ListState = 'loading' | 'error' | 'ready';
 
@@ -24,6 +25,7 @@ const NAME_VALIDATORS = [Validators.required, Validators.minLength(2), Validator
 export class CategoryManagerComponent {
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly injector = inject(Injector);
+  protected readonly t = inject(I18nService).t;
 
   readonly categories = input<ManagedCategory[] | null>(null);
   readonly state = input.required<ListState>();

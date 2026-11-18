@@ -1,4 +1,6 @@
-<a class="skip-link" href="#main-content" (click)="skipToContent($event)">Saltar al contenido</a>
+<a class="skip-link" href="#main-content" (click)="skipToContent($event)">{{ i18n.t().app.skipToContent }}</a>
+
+<app-site-header />
 
 <main id="main-content" #main tabindex="-1">
   <router-outlet />

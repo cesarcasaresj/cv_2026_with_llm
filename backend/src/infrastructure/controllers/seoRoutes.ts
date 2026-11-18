@@ -13,6 +13,7 @@ export function seoRoutes(listSitemapEntries: ListSitemapEntries, siteUrl: strin
     // Los slugs solo tienen minúsculas, números y guiones: no hace falta escapar nada en el XML
     const urls = [
       `  <url><loc>${siteUrl}/</loc></url>`,
+      `  <url><loc>${siteUrl}/blog</loc></url>`,
       ...entries.map(
         (entry) =>
           `  <url><loc>${siteUrl}/articulos/${entry.slug}</loc><lastmod>${entry.updatedAt.toISOString()}</lastmod></url>`,

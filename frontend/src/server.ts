@@ -7,6 +7,7 @@ import {
 import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { join } from 'node:path';
+import { negotiateLang } from './app/core/i18n/lang';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -44,6 +45,16 @@ app.use(
     redirect: false,
   }),
 );
+
+/**
+ * Idioma de la página (spec.md, HU-18): la misma URL sirve español o inglés según la cookie `lang`
+ * o el idioma del navegador. Vary avisa a las cachés de que la respuesta depende de esas cabeceras.
+ */
+app.use((req, res, next) => {
+  res.setHeader('Vary', 'Cookie, Accept-Language');
+  res.setHeader('Content-Language', negotiateLang(req.headers.cookie ?? null, req.headers['accept-language'] ?? null));
+  next();
+});
 
 /**
  * Handle all other requests by rendering the Angular application.
