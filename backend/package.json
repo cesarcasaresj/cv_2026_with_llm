@@ -8,6 +8,8 @@
     "dev": "node --env-file-if-exists=../.env --import tsx src/main.ts",
     "create:user": "node --env-file-if-exists=../.env --import tsx scripts/create-user.ts",
     "load:content": "node --env-file-if-exists=../.env --import tsx scripts/load-content.ts",
+    "load:linkedin": "node --env-file-if-exists=../.env --import tsx scripts/load-linkedin.ts",
+    "load:profile": "node --env-file-if-exists=../.env --import tsx scripts/load-profile.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },

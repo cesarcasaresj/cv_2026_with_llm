@@ -1,0 +1,146 @@
+{
+  "name": "Cesar Casares",
+  "location": null,
+  "headline": {
+    "es": "Frontend Engineer · Angular, React y Node.js · El arrullo de las ideas en el desarrollo web",
+    "en": "Frontend Engineer · Angular, React & Node.js · The lullaby of ideas in web development"
+  },
+  "about": {
+    "es": [
+      "Soy Frontend Engineer y he construido aplicaciones con Angular en muchos proyectos. En cada uno pongo mis habilidades y mis ideas, y me encanta darles vida, también en productos para el Internet de las cosas.",
+      "La web y el móvil nunca se quedan quietos: cambian cada día. Eso es justo lo que disfruto: aprender tecnologías nuevas y ser una pieza útil dentro del equipo. Como desarrollador, mi inspiración viene de la música y el arte; me acompañan mientras escribo código.",
+      "Eso es parte de quien soy.",
+      "Trabajo con HTML, CSS y JavaScript. El panorama no deja de cambiar y hoy mi foco está en Angular, React, Node.js y Express, con experiencia en PHP, Laravel y Ruby on Rails.",
+      "He trabajado con empresas como Globant, Indra, Cheil, Humantech y Webcreek, y sigo abierto a nuevos equipos en cualquier lugar, en remoto o de forma presencial."
+    ],
+    "en": [
+      "I'm a Frontend Engineer who has built Angular applications across many projects. I put my skills and ideas into every one of them, and I love bringing them to life, including products for the Internet of Things.",
+      "Web and mobile never stand still: they change every day. That's exactly what I enjoy: learning new technologies and being a useful part of the team. As a developer, my inspiration comes from music and art; they're with me while I write code.",
+      "That's part of who I am.",
+      "I work with HTML, CSS and JavaScript. The landscape keeps changing, and today my focus is on Angular, React, Node.js and Express, with experience in PHP, Laravel and Ruby on Rails.",
+      "I've worked with companies such as Globant, Indra, Cheil, Humantech and Webcreek, and I'm open to new teams anywhere, remotely or on site."
+    ]
+  },
+  "experience": [
+    {
+      "company": "Globant",
+      "location": "Lima, Perú",
+      "startedOn": "2025-02",
+      "finishedOn": null,
+      "title": {
+        "es": "Web UI Semi Senior Advanced · BBVA",
+        "en": "Web UI Semi Senior Advanced · BBVA"
+      },
+      "description": {
+        "es": "Desarrollo de interfaces web para BBVA dentro del equipo de Globant, en remoto.",
+        "en": "Building web interfaces for BBVA as part of Globant's team, working remotely."
+      },
+      "scene": "tower"
+    },
+    {
+      "company": "Globant",
+      "location": "Lima, Perú",
+      "startedOn": "2024-07",
+      "finishedOn": "2024-11",
+      "title": {
+        "es": "Web UI Semi Senior Advanced · Yanbal",
+        "en": "Web UI Semi Senior Advanced · Yanbal"
+      },
+      "description": {
+        "es": "Proyecto para Yanbal Unique: interfaces con Angular construidas sobre patrones de diseño, en remoto.",
+        "en": "Project for Yanbal Unique: Angular interfaces built on solid design patterns, working remotely."
+      },
+      "scene": "vanity"
+    },
+    {
+      "company": "Globant",
+      "location": "Lima, Perú",
+      "startedOn": "2022-05",
+      "finishedOn": "2024-06",
+      "title": {
+        "es": "Web UI Semi Senior Advanced · BCP Cocos y Lucas",
+        "en": "Web UI Semi Senior Advanced · BCP Cocos y Lucas"
+      },
+      "description": {
+        "es": "Cocos y Lucas es la plataforma del BCP para cambiar soles y dólares en línea de forma fácil. Desarrollé su interfaz con Angular cumpliendo los lineamientos de seguridad, políticas y gobierno del banco, en un equipo ágil con Jira.",
+        "en": "Cocos y Lucas is BCP's platform for exchanging Peruvian soles and US dollars online, simply. I built its interface with Angular following the bank's security, policy and governance guidelines, in an agile team using Jira."
+      },
+      "scene": "exchange"
+    },
+    {
+      "company": "Humantech Innovation & Technology Agency",
+      "location": "Lima, Perú",
+      "startedOn": "2020-08",
+      "finishedOn": "2021-06",
+      "title": {
+        "es": "Ingeniero de Sistemas",
+        "en": "Systems Engineer"
+      },
+      "description": {
+        "es": "Agencia de innovación y tecnología: desarrollo frontend con SASS y patrones de diseño.",
+        "en": "Innovation and technology agency: frontend development with SASS and design patterns."
+      },
+      "scene": "lab"
+    },
+    {
+      "company": "Indra",
+      "location": "Lima, Perú",
+      "startedOn": "2020-12",
+      "finishedOn": "2021-03",
+      "title": {
+        "es": "Analista de Sistemas · Telefónica",
+        "en": "Systems Analyst · Telefónica"
+      },
+      "description": {
+        "es": "Nuevos módulos y submódulos para Telefónica, siguiendo sus procesos y cumpliendo los plazos de entrega. Stack: PHP con Laravel, Node.js, JavaScript, HTML5, CSS y SASS.",
+        "en": "New modules and submodules for Telefónica, following its processes and meeting delivery deadlines. Stack: PHP with Laravel, Node.js, JavaScript, HTML5, CSS and SASS."
+      },
+      "scene": "antenna"
+    },
+    {
+      "company": "Cheil Worldwide",
+      "location": "Perú",
+      "startedOn": "2019-08",
+      "finishedOn": "2020-08",
+      "title": {
+        "es": "Web Developer",
+        "en": "Web Developer"
+      },
+      "description": {
+        "es": "Desarrollo web con Angular 9, Ruby on Rails, JavaScript, jQuery, HTML y CSS con BEM y SASS. También análisis de marketing con Tableau, Google Analytics y Google Trends.",
+        "en": "Web development with Angular 9, Ruby on Rails, JavaScript, jQuery, HTML and CSS with BEM and SASS. Also marketing analysis with Tableau, Google Analytics and Google Trends."
+      },
+      "scene": "billboard"
+    },
+    {
+      "company": "WebCreek",
+      "location": "Lima, Perú",
+      "startedOn": "2019-02",
+      "finishedOn": "2019-06",
+      "title": {
+        "es": "Software Engineer",
+        "en": "Software Engineer"
+      },
+      "description": {
+        "es": "Desarrollo web y móvil.",
+        "en": "Web and mobile development."
+      },
+      "scene": "phone"
+    },
+    {
+      "company": "Teractive Consulting",
+      "location": "Madrid, España",
+      "startedOn": "2016-06",
+      "finishedOn": "2017-04",
+      "title": {
+        "es": "Programador Frontend Angular",
+        "en": "Angular Frontend Developer"
+      },
+      "description": {
+        "es": "Aplicación móvil con pasarela de pago, construida con Ionic 2 y Angular 2.",
+        "en": "Mobile app with a payment gateway, built with Ionic 2 and Angular 2."
+      },
+      "scene": "payment"
+    }
+  ]
+}

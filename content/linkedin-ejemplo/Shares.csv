@@ -1,0 +1,5 @@
+Date,ShareLink,ShareCommentary,SharedUrl,MediaUrl,Visibility
+2026-11-14 18:30:00,,"Publiqué la nueva versión de mi CV: portada con Angular SSR, datos de GitHub en vivo y una escena 3D con three.js que respeta ""reducir movimiento"". {hashtag|\#|Angular} {hashtag|\#|threejs}",,,MEMBER_NETWORK
+2026-11-02 09:15:00,,"Contratos OpenAPI como fuente de verdad: el frontend y el backend generan sus tipos del mismo archivo y los errores de integración aparecen al compilar.",,,MEMBER_NETWORK
+2026-10-20 12:00:00,,"Pequeño recordatorio de accesibilidad: un solo h1 por página y encabezados sin saltos. Los lectores de pantalla navegan por ellos.",,,MEMBER_NETWORK
+2026-10-05 08:45:00,,"Esta publicación es solo para contactos y no debe aparecer en la portada.",,,CONNECTIONS_ONLY
