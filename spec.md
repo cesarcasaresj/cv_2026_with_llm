@@ -245,6 +245,18 @@ Criterios de aceptación:
 - [x] Si el sonido de la HU-19 está activado, cada salto suena con una nota.
 - [x] Con "reducir movimiento" la cámara y la nota cambian de nivel sin viajar ni saltar, y las escenas no se animan. En móvil el mapa queda arriba y las tarjetas pasan por debajo, sin scroll horizontal.
 
+### HU-21: Portales entre secciones y bandera del idioma (visitante)
+**Como** visitante, **quiero** que cada sección se presente con una escena propia al navegar, **para** que recorrer el CV sea una experiencia que se recuerde.
+
+Criterios de aceptación:
+- [x] La cabecera muestra el nombre del autor ("Cesar Casares"), que también cierra el `<title>` de cada página.
+- [x] Cada enlace del menú abre un portal 3D (three.js) de ~1,5 s con el nombre de la sección: Experiencia (túnel del tiempo con los años reales de la trayectoria), Sobre mí (una chispa que estalla y forma `</>`), Proyectos (bloques que caen y forman una ciudad), Actualidad (antena que emite ondas) y Blog (libro que suelta sus páginas).
+- [x] El portal nunca bloquea la navegación: el enlace navega por debajo y el portal se disuelve al terminar. Se salta con un clic o con Esc. Sin WebGL, no se muestra.
+- [x] No se abre con "reducir movimiento" ni con clics que abren otra pestaña (Ctrl, Cmd, Mayús, rueda).
+- [x] three.js se descarga solo la primera vez que se abre un portal (unos 106 kB comprimidos): no pesa en la carga inicial.
+- [x] Al cambiar de idioma aparece una bandera cartoon ondeando: EE. UU. para inglés y España para español. Las banderas se precargan; con "reducir movimiento" solo se funden.
+- [x] Portal y bandera son decorativos (`aria-hidden`): la sección de destino recibe el foco y el cambio de idioma se anuncia con texto.
+
 ---
 
 ## 4. Requisitos transversales

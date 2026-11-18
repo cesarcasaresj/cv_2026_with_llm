@@ -46,6 +46,11 @@
   - **Backend:** `npm run build` genera `dist/server.mjs` con todas las dependencias (esbuild); migraciones con `schema_migrations` al arrancar o con `npm run db:migrate`.
   - **Despliegue:** `.github/workflows/deploy.yml` prueba y compila en cada PR; en `main` sube por SSH a las apps de cPanel (`app.cjs` para Passenger) y las reinicia. Las portadas se generan en CI (`npm run build:images`).
   - **Verificado:** 119 pruebas del backend; el bundle aplica las 8 migraciones sobre una base vacía con secretos por variables de entorno; el paquete `release/` arranca con `node app.cjs` como en Passenger (portada SSR, proxy a la API, imágenes y blog).
+- Portales y bandera del idioma, HU-21 (rama `feat/portales-y-banderas`):
+  - **Cabecera:** el nombre del autor sustituye a "CV 2026" (`SITE_NAME`, también en los títulos).
+  - **Portales:** cinco escenas three.js en `presentation/portal/` que se abren al pulsar el menú mientras la página navega por debajo; three.js vuelve al proyecto, pero solo se descarga al primer clic.
+  - **Bandera:** `LanguageFlag` (SVG cartoon de EE. UU. y España en `public/images/flags/`) ondea con CSS durante el cambio de idioma.
+  - **Verificado:** 13 comprobaciones en Chrome contra la API real (cada portal llega a su sección, Esc lo salta, bandera en los dos idiomas, "reducir movimiento", móvil y sin errores en consola).
 - Producción del frontend: `node dist/frontend/server/server.mjs` con `PORT`, `BACKEND_URL`, `PUBLIC_SITE_URL` y `ALLOWED_HOSTS` (dominios aceptados por la protección SSRF de Angular).
 
 ## Decisiones tomadas
