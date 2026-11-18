@@ -1,0 +1,121 @@
+# Pruebas en cada pull request y despliegue al hosting (cPanel) en cada cambio en main. Guía: DEPLOY.md
+#
+# Se compila aquí, no en el hosting (un plan compartido no tiene memoria para compilar Angular):
+# al servidor solo llegan el backend en un archivo (dist/server.mjs), sus migraciones y el frontend ya compilado.
+# Ninguna credencial está en este archivo: todas son Secrets del repositorio (Settings → Secrets and variables).
+
+name: Pruebas y despliegue
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Nunca dos despliegues a la vez; el que está en marcha termina
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Pruebas y compilación
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Backend · contrato, tipos, pruebas y compilación
+        working-directory: backend
+        run: |
+          npm ci
+          npm run generate:api
+          npm run typecheck
+          npm test
+          npm run build
+          npm run build:images
+
+      - name: Frontend · contrato y compilación
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run generate:api
+          npm run build
+
+      - name: Preparar los paquetes para el hosting
+        run: |
+          mkdir -p release/api/dist release/api/db release/web
+          cp backend/dist/server.mjs backend/dist/server.mjs.map release/api/dist/
+          cp -r backend/db/init release/api/db/init
+          cp backend/deploy/app.cjs release/api/
+          cp -r frontend/dist/frontend/server frontend/dist/frontend/browser release/web/
+          cp frontend/deploy/app.cjs release/web/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: release
+          retention-days: 7
+
+  deploy:
+    name: Despliegue en el hosting
+    needs: build
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      SSH_HOST: ${{ secrets.SSH_HOST }}
+      SSH_PORT: ${{ secrets.SSH_PORT }}
+      SSH_USER: ${{ secrets.SSH_USER }}
+      API_DIR: ${{ secrets.API_DIR }}
+      WEB_DIR: ${{ secrets.WEB_DIR }}
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Configurar SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # Huella del servidor guardada de antemano: si cambia, la conexión se rechaza (evita suplantaciones)
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Subir backend y frontend
+        run: |
+          SSH="ssh -i ~/.ssh/deploy_key -p $SSH_PORT"
+          # --delete quita archivos viejos; se respetan los que crea cPanel (node_modules, tmp, .htaccess, logs)
+          EXCLUDES=(--exclude node_modules --exclude tmp --exclude .htaccess --exclude '*.log')
+          rsync -az --delete "${EXCLUDES[@]}" -e "$SSH" release/api/ "$SSH_USER@$SSH_HOST:$API_DIR/"
+          rsync -az --delete "${EXCLUDES[@]}" -e "$SSH" release/web/ "$SSH_USER@$SSH_HOST:$WEB_DIR/"
+
+      - name: Reiniciar las aplicaciones
+        run: |
+          # Passenger reinicia una app cuando cambia tmp/restart.txt; el backend aplica las migraciones al arrancar
+          ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
+            "mkdir -p '$API_DIR/tmp' '$WEB_DIR/tmp' && touch '$API_DIR/tmp/restart.txt' '$WEB_DIR/tmp/restart.txt'"
+
+      - name: Comprobar que el sitio responde
+        if: vars.SITE_URL != ''
+        run: |
+          # La API se comprueba como la usan los visitantes: a través del sitio (HTTPS), que la reenvía al backend
+          curl --fail --silent --show-error --retry 6 --retry-delay 10 --retry-all-errors "$SITE_URL/api/v1/posts/count" > /dev/null
+          curl --fail --silent --show-error --retry 6 --retry-delay 10 --retry-all-errors "$SITE_URL/" > /dev/null
+          echo "✓ $SITE_URL y su API responden"

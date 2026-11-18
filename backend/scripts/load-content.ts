@@ -1,5 +1,6 @@
 // Carga los artículos de content/articulos/*.md en la base (spec.md, pregunta 8).
 // Uso:   npm run load:content -- --author correo@ejemplo.com
+//        npm run build:images     solo genera las portadas, sin tocar la base (lo usa el despliegue)
 //
 // - El nombre del archivo es el slug del artículo; volver a cargar un archivo lo actualiza (no lo duplica).
 // - Si algún archivo no cumple las reglas de §5.1, no se escribe nada y se listan los errores.
@@ -12,7 +13,7 @@ import { readdir, readFile, mkdir } from 'node:fs/promises';
 import { basename, join, resolve } from 'node:path';
 import sharp from 'sharp';
 import type { Pool, PoolClient } from 'pg';
-import { VaultClient } from '../src/infrastructure/security/VaultClient';
+import { createSecretStore, secretPaths } from '../src/infrastructure/security/SecretStore';
 import { createDatabasePool } from '../src/infrastructure/database/DatabasePool';
 import { slugify } from '../src/core/domain/slug';
 import { parseArticle, type ArticleSource } from './content/articleSource';
@@ -26,12 +27,6 @@ const COVER_MAX_WIDTH = 1600;
 interface ProcessedCover {
   width: number;
   height: number;
-}
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Falta la variable de entorno ${name}`);
-  return value;
 }
 
 function authorArgument(): string {
@@ -168,8 +163,6 @@ async function saveArticle(
 }
 
 async function main(): Promise<void> {
-  const authorEmail = authorArgument();
-
   // 1. Leer y validar todos los archivos antes de escribir nada
   const files = (await readdir(CONTENT_DIR)).filter((file) => file.endsWith('.md') && file !== 'README.md').sort();
   const articles: ArticleSource[] = [];
@@ -185,9 +178,20 @@ async function main(): Promise<void> {
     throw new Error(`No se cargó nada. Corrige estos archivos:\n${problems.join('\n')}`);
   }
 
-  // 2. Conectar con las credenciales de Vault y comprobar el autor
-  const vault = new VaultClient(requiredEnv('VAULT_ADDR'), requiredEnv('VAULT_TOKEN'));
-  const pool = await createDatabasePool(vault, requiredEnv('VAULT_POSTS_DB_PATH'));
+  // Solo portadas: el despliegue las genera al compilar el frontend (no se guardan en git)
+  if (process.argv.includes('--images-only')) {
+    await mkdir(COVER_OUTPUT_DIR, { recursive: true });
+    for (const article of articles) {
+      if (article.cover) await processCover(article.slug, article.cover.file);
+    }
+    console.log(`✓ Portadas generadas en ${COVER_OUTPUT_DIR}`);
+    return;
+  }
+
+  const authorEmail = authorArgument();
+
+  // 2. Conectar con las credenciales (Vault o variables de entorno) y comprobar el autor
+  const pool = await createDatabasePool(createSecretStore(), secretPaths().database);
 
   try {
     const { rows } = await pool.query<{ id: number; display_name: string | null }>(

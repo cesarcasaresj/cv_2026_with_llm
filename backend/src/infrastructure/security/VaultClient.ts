@@ -1,6 +1,7 @@
-type Secret = Record<string, string>;
+import type { Secret, SecretStore } from './SecretStore';
 
-export class VaultClient {
+/** Secretos en HashiCorp Vault (motor KV v2). Es el almacén por defecto (constitution.md, sección 2). */
+export class VaultClient implements SecretStore {
   private readonly cache = new Map<string, { data: Secret; expiresAt: number }>();
 
   constructor(

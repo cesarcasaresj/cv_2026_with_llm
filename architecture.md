@@ -86,6 +86,8 @@ Vault (:8200) · PostgreSQL (:5432)
 | Categorías | Lista fija gestionada por el autor en `/cuenta/categorias` | Una sola fuente de verdad: el script de carga no crea categorías ni pisa las asignaciones hechas en la interfaz (spec.md, decisiones I y J) |
 | Rutas del autor | Agrupadas en `/api/v1/author/*` | Un solo router exige la sesión para todas; las rutas públicas no cambian |
 | Estilos | CSS propio, BEM y mobile first; sin frameworks de CSS | Control total del diseño y de la accesibilidad, sin peso extra |
+| Producción | Hosting compartido (cPanel/Passenger): backend en un solo archivo con esbuild, frontend SSR, GitHub Actions por SSH | El plan no puede compilar Angular ni correr Vault: se compila en CI y los secretos van en variables del panel (`SecretStore`, decisión N, `DEPLOY.md`) |
+| Migraciones | `schema_migrations` + candado de PostgreSQL; al arrancar (`RUN_MIGRATIONS_ON_START`) o con `npm run db:migrate` | Sin Docker en el hosting, cada archivo de `db/init` se aplica una sola vez y en su propia transacción |
 | Viaje de la experiencia | CSS 3D propio: cada diorama es una lista de cubos (datos en `presentation/journey/scenes.ts`) dibujados por un único CSS genérico | Sin WebGL ni librerías (+5 kB comprimidos para todo); el texto real queda en la página para lectores de pantalla y SEO (spec.md, HU-20) |
 | Fondo animado | Canvas 2D propio con `import()` diferido (4,5 kB); sonido con Web Audio | Sustituye a three.js (750 kB): pesa casi nada, no necesita WebGL y cuenta algo del autor (spec.md, HU-19) |
 | Idiomas | Diccionarios tipados propios + `I18nService` (señales); cookie `lang` | Cambio instantáneo sin recargar y sin librerías; el compilador garantiza que el inglés tiene todos los textos (spec.md, HU-18 y decisión M) |

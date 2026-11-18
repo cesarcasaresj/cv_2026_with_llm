@@ -3,18 +3,12 @@
 // La contraseña se lee del entorno para que no quede en el historial de la terminal ni en el código.
 // AUTHOR_NAME es el nombre que se publica en los artículos (el correo nunca se muestra); es opcional al cambiar la contraseña.
 
-import { VaultClient } from '../src/infrastructure/security/VaultClient';
+import { createSecretStore, secretPaths } from '../src/infrastructure/security/SecretStore';
 import { createDatabasePool } from '../src/infrastructure/database/DatabasePool';
 import { PostgresUserRepository } from '../src/infrastructure/database/PostgresUserRepository';
 import { ScryptPasswordHasher } from '../src/infrastructure/security/ScryptPasswordHasher';
 
 const MIN_PASSWORD_LENGTH = 12;
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-  if (!value) throw new Error(`Falta la variable de entorno ${name}`);
-  return value;
-}
 
 async function main(): Promise<void> {
   const email = process.argv[2]?.trim().toLowerCase();
@@ -27,8 +21,7 @@ async function main(): Promise<void> {
     throw new Error(`Define AUTHOR_PASSWORD con al menos ${MIN_PASSWORD_LENGTH} caracteres.`);
   }
 
-  const vault = new VaultClient(requiredEnv('VAULT_ADDR'), requiredEnv('VAULT_TOKEN'));
-  const pool = await createDatabasePool(vault, requiredEnv('VAULT_POSTS_DB_PATH'));
+  const pool = await createDatabasePool(createSecretStore(), secretPaths().database);
 
   try {
     const passwordHash = await new ScryptPasswordHasher().hash(password);

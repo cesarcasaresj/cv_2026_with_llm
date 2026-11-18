@@ -67,10 +67,12 @@ app.use((req, res, next) => {
 });
 
 /**
- * Start the server if this module is the main entry point, or it is ran via PM2.
- * The server listens on the port defined by the `PORT` environment variable, or defaults to 4000.
+ * Arranca el servidor si este módulo es el principal, si lo lanza PM2 o si lo lanza Passenger
+ * (cPanel → Setup Node.js App, que lo carga desde deploy/app.cjs y define PASSENGER_APP_ENV).
+ * Escucha en `PORT` (por defecto 4000); con Passenger, el puerto lo decide Passenger.
  */
-if (isMainModule(import.meta.url) || process.env['pm_id']) {
+const startedByPassenger = Boolean(process.env['PASSENGER_APP_ENV']) || 'PhusionPassenger' in globalThis;
+if (isMainModule(import.meta.url) || process.env['pm_id'] || startedByPassenger) {
   const port = process.env['PORT'] || 4000;
   app.listen(port, (error) => {
     if (error) {
