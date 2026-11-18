@@ -255,6 +255,10 @@ Criterios de aceptación:
 - [x] No se abre con "reducir movimiento" ni con clics que abren otra pestaña (Ctrl, Cmd, Mayús, rueda).
 - [x] three.js se descarga solo la primera vez que se abre un portal (unos 106 kB comprimidos): no pesa en la carga inicial.
 - [x] Al cambiar de idioma aparece una bandera cartoon ondeando: EE. UU. para inglés y España para español. Las banderas se precargan; con "reducir movimiento" solo se funden.
+- [x] El interruptor ES / EN lleva en su píldora la bandera del idioma activo, con las letras perfiladas para leerse sobre cualquier color. Al cambiar, la píldora gira en 3D, salta confeti con los colores de la bandera y aparece un saludo ("¡Hola!" / "Hello!"); la primera vez en la visita, todo más grande.
+- [x] Al pulsar un enlace del menú, su texto cuenta la sección: Experiencia sube como niveles (+XP), Sobre mí nace de letras dispersas (❤), Proyectos cae como bloques ({ }), Actualidad parpadea como una señal (● EN VIVO) y Blog se escribe a máquina. Los lectores de pantalla leen el texto completo una sola vez (las letras sueltas son `aria-hidden`).
+- [x] El portal queda debajo de la cabecera y la cabecera tiene su propio grupo en las transiciones de página e idioma: sus efectos se ven vivos. Ir a un ancla de la misma página no lanza la transición de página.
+- [x] three.js se descarga cuando el puntero o el foco llegan al menú, para que el primer clic no se congele.
 - [x] Portal y bandera son decorativos (`aria-hidden`): la sección de destino recibe el foco y el cambio de idioma se anuncia con texto.
 
 ---

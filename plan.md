@@ -49,7 +49,8 @@
 - Portales y bandera del idioma, HU-21 (rama `feat/portales-y-banderas`):
   - **Cabecera:** el nombre del autor sustituye a "CV 2026" (`SITE_NAME`, también en los títulos).
   - **Portales:** cinco escenas three.js en `presentation/portal/` que se abren al pulsar el menú mientras la página navega por debajo; three.js vuelve al proyecto, pero solo se descarga al primer clic.
-  - **Bandera:** `LanguageFlag` (SVG cartoon de EE. UU. y España en `public/images/flags/`) ondea con CSS durante el cambio de idioma.
+  - **Bandera:** `LanguageFlag` (SVG cartoon de EE. UU. y España en `public/images/flags/`) ondea con CSS durante el cambio de idioma; el interruptor ES / EN lleva la bandera, gira en 3D y celebra con confeti y un saludo.
+  - **Menú:** `NavLabel` anima el texto de cada enlace con el efecto de su sección, accesible (texto completo para lectores de pantalla).
   - **Verificado:** 13 comprobaciones en Chrome contra la API real (cada portal llega a su sección, Esc lo salta, bandera en los dos idiomas, "reducir movimiento", móvil y sin errores en consola).
 - Producción del frontend: `node dist/frontend/server/server.mjs` con `PORT`, `BACKEND_URL`, `PUBLIC_SITE_URL` y `ALLOWED_HOSTS` (dominios aceptados por la protección SSRF de Angular).
 
