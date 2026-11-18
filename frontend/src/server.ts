@@ -32,6 +32,9 @@ app.use(
   createProxyMiddleware({
     target: backendUrl,
     pathFilter: ['/api', '/sitemap.xml', '/robots.txt'],
+    // El proxy presenta el nombre del backend (api.…), no el de esta petición: así el hosting,
+    // que sirve varios sitios en la misma IP, entrega la petición a la app correcta
+    changeOrigin: true,
   }),
 );
 
