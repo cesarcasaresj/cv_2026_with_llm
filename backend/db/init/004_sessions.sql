@@ -1,8 +1,10 @@
 -- Sesiones activas. Cada JWT lleva el id de su fila: así el logout revoca el token en el servidor
 -- aunque alguien lo haya copiado antes (spec.md, HU-03).
+-- El id lo genera el backend (crypto.randomUUID): así funciona también en PostgreSQL 10,
+-- el del hosting compartido, donde gen_random_uuid() no existe.
 
 CREATE TABLE IF NOT EXISTS sessions (
-  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  id         UUID PRIMARY KEY,
   user_id    INTEGER     NOT NULL REFERENCES users (id) ON DELETE CASCADE,
   expires_at TIMESTAMPTZ NOT NULL,
   revoked_at TIMESTAMPTZ,

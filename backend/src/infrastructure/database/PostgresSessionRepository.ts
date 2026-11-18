@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import type { Pool } from 'pg';
 import type { SessionRepository } from '../../core/domain/Session';
 
@@ -5,11 +6,11 @@ export class PostgresSessionRepository implements SessionRepository {
   constructor(private readonly pool: Pool) {}
 
   async create(userId: number, expiresAt: Date): Promise<string> {
-    const { rows } = await this.pool.query<{ id: string }>(
-      'INSERT INTO sessions (user_id, expires_at) VALUES ($1, $2) RETURNING id',
-      [userId, expiresAt],
-    );
-    return rows[0].id;
+    // El id lo genera Node con un generador criptográfico: no se puede adivinar, y funciona en cualquier
+    // versión de PostgreSQL (gen_random_uuid() no existe antes de la 13, como en el hosting compartido)
+    const id = randomUUID();
+    await this.pool.query('INSERT INTO sessions (id, user_id, expires_at) VALUES ($1, $2, $3)', [id, userId, expiresAt]);
+    return id;
   }
 
   async findActiveUserId(sessionId: string): Promise<number | null> {
