@@ -7,7 +7,6 @@ import {
   inject,
   input,
   signal,
-  untracked,
   viewChildren,
 } from '@angular/core';
 import { DatePipe, isPlatformBrowser } from '@angular/common';
@@ -143,17 +142,6 @@ export class ExperienceJourneyComponent {
       cards.forEach((card) => observer.observe(card.nativeElement));
       onCleanup(() => observer.disconnect());
     });
-
-    // Cada salto suena con una nota de la nana, si el sonido está activado en la portada
-    let first = true;
-    effect(() => {
-      const index = this.active();
-      if (first) {
-        first = false;
-        return;
-      }
-      untracked(() => this.audio.play(NOTES[NOTES.length - 1 - (index % NOTES.length)].frequency));
-    });
   }
 
   /** Lleva al nivel indicado: mueve la cámara, desplaza la página hasta su tarjeta y lo anuncia. */
@@ -164,6 +152,9 @@ export class ExperienceJourneyComponent {
     if (!level) return;
 
     this.active.set(target);
+    // El salto suena con una nota de la nana (si el sonido está activado en la portada). Solo al pedirlo
+    // con los botones o el teclado: hacer scroll por la página nunca suena.
+    this.audio.play(NOTES[NOTES.length - 1 - (target % NOTES.length)].frequency);
     this.cards()[target]?.nativeElement.scrollIntoView({
       block: 'center',
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',

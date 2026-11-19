@@ -7,7 +7,7 @@ import { NOTES, SECRET_MELODY, noteById, type NoteId } from '../../../melody/mel
  * Es presentacional: avisa de lo que toca la persona y muestra el avance que le llega; no guarda la partida.
  *
  * Teclado: cada nota es un <button> (Tab + Enter o Espacio). Además, con el foco dentro del teclado,
- * las teclas 1 a 5 tocan las notas. No se capturan teclas fuera de él: el resto de la página se usa con normalidad.
+ * las teclas 1 a 5 tocan las notas, de la fila de números o del teclado numérico (con o sin Bloq Num). No se capturan teclas fuera de él: el resto de la página se usa con normalidad.
  */
 @Component({
   selector: 'app-note-pad',
@@ -50,9 +50,22 @@ export class NotePadComponent {
 
   protected onKeydown(event: KeyboardEvent): void {
     if (event.ctrlKey || event.metaKey || event.altKey) return;
-    const note = NOTES[Number(event.key) - 1];
+    const note = NOTES[noteKey(event) - 1];
     if (!note) return;
+    // Sin esto, con Bloq Num apagado el navegador haría lo de la tecla: Fin, flechas, Inicio…
     event.preventDefault();
     this.play(note.id);
   }
+}
+
+/**
+ * Número de nota (1 a 5) de una tecla, o 0 si no es una nota. Se mira la tecla física (`code`), no el carácter:
+ * - el teclado numérico vale con Bloq Num encendido o apagado (apagado, su 1 escribe "End" y su 2 "ArrowDown");
+ * - la fila de números vale en cualquier distribución (en AZERTY, la tecla del 1 escribe "&").
+ * Si el navegador no informa la tecla física (algunos teclados virtuales), se usa el carácter.
+ */
+export function noteKey(event: Pick<KeyboardEvent, 'code' | 'key'>): number {
+  const physical = /^(?:Digit|Numpad)([1-5])$/.exec(event.code);
+  if (physical) return Number(physical[1]);
+  return /^[1-5]$/.test(event.key) ? Number(event.key) : 0;
 }
