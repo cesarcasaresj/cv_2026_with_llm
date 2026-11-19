@@ -32,8 +32,8 @@
         "en": "Web UI Semi Senior Advanced · BBVA"
       },
       "description": {
-        "es": "Desarrollo la capa de seguridad web de BBVA, por la que pasan más de 50 flujos del banco: verifica token, biometría y dispositivo antes de cada transferencia o consulta sensible. Migré componentes de Polymer a Lit, construí piezas de seguridad para web y Android (biometría, certificados, semillas, dispositivo) y resolví incidencias críticas de producción.",
-        "en": "I build BBVA's web security layer, which 50+ banking flows go through: it verifies token, biometrics and device before every transfer or sensitive operation. I migrated components from Polymer to Lit, built security pieces for web and Android (biometrics, certificates, seeds, device binding) and resolved critical production issues."
+        "es": "Desarrollo la capa de seguridad de la app de BBVA, por la que pasan más de 50 flujos del banco: verifica token, biometría, certificados y dispositivo antes de cada transferencia o consulta sensible. Son web components con Lit dentro de la app, comunicados con las bibliotecas nativas de Android e iOS mediante Cells, el framework de BBVA. Migré componentes de Polymer a Lit mejorando el rendimiento, con un índice de aceptación del cliente del 76 %, y resolví incidencias críticas de producción.",
+        "en": "I build the security layer of BBVA's app, which 50+ banking flows go through: it verifies token, biometrics, certificates and device before every transfer or sensitive operation. It is made of Lit web components inside the app, communicating with native Android and iOS libraries through Cells, BBVA's framework. I migrated components from Polymer to Lit, improving performance, reached a 76% customer acceptance rate and resolved critical production issues."
       },
       "scene": "tower"
     },
