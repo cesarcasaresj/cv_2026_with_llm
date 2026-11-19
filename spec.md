@@ -224,7 +224,7 @@ Criterios de aceptación:
 
 Criterios de aceptación:
 - [x] Sobre el cielo de la portada ondula un pentagrama de cinco líneas de luz, más tranquilo bajo el texto; el puntero lo curva como cuerdas.
-- [x] Bajo el nombre, siempre visibles, cinco notas con símbolos propios (◆ { } ⚡ </> ✦), cada una de un color y un tono de una escala pentatónica. Son `<button>` nativos con nombre accesible (Idea, Código, Chispa, Web, Sueño); con el foco dentro del teclado de notas, las teclas 1 a 5 también las tocan. Fuera de él no se captura ninguna tecla.
+- [x] Bajo el nombre, siempre visibles, cinco notas con símbolos propios (◆ { } ⚡ </> ✦), cada una de un color y un tono de una escala pentatónica. Son `<button>` nativos con nombre accesible (Idea, Código, Chispa, Web, Sueño); con el foco dentro del teclado de notas, las teclas 1 a 5 también las tocan, de la fila de números o del teclado numérico, con Bloq Num encendido o apagado y en cualquier distribución de teclado (se lee la tecla física). Fuera de él no se captura ninguna tecla.
 - [x] Cada nota aparece en el pentagrama, lanza una onda por su línea y suelta chispas; la partitura avanza hacia la izquierda y se desvanece. La nota se anuncia por su nombre.
 - [x] Hay una melodía secreta de seis notas, original (no reproduce música de terceros). Seis puntos muestran cuántas notas seguidas van bien y esas notas brillan doradas; tras diez notas sin acertarla, la pista enseña cómo empieza.
 - [x] Al tocarla se activa el modo fiesta: el pentagrama cambia de color, suben corcheas flotando y los colores de acento de toda la página giran despacio por el arcoíris (12 s por vuelta, sin destellos; contraste mínimo 4.9:1 en cualquier tono). Se anuncia "Melodía descubierta" y un botón termina la fiesta.
