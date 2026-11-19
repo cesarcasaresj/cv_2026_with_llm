@@ -5,9 +5,10 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, skip } from 'rxjs';
 import { SiteHeaderComponent } from './presentation/components/organisms/site-header/site-header.component';
 import { I18nService } from './core/i18n/i18n.service';
+import { SectionPortalComponent } from './presentation/portal/section-portal.component';
 
 @Component({
-  imports: [RouterOutlet, SiteHeaderComponent],
+  imports: [RouterOutlet, SiteHeaderComponent, SectionPortalComponent],
   selector: 'app-root',
   styleUrl: './app.css',
   templateUrl: './app.html',

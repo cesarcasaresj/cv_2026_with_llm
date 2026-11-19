@@ -3,6 +3,7 @@ import { httpResource } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 import { SeoService } from '../../../core/seo/seo.service';
 import { I18nService } from '../../../core/i18n/i18n.service';
+import { SectionPortalService } from '../../portal/section-portal.service';
 import { type ListState, stateOf } from '../../../core/http/resource-state';
 import { PORTFOLIO_API, type Profile, type Project, type ProfileUpdate } from '../../../core/portfolio/portfolio.types';
 import { HeroSectionComponent } from '../../components/organisms/hero-section/hero-section.component';
@@ -56,6 +57,13 @@ export class PortfolioPageComponent {
   protected readonly loadedProjects = computed(() => (this.projects.hasValue() ? this.projects.value() : null));
 
   constructor() {
+    // El túnel del tiempo del portal de Experiencia usa los años reales de la trayectoria (HU-21)
+    const portals = inject(SectionPortalService);
+    effect(() => {
+      const experience = this.loadedProfile()?.experience ?? [];
+      portals.years.set([...new Set(experience.map((position) => Number(position.startedOn.slice(0, 4))))].sort());
+    });
+
     effect(() => {
       const profile = this.loadedProfile();
       const seo = this.t().seo;

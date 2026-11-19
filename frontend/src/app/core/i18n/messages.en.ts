@@ -13,14 +13,28 @@ export const en: Messages = {
     changed: (name: string) => `Language: ${name}`,
   },
 
+  theme: {
+    toggle: 'Dark mode',
+    changedToDark: 'Dark mode on',
+    changedToLight: 'Light mode on',
+  },
+
   header: {
-    brandLabel: 'CV 2026, go to the top',
+    brandLabel: 'Cesar Casares, go to the top',
     navLabel: 'Main',
     experience: 'Experience',
     about: 'About me',
     projects: 'Projects',
     updates: 'Latest',
     blog: 'Blog',
+    live: '● LIVE',
+    previews: {
+      experience: 'My career, level by level',
+      about: 'Who I am and what inspires me',
+      projects: 'What I have built',
+      updates: 'What I share lately',
+      blog: 'What I write about',
+    },
   },
 
   hero: {
@@ -30,6 +44,10 @@ export const en: Messages = {
     profilesLabel: 'Profiles',
     loading: 'Loading the profile…',
     error: "We couldn't load the profile. Please try again in a few minutes.",
+  },
+
+  portal: {
+    skip: 'Click or Esc to skip',
   },
 
   melody: {

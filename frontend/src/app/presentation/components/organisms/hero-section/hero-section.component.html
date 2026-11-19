@@ -36,11 +36,11 @@
         }
       }
       @case ('loading') {
-        <h1 id="hero-title" class="hero__title">CV 2026</h1>
+        <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
         <p class="hero__headline">{{ t().hero.loading }}</p>
       }
       @default {
-        <h1 id="hero-title" class="hero__title">CV 2026</h1>
+        <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
         <p class="hero__headline">{{ t().hero.error }}</p>
         <div class="hero__actions">
           <a class="hero__cta hero__cta--primary" routerLink="/blog">{{ t().hero.blogCta }}</a>

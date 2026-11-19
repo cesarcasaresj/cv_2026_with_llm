@@ -1,0 +1,54 @@
+<span class="preview">
+  <span class="preview__stage">
+    @switch (section()) {
+      @case ('experience') {
+        <!-- Los años pasan por un camino y el maletín avanza saltando -->
+        <span class="preview__road"></span>
+        <span class="preview__years">
+          @for (year of years; track year) {
+            <span class="preview__year">{{ year }}</span>
+          }
+        </span>
+        <span class="preview__item preview__item--hop">💼</span>
+      }
+      @case ('about') {
+        <!-- El autor en el centro y lo que le inspira girando alrededor -->
+        <span class="preview__item preview__item--center">🙋</span>
+        <span class="preview__orbit">
+          @for (thing of inspirations; track thing; let index = $index) {
+            <span class="preview__satellite" [style.--k]="index">{{ thing }}</span>
+          }
+        </span>
+      }
+      @case ('projects') {
+        <!-- Ventanas de código que aparecen una tras otra y se escriben solas -->
+        @for (window of windows; track window) {
+          <span class="preview__window" [style.--k]="window">
+            <span class="preview__dots"></span>
+            <span class="preview__line"></span>
+            <span class="preview__line preview__line--short"></span>
+          </span>
+        }
+      }
+      @case ('updates') {
+        <!-- Un móvil con publicaciones que suben como un feed, en directo -->
+        <span class="preview__phone">
+          <span class="preview__feed">
+            @for (post of posts; track post) {
+              <span class="preview__post" [style.--k]="post"></span>
+            }
+          </span>
+        </span>
+        <span class="preview__live">●</span>
+        <span class="preview__item preview__item--side">📡</span>
+      }
+      @case ('blog') {
+        <!-- Un libro abierto y un lápiz que escribe una línea -->
+        <span class="preview__item preview__item--book">📖</span>
+        <span class="preview__ink"></span>
+        <span class="preview__item preview__item--pencil">✏️</span>
+      }
+    }
+  </span>
+  <span class="preview__caption">{{ caption() }}</span>
+</span>

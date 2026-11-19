@@ -17,14 +17,31 @@ export const es = {
     changed: (name: string) => `Idioma: ${name}`,
   },
 
+  /** Modo claro / oscuro (HU-22). */
+  theme: {
+    toggle: 'Modo oscuro',
+    changedToDark: 'Modo oscuro activado',
+    changedToLight: 'Modo claro activado',
+  },
+
   header: {
-    brandLabel: 'CV 2026, ir al inicio',
+    brandLabel: 'Cesar Casares, ir al inicio',
     navLabel: 'Principal',
     experience: 'Experiencia',
     about: 'Sobre mí',
     projects: 'Proyectos',
     updates: 'Actualidad',
     blog: 'Blog',
+    /** Distintivo del efecto de Actualidad en el menú (HU-21). */
+    live: '● EN VIVO',
+    /** Frase de la escena que aparece al pasar el ratón por cada enlace (HU-21). */
+    previews: {
+      experience: 'Mi trayectoria, nivel a nivel',
+      about: 'Quién soy y qué me inspira',
+      projects: 'Lo que he construido',
+      updates: 'Lo último que comparto',
+      blog: 'Lo que escribo',
+    },
   },
 
   hero: {
@@ -34,6 +51,11 @@ export const es = {
     profilesLabel: 'Perfiles',
     loading: 'Cargando el perfil…',
     error: 'No pudimos cargar el perfil. Intenta de nuevo en unos minutos.',
+  },
+
+  /** Portales entre secciones (HU-21). */
+  portal: {
+    skip: 'Clic o Esc para saltar',
   },
 
   /** La nana de las ideas (HU-19): el teclado de notas de la portada. */

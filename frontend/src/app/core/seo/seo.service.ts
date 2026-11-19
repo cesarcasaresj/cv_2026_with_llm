@@ -6,7 +6,8 @@ import { I18nService } from '../i18n/i18n.service';
 
 type ArticleDetail = components['schemas']['ArticleDetail'];
 
-export const SITE_NAME = 'CV 2026';
+/** Nombre del sitio: la marca de la cabecera y el final de cada <title>. */
+export const SITE_NAME = 'Cesar Casares';
 
 /**
  * Origen público del sitio para las URLs absolutas (canonical, og:url, og:image).
@@ -18,7 +19,7 @@ export const SITE_URL = new InjectionToken<string>('SITE_URL', {
 });
 
 export interface PageSeo {
-  /** Título sin el nombre del sitio: el servicio añade " · CV 2026". */
+  /** Título sin el nombre del sitio: el servicio añade " · Cesar Casares" (salvo si el título ya es ese nombre). */
   title: string;
   description: string;
   /** Ruta de la página, por ejemplo "/" o "/articulos/mi-articulo". */
@@ -113,7 +114,7 @@ export class SeoService {
   }
 
   private setCommon(page: PageSeo, type: 'website' | 'article'): void {
-    const fullTitle = `${page.title} · ${SITE_NAME}`;
+    const fullTitle = page.title === SITE_NAME ? SITE_NAME : `${page.title} · ${SITE_NAME}`;
     const url = this.absolute(page.path);
 
     this.title.setTitle(fullTitle);

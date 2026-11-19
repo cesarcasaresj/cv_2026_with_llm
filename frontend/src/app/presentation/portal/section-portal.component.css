@@ -1,0 +1,72 @@
+/* Bloque .portal: capa a pantalla completa, sobre la cabecera, con el cielo nocturno del sitio */
+.portal {
+  position: fixed;
+  /* Debajo de la cabecera: el texto del enlace pulsado sigue animándose a la vista */
+  inset: var(--header-height) 0 0;
+  z-index: 100;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 50% at 50% 40%, rgb(124 92 255 / 0.35), transparent 70%),
+    radial-gradient(40% 40% at 80% 80%, rgb(0 209 178 / 0.2), transparent 70%),
+    var(--color-night);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity 0.4s var(--ease-out),
+    visibility 0s linear 0.4s;
+}
+
+.portal--open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.25s var(--ease-out);
+}
+
+.portal__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* El nombre de la sección entra letra a letra */
+.portal__label {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  margin: 0;
+  translate: -50% 0;
+  color: var(--color-on-night);
+  font: 800 clamp(2.4rem, 9vw, 5.5rem) / 1 var(--font-display);
+  letter-spacing: -0.03em;
+  white-space: nowrap;
+  text-shadow: 0 0 40px rgb(124 92 255 / 0.8);
+}
+
+.portal__letter {
+  display: inline-block;
+  white-space: pre; /* los espacios entre palabras se conservan */
+  animation: portal-letter 0.6s var(--ease-spring) both;
+  animation-delay: calc(0.25s + var(--i) * 0.04s);
+}
+
+@keyframes portal-letter {
+  from {
+    opacity: 0;
+    transform: translateY(0.6em) scale(0.6) rotate(-8deg);
+  }
+}
+
+.portal__hint {
+  position: absolute;
+  right: 1.25rem;
+  bottom: 1rem;
+  margin: 0;
+  color: var(--color-on-night-muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}

@@ -8,25 +8,36 @@
  * Prefijos: l- para maquetación (layout); is- para estados que pone JavaScript.
  */
 
-/* Paleta con contraste AA (4.5:1 o más) sobre su fondo (spec.md, HU-13) */
+/*
+ * Paleta con contraste AA (4.5:1 o más) sobre su fondo (spec.md, HU-13), en claro y en oscuro (HU-22).
+ * light-dark(claro, oscuro) elige según color-scheme: sin elección guardada manda el sistema;
+ * con <html data-theme="light|dark"> (ThemeService), manda la persona. Ratios: claro / oscuro.
+ */
 :root {
-  --color-background: #ffffff;
-  --color-text: #1a1a1a; /* 17.4:1 */
-  --color-text-muted: #4a4a4a; /* 8.9:1 */
-  --color-link: #0b57d0; /* 6.4:1 */
-  --color-border: #767676; /* 4.5:1: los bordes también se distinguen */
-  --color-surface-strong: #eef2f7;
+  color-scheme: light dark;
+  /* 0 en claro, 1 en oscuro: para lo que no es un color (el sol que se hace luna del interruptor) */
+  --is-dark: 0;
+
+  --color-background: light-dark(#ffffff, #0f1426);
+  --color-text: light-dark(#1a1a1a, #e9ecf8); /* 17.4:1 / 15.5:1 */
+  --color-text-muted: light-dark(#4a4a4a, #b6bcd6); /* 8.9:1 / 9.7:1 */
+  --color-link: light-dark(#0b57d0, #8cb4ff); /* 6.4:1 / 8.8:1 */
+  --color-border: light-dark(#767676, #8a91ad); /* 4.5:1 / 5.9:1: los bordes también se distinguen */
+  --color-surface-strong: light-dark(#eef2f7, #1d2540);
+  /* Cabecera translúcida y líneas finas */
+  --color-header: light-dark(rgb(255 255 255 / 0.86), rgb(15 20 38 / 0.82));
+  --color-hairline: light-dark(rgb(11 16 32 / 0.08), rgb(245 247 255 / 0.1));
 
   /* Portada */
   --color-night: #0b1020;
   --color-night-soft: #151b33;
   --color-on-night: #f5f7ff; /* 17.9:1 sobre --color-night */
   --color-on-night-muted: #c3c9e6; /* 11:1 sobre --color-night */
-  --color-accent: #5b3fd6; /* 6.7:1 sobre blanco: válido para texto */
+  --color-accent: light-dark(#5b3fd6, #b9a8ff); /* 6.7:1 / 8.8:1 sobre el fondo: válido para texto */
   --color-accent-bright: #7c5cff; /* solo decoración */
   --color-teal: #00d1b2; /* solo decoración */
   --color-pink: #ff6b9a; /* solo decoración */
-  --color-surface-soft: #f6f5ff;
+  --color-surface-soft: light-dark(#f6f5ff, #171d35);
 
   --font-display: 'Segoe UI Variable Display', 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
   --radius-card: 1rem;
@@ -42,8 +53,23 @@
   }
 }
 
-html {
+/* Tema del sistema, salvo que la persona haya elegido claro */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --is-dark: 1;
+  }
+}
+
+:root[data-theme='light'] {
   color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --is-dark: 1;
+}
+
+html {
   /* Los saltos a #experiencia, #proyectos… no quedan tapados por la cabecera fija */
   scroll-padding-top: calc(var(--header-height) + 1rem);
 }
@@ -174,6 +200,36 @@ html.is-switching-lang::view-transition-new(root) {
 }
 
 /*
+ * Cambio de tema (HU-22, ThemeService.toggle): el nuevo tema se expande en círculo desde el botón.
+ * La cabecera tiene su propio grupo (view-transition-name) y está arriba a la izquierda, como la página:
+ * el mismo círculo, con las mismas coordenadas, la cubre a la vez. Lo antiguo se queda quieto debajo.
+ */
+html.is-switching-theme::view-transition-old(root),
+html.is-switching-theme::view-transition-old(site-header) {
+  animation: none;
+}
+
+/* Sin la mezcla "plus-lighter" por defecto: el borde del círculo no se aclara al superponerse */
+html.is-switching-theme::view-transition-old(*),
+html.is-switching-theme::view-transition-new(*) {
+  mix-blend-mode: normal;
+}
+
+html.is-switching-theme::view-transition-new(root),
+html.is-switching-theme::view-transition-new(site-header) {
+  animation: theme-reveal 0.65s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0 at var(--theme-x, 50%) var(--theme-y, 0));
+  }
+  to {
+    clip-path: circle(var(--theme-r, 150vmax) at var(--theme-x, 50%) var(--theme-y, 0));
+  }
+}
+
+/*
  * "Reducir movimiento" (WCAG 2.3.3): modo suave, no estático.
  * Se quitan los desplazamientos, giros, zooms y desenfoques; quedan los fundidos y el movimiento
  * ambiental lento (escena 3D, brillos). La inclinación con el puntero y el estallido se desactivan en JS.
@@ -200,6 +256,12 @@ html.is-switching-lang::view-transition-new(root) {
   }
 
   ::view-transition-new(root) {
+    animation: fade-in 0.35s ease both;
+  }
+
+  /* El tema nuevo aparece con un fundido, sin círculo que crece */
+  html.is-switching-theme::view-transition-new(root),
+  html.is-switching-theme::view-transition-new(site-header) {
     animation: fade-in 0.35s ease both;
   }
 

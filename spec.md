@@ -245,6 +245,34 @@ Criterios de aceptación:
 - [x] Si el sonido de la HU-19 está activado, cada salto suena con una nota.
 - [x] Con "reducir movimiento" la cámara y la nota cambian de nivel sin viajar ni saltar, y las escenas no se animan. En móvil el mapa queda arriba y las tarjetas pasan por debajo, sin scroll horizontal.
 
+### HU-21: Portales entre secciones y bandera del idioma (visitante)
+**Como** visitante, **quiero** que cada sección se presente con una escena propia al navegar, **para** que recorrer el CV sea una experiencia que se recuerde.
+
+Criterios de aceptación:
+- [x] La cabecera muestra el nombre del autor ("Cesar Casares"), que también cierra el `<title>` de cada página.
+- [x] Cada enlace del menú abre un portal 3D (three.js) de ~1,5 s con el nombre de la sección: Experiencia (túnel del tiempo con los años reales de la trayectoria), Sobre mí (una chispa que estalla y forma `</>`), Proyectos (bloques que caen y forman una ciudad), Actualidad (antena que emite ondas) y Blog (libro que suelta sus páginas).
+- [x] El portal nunca bloquea la navegación: el enlace navega por debajo y el portal se disuelve al terminar. Se salta con un clic o con Esc. Sin WebGL, no se muestra.
+- [x] No se abre con "reducir movimiento" ni con clics que abren otra pestaña (Ctrl, Cmd, Mayús, rueda).
+- [x] three.js se descarga solo la primera vez que se abre un portal (unos 106 kB comprimidos): no pesa en la carga inicial.
+- [x] Al cambiar de idioma aparece una bandera cartoon ondeando: EE. UU. para inglés y España para español. Las banderas se precargan; con "reducir movimiento" solo se funden.
+- [x] El interruptor ES / EN lleva en su píldora la bandera del idioma activo, con las letras perfiladas para leerse sobre cualquier color. Al cambiar, la píldora gira en 3D, salta confeti con los colores de la bandera y aparece un saludo ("¡Hola!" / "Hello!"); la primera vez en la visita, todo más grande.
+- [x] Al pulsar un enlace del menú, su texto cuenta la sección: Experiencia sube como niveles (+XP), Sobre mí nace de letras dispersas (❤), Proyectos cae como bloques ({ }), Actualidad parpadea como una señal (● EN VIVO) y Blog se escribe a máquina. Los lectores de pantalla leen el texto completo una sola vez (las letras sueltas son `aria-hidden`).
+- [x] El portal queda debajo de la cabecera y la cabecera tiene su propio grupo en las transiciones de página e idioma: sus efectos se ven vivos. Ir a un ancla de la misma página no lanza la transición de página.
+- [x] three.js se descarga cuando el puntero o el foco llegan al menú, para que el primer clic no se congele.
+- [x] En escritorio, al pasar el ratón o llegar con el teclado a un enlace, se despliega una tarjeta con una escena animada de su sección y una frase: Experiencia (los años pasan y un maletín avanza), Sobre mí (lo que inspira al autor orbita a su alrededor: música, arte, ideas y código), Proyectos (ventanas de código que se escriben solas), Actualidad (un móvil con un feed en directo) y Blog (un lápiz que escribe). Es decorativa (`aria-hidden`).
+- [x] En móvil las cinco secciones caben siempre, en columnas iguales con su icono encima del texto, sin desplazamiento horizontal.
+- [x] Portal y bandera son decorativos (`aria-hidden`): la sección de destino recibe el foco y el cambio de idioma se anuncia con texto.
+
+### HU-22: Modo oscuro (visitante)
+**Como** visitante, **quiero** ver el sitio en modo oscuro o claro, **para** leer cómodo de noche o con poca luz.
+
+Criterios de aceptación:
+- [x] Sin elección guardada, el sitio sigue el tema del sistema (`prefers-color-scheme`) desde el primer pintado, sin parpadeo.
+- [x] Un botón en la cabecera (sol que se convierte en luna) cambia de tema; la elección se guarda en la cookie `theme` y el servidor la usa para enviar la página ya con ese tema (`<html data-theme>`).
+- [x] El nuevo tema se expande en círculo desde el botón (View Transitions); con "reducir movimiento" es un fundido; sin esa API, el cambio es inmediato.
+- [x] Todos los textos mantienen contraste AA (4.5:1 o más) en los dos temas; los controles nativos y las barras de desplazamiento siguen el tema (`color-scheme`).
+- [x] El botón es nativo, con nombre "Modo oscuro" / "Dark mode" y `aria-pressed`; el cambio se anuncia con texto.
+
 ---
 
 ## 4. Requisitos transversales

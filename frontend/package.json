@@ -27,6 +27,7 @@
     "express": "^5.1.0",
     "http-proxy-middleware": "^4.2.2",
     "rxjs": "~7.8.0",
+    "three": "^0.180.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
@@ -43,6 +44,7 @@
     "@storybook/angular-vite": "^10.6.7",
     "@types/express": "^5.0.1",
     "@types/node": "^22.12.0",
+    "@types/three": "^0.180.0",
     "@vitest/browser-playwright": "latest",
     "@vitest/coverage-v8": "latest",
     "openapi-typescript": "^7.13.0",

@@ -2,14 +2,28 @@
   <div class="site-header__inner">
     <a class="site-header__brand" routerLink="/" fragment="inicio" [attr.aria-label]="t().header.brandLabel">
       <span class="site-header__logo" aria-hidden="true">◆</span>
-      <span class="site-header__brand-text">CV 2026</span>
+      <span class="site-header__brand-text">{{ siteName }}</span>
     </a>
 
-    <nav class="site-header__nav" [attr.aria-label]="t().header.navLabel">
+    <nav
+      class="site-header__nav"
+      [attr.aria-label]="t().header.navLabel"
+      (pointerenter)="portals.warmUp()"
+      (focusin)="portals.warmUp()"
+    >
       <ul class="site-header__list">
         @for (item of items(); track item.fragment) {
           <li class="site-header__item">
-            <a class="site-header__link" [routerLink]="item.path" [fragment]="item.fragment">{{ item.label }}</a>
+            <a
+              class="site-header__link"
+              [routerLink]="item.path"
+              [fragment]="item.fragment"
+              (click)="activate(item.section, $event)"
+            >
+              <span class="site-header__icon" aria-hidden="true">{{ icons[item.section] }}</span>
+              <app-nav-label [text]="item.label" [section]="item.section" [run]="effectRun(item.section)" />
+              <app-nav-preview class="site-header__preview" [section]="item.section" />
+            </a>
           </li>
         }
         <li class="site-header__item">
@@ -18,15 +32,24 @@
             routerLink="/blog"
             routerLinkActive="site-header__link--active"
             ariaCurrentWhenActive="page"
+            (click)="activate('blog', $event)"
           >
-            {{ t().header.blog }}
+            <span class="site-header__icon" aria-hidden="true">{{ icons.blog }}</span>
+            <app-nav-label [text]="t().header.blog" section="blog" [run]="effectRun('blog')" />
+            <app-nav-preview class="site-header__preview" section="blog" />
           </a>
         </li>
       </ul>
     </nav>
 
-    <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="i18n.setLang($event)" />
+    <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="changeLang($event)" />
+    <app-theme-toggle class="site-header__theme" [dark]="theme.theme() === 'dark'" (toggled)="theme.toggle($event)" />
   </div>
   <!-- Barra de progreso de lectura: decorativa, solo en navegadores con animaciones ligadas al scroll -->
   <span class="site-header__progress" aria-hidden="true"></span>
 </header>
+
+<!-- Bandera del idioma elegido (HU-21): decorativa, el cambio ya se anuncia con texto -->
+@if (flagRun()) {
+  <app-language-flag [lang]="flagLang()" [run]="flagRun()" />
+}

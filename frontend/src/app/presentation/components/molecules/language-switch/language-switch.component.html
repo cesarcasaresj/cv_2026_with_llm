@@ -6,7 +6,12 @@
   role="group"
   [attr.aria-label]="i18n.t().language.label"
 >
-  <span class="language-switch__pill" aria-hidden="true"></span>
+  <span class="language-switch__pill" aria-hidden="true">
+    <!-- La bandera del idioma activo; se crea de nuevo al cambiar para girar en 3D -->
+    @for (current of [lang()]; track current) {
+      <span class="language-switch__flag" [style.background-image]="flag()"></span>
+    }
+  </span>
   @for (option of options; track option) {
     <button
       type="button"
@@ -17,5 +22,17 @@
     >
       {{ option.toUpperCase() }}<span class="cdk-visually-hidden"> {{ i18n.t().language.names[option] }}</span>
     </button>
+  }
+
+  <!-- Celebración del cambio: confeti con los colores de la bandera y un saludo (decorativos) -->
+  @if (celebration(); as party) {
+    @for (play of [party.run]; track play) {
+      <span class="language-switch__burst" [class.language-switch__burst--big]="party.big" aria-hidden="true">
+        @for (piece of pieces(); track piece.index) {
+          <span class="language-switch__piece" [style.--p]="piece.index" [style.--c]="piece.color"></span>
+        }
+        <span class="language-switch__bubble" [attr.lang]="party.lang">{{ greeting() }}</span>
+      </span>
+    }
   }
 </div>
