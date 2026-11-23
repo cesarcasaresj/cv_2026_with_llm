@@ -1,0 +1,139 @@
+:host {
+  display: block;
+}
+
+/* Caja de diálogo: fondo de noche, doble borde como en los juegos de rol */
+.dialogue {
+  position: relative;
+  display: grid;
+  gap: 1rem;
+  padding: 2.25rem 1.5rem 1.25rem;
+  border: 3px solid var(--color-on-night);
+  border-radius: 0.9rem;
+  background: var(--color-night);
+  color: var(--color-on-night);
+  box-shadow:
+    0 0 0 4px var(--color-night),
+    0 0 0 7px var(--color-accent),
+    0 30px 60px -30px rgb(11 16 32 / 0.8);
+}
+
+/* Etiqueta con quien habla, montada sobre el borde superior */
+.dialogue__speaker {
+  position: absolute;
+  top: 0;
+  left: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.25rem 0.9rem 0.25rem 0.3rem;
+  border: 3px solid var(--color-on-night);
+  border-radius: 999px;
+  background: #ffd166;
+  color: #1b0b33;
+  transform: translateY(-55%);
+}
+
+.dialogue__portrait {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center 20%;
+  background: linear-gradient(180deg, #6a2ccf, #e0337f);
+}
+
+.dialogue__name {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* El párrafo visible y su "fantasma" ocupan la misma celda */
+.dialogue__text {
+  display: grid;
+}
+
+.dialogue__text > p {
+  grid-area: 1 / 1;
+  margin: 0;
+  font-size: clamp(1.05rem, 2.6vw, 1.2rem);
+  line-height: 1.6;
+}
+
+.dialogue__ghost {
+  visibility: hidden;
+}
+
+/* Cursor que parpadea mientras escribe */
+.dialogue__typed.is-typing::after {
+  content: '▌';
+  margin-left: 0.1em;
+  color: #ffd166;
+  animation: dialogue-caret 0.7s steps(1) infinite;
+}
+
+@keyframes dialogue-caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+.dialogue__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dialogue__page {
+  color: var(--color-on-night-muted);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.dialogue__next {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 2px solid #ffd166;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffd166;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+.dialogue__next:hover {
+  background: #ffd166;
+  color: #1b0b33;
+}
+
+.dialogue__next:focus-visible {
+  outline: 3px solid var(--color-on-night);
+  outline-offset: 3px;
+}
+
+.dialogue__arrow {
+  display: inline-block;
+  animation: dialogue-bob 1s ease-in-out infinite;
+}
+
+@keyframes dialogue-bob {
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dialogue__arrow,
+  .dialogue__typed.is-typing::after {
+    animation: none;
+  }
+}

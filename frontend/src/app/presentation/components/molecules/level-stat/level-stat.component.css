@@ -1,0 +1,196 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.stat {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  height: 100%;
+  padding: 1.5rem 1.25rem 1.25rem;
+  border: 2px solid var(--color-hairline);
+  border-radius: var(--radius-card);
+  background: var(--color-background);
+  box-shadow: 0 20px 40px -28px rgb(91 63 214 / 0.55);
+  transition: transform 0.4s var(--ease-spring);
+}
+
+.stat:hover {
+  transform: translateY(-6px) rotate(-1.2deg);
+}
+
+.stat > p {
+  margin: 0;
+}
+
+/* "LEVEL UP!": salta cuando termina de contar */
+.stat__badge {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  padding: 0.2rem 0.65rem;
+  border: 2px solid #1b0b33;
+  border-radius: 999px;
+  background: #ffd166;
+  color: #1b0b33;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  transform: translateY(-50%) rotate(4deg);
+}
+
+:host(.is-armed:not(.is-done)) .stat__badge {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.3);
+}
+
+:host(.is-done) .stat__badge {
+  animation: stat-level-up 0.7s var(--ease-spring) both;
+}
+
+@keyframes stat-level-up {
+  0% {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.3) rotate(-12deg);
+  }
+
+  60% {
+    opacity: 1;
+    transform: translateY(-80%) scale(1.25) rotate(8deg);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(-50%) scale(1) rotate(4deg);
+  }
+}
+
+/* Destello alrededor de la tarjeta al subir de nivel */
+:host(.is-done) .stat::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  border: 2px solid var(--color-accent);
+  animation: stat-flash 0.9s ease-out both;
+  pointer-events: none;
+}
+
+@keyframes stat-flash {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+}
+
+.stat__value {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+}
+
+.stat__label {
+  color: var(--color-text-muted);
+  font-weight: 600;
+}
+
+.stat__achievement {
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+/* Barra de experiencia */
+.stat__xp {
+  display: block;
+  height: 0.6rem;
+  margin-block: 0.35rem;
+  overflow: hidden;
+  border: 2px solid var(--color-text);
+  border-radius: 999px;
+}
+
+.stat__xp-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #6a2ccf, #e0337f, #ffd166);
+  transform-origin: left;
+}
+
+:host(.is-armed) .stat__xp-fill {
+  transform: scaleX(0);
+}
+
+:host(.is-counting) .stat__xp-fill {
+  transform: scaleX(1);
+  transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Variante open source: calendario de contribuciones que se enciende */
+.stat__grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-block: 0.35rem;
+  max-width: 10rem;
+}
+
+.stat__cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background: var(--color-hairline);
+}
+
+.stat__cell[data-level='1'] {
+  --cell-on: light-dark(#9be9a8, #0e4429);
+}
+
+.stat__cell[data-level='2'] {
+  --cell-on: light-dark(#40c463, #006d32);
+}
+
+.stat__cell[data-level='3'] {
+  --cell-on: light-dark(#216e39, #39d353);
+}
+
+.stat__cell:not([data-level='0']) {
+  background: var(--cell-on);
+}
+
+:host(.is-armed) .stat__cell:not([data-level='0']) {
+  background: var(--color-hairline);
+}
+
+:host(.is-counting) .stat__cell:not([data-level='0']) {
+  background: var(--cell-on);
+  transition: background-color 0.3s ease-out var(--cell-delay, 0ms);
+}
+
+.stat__link {
+  justify-self: start;
+  margin-top: 0.25rem;
+  color: var(--color-link);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat,
+  .stat:hover {
+    transition: none;
+    transform: none;
+  }
+}

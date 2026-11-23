@@ -273,6 +273,16 @@ Criterios de aceptación:
 - [x] Todos los textos mantienen contraste AA (4.5:1 o más) en los dos temas; los controles nativos y las barras de desplazamiento siguen el tema (`color-scheme`).
 - [x] El botón es nativo, con nombre "Modo oscuro" / "Dark mode" y `aria-pressed`; el cambio se anuncia con texto.
 
+### HU-23: "Acerca de mí" como pantalla de personaje (visitante)
+**Como** visitante, **quiero** conocer a la persona con una presentación que se sienta como un videojuego, **para** recordar su perfil y sus logros.
+
+Criterios de aceptación:
+- [x] Una tarjeta de personaje con su retrato (recortado, sin metadatos), su nombre, su rol y una insignia con el nivel (años de experiencia). Está hecha de capas de papel (cielo, sol, ciudad, la persona y el cartel): sola se balancea de lado a lado y, con el ratón encima, se inclina hacia el puntero con paralaje entre capas. La cabeza sobresale del marco.
+- [x] El texto "acerca de mí" aparece en una caja de diálogo: se escribe letra a letra al entrar en pantalla, un párrafo cada vez, con un botón nativo ▼ para avanzar (y volver a empezar al final). Todo el texto está siempre en la página, oculto solo a la vista, para lectores de pantalla y buscadores.
+- [x] Las cifras (años, empresas, proyectos públicos) cuentan desde 0 al entrar en pantalla, llenan una barra de experiencia y muestran "LEVEL UP!" con su logro ("Nivel 10 alcanzado", "6.ª empresa desbloqueada"). Los proyectos públicos llevan la insignia OPEN SOURCE, un calendario de contribuciones que se enciende y el enlace a GitHub.
+- [x] El HTML del servidor trae los valores finales; con "reducir movimiento" no hay balanceo, ni inclinación, ni conteo, ni máquina de escribir. Los lectores de pantalla leen solo el valor final de cada cifra. Nada suena al hacer scroll (HU-19).
+- [x] Sin librerías 3D: CSS (transformaciones, `@property`) y un retrato en AVIF/WebP/PNG de pocos KB.
+
 ---
 
 ## 4. Requisitos transversales

@@ -1,0 +1,36 @@
+<figure class="card">
+  <!-- Fondo del póster: cielo de atardecer, sol con franjas y ciudad. Solo decoración. -->
+  <div class="card__scene" aria-hidden="true">
+    <div class="card__layer card__sky"></div>
+    <div class="card__layer card__sun"></div>
+    <svg class="card__layer card__city card__city--far" viewBox="0 0 400 120" preserveAspectRatio="none">
+      <path
+        d="M0 120V70h22V48h18v22h14V30h26v40h12V56h20v64zm120 0V62h16V40h10v-14h8v14h10v22h14V50h24v70zm110 0V74h18V36h30v38h10V58h22v62zm110 0V44h24v-16h12v16h14v76z"
+      />
+    </svg>
+    <svg class="card__layer card__city card__city--near" viewBox="0 0 400 120" preserveAspectRatio="none">
+      <path
+        d="M0 120V88h30V70h26v18h16V64h34v56zm116 0V80h20V58h28v22h12v40zm96 0V76h26V60h22v16h18V92h24v28zm110 0V72h30V54h20v18h20v48z"
+      />
+    </svg>
+    <div class="card__layer card__glare"></div>
+  </div>
+
+  <picture class="card__hero">
+    <source type="image/avif" [srcset]="image() + '-400.avif 400w, ' + image() + '-800.avif 800w'" sizes="(min-width: 64rem) 22rem, 70vw" />
+    <source type="image/webp" [srcset]="image() + '-400.webp 400w, ' + image() + '-800.webp 800w'" sizes="(min-width: 64rem) 22rem, 70vw" />
+    <img [src]="image() + '-400.png'" [alt]="alt()" width="400" height="365" loading="lazy" decoding="async" />
+  </picture>
+
+  @if (level(); as lvl) {
+    <span class="card__badge" aria-hidden="true">
+      <span class="card__badge-label">{{ levelLabel() }}</span>
+      <span class="card__badge-value">{{ lvl }}</span>
+    </span>
+  }
+
+  <figcaption class="card__plate">
+    <span class="card__name">{{ name() }}</span>
+    <span class="card__role">{{ role() }}</span>
+  </figcaption>
+</figure>

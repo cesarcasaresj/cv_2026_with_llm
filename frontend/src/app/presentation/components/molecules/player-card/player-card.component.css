@@ -1,0 +1,222 @@
+/* Posición del puntero sobre la tarjeta (-0,5 a 0,5). Registradas para poder animarlas y suavizarlas. */
+@property --mx {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --my {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:host {
+  display: block;
+  width: min(100%, 22rem);
+  margin-inline: auto;
+  /* La cabeza sobresale por arriba del marco: hueco para que no tape lo de encima */
+  padding-top: 0.5rem;
+}
+
+.card {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  margin: 0;
+  transform-style: preserve-3d;
+  transform: perspective(1100px) rotateY(calc(var(--mx) * 18deg)) rotateX(calc(var(--my) * -14deg));
+  transition:
+    --mx 0.35s ease-out,
+    --my 0.35s ease-out;
+  /* Sola, se balancea de lado a lado como una lámina de papel colgada */
+  animation: card-sway 7s ease-in-out infinite alternate;
+}
+
+/* Con el ratón encima manda el puntero */
+:host(.is-pointing) .card {
+  animation: none;
+  transition:
+    --mx 0.12s linear,
+    --my 0.12s linear;
+}
+
+@keyframes card-sway {
+  from {
+    --mx: -0.32;
+    --my: 0.06;
+  }
+
+  to {
+    --mx: 0.32;
+    --my: -0.06;
+  }
+}
+
+/* ---------- Escena de fondo: recortada en el marco ---------- */
+
+.card__scene {
+  position: absolute;
+  inset: 20% 0 0;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: 1.25rem;
+  background: #2b1055;
+  box-shadow:
+    0 2px 0 rgb(0 0 0 / 0.08),
+    0 34px 60px -30px rgb(43 16 85 / 0.75);
+}
+
+/* Cada capa se desplaza según su profundidad: las lejanas poco, las cercanas más (paralaje) */
+.card__layer {
+  position: absolute;
+  transform: translate3d(calc(var(--mx) * var(--depth) * -1px), calc(var(--my) * var(--depth) * -1px), 0);
+}
+
+.card__sky {
+  --depth: 8;
+  inset: -12%;
+  background: linear-gradient(180deg, #2b1055 0%, #6a2ccf 28%, #e0337f 58%, #ff8a3d 82%, #ffd166 100%);
+}
+
+/* Sol de atardecer con franjas, como en los pósters retro */
+.card__sun {
+  --depth: 18;
+  left: 18%;
+  top: 14%;
+  width: 64%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #fff3b0 0%, #ffd166 40%, #ff8a3d 100%);
+  mask: linear-gradient(180deg, #000 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83%);
+  opacity: 0.95;
+}
+
+.card__city {
+  left: -10%;
+  bottom: 0;
+  width: 120%;
+}
+
+.card__city--far {
+  --depth: 30;
+  height: 38%;
+  fill: rgb(74 20 120 / 0.8);
+}
+
+.card__city--near {
+  --depth: 46;
+  height: 28%;
+  fill: #1b0b33;
+}
+
+/* Brillo que sigue al puntero */
+.card__glare {
+  --depth: 0;
+  inset: 0;
+  background: radial-gradient(
+    circle at calc(50% + var(--mx) * 120%) calc(40% + var(--my) * 120%),
+    rgb(255 255 255 / 0.32),
+    transparent 55%
+  );
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+}
+
+/* ---------- La persona: sale del marco por arriba ---------- */
+
+.card__hero {
+  position: absolute;
+  left: 4%;
+  width: 92%;
+  bottom: 17%;
+  transform: translateZ(60px) translate(calc(var(--mx) * 14px), calc(var(--my) * 10px));
+  pointer-events: none;
+}
+
+.card__hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Recorte de papel: borde blanco alrededor de la silueta y una sombra que la separa del fondo */
+  filter: drop-shadow(3px 0 0 #fff) drop-shadow(-3px 0 0 #fff) drop-shadow(0 3px 0 #fff) drop-shadow(0 -3px 0 #fff)
+    drop-shadow(0 18px 18px rgb(27 11 51 / 0.45)) saturate(1.12) contrast(1.05);
+  /* El corte de abajo (la camiseta) se desvanece detrás del cartel: sin línea blanca recta */
+  mask: linear-gradient(180deg, #000 80%, transparent 97%);
+}
+
+/* ---------- Insignia de nivel y cartel con el nombre: lo más cercano ---------- */
+
+.card__badge {
+  position: absolute;
+  top: 12%;
+  right: -2%;
+  display: grid;
+  place-items: center;
+  width: 4.6rem;
+  aspect-ratio: 1;
+  border: 3px solid #1b0b33;
+  border-radius: 50%;
+  background: #ffd166;
+  color: #1b0b33;
+  line-height: 1;
+  transform: translateZ(90px) rotate(10deg);
+  box-shadow: 0 10px 18px -8px rgb(27 11 51 / 0.6);
+}
+
+.card__badge-label {
+  align-self: end;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.card__badge-value {
+  align-self: start;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 900;
+}
+
+.card__plate {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 3%;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 1rem 0.8rem;
+  border-radius: 0.4rem;
+  background: #fffdf7;
+  color: #1b0b33;
+  text-align: center;
+  transform: translateZ(80px) rotate(-2deg);
+  box-shadow: 0 14px 24px -14px rgb(27 11 51 / 0.7);
+}
+
+.card__name {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4.5vw, 1.55rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.card__role {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #7a1e9c;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    transform: none;
+    transition: none;
+  }
+
+  .card__layer,
+  .card__hero {
+    transform: none;
+  }
+}
