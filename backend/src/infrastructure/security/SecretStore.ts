@@ -1,7 +1,7 @@
 // De dónde salen los secretos (constitution.md, sección 2).
 // - "vault" (por defecto): HashiCorp Vault, siempre en desarrollo y donde el hosting lo permita.
-// - "env": variables de entorno del panel del hosting. Es la excepción escrita en la constitución para
-//   hostings compartidos (cPanel), donde no se puede correr Vault. Los valores nunca están en el código ni en git.
+// - "env": variables de entorno (en el VPS, el archivo /opt/cv/.env). Es la excepción escrita en la constitución
+//   para producción sin Vault. Los valores nunca están en el código ni en git.
 import { VaultClient } from './VaultClient';
 
 export type Secret = Record<string, string>;

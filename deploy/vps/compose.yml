@@ -1,0 +1,87 @@
+# Producción en el VPS (DEPLOY.md): PostgreSQL + backend + frontend (SSR) + Caddy (HTTPS).
+#
+# Vive en /opt/cv del servidor junto a:
+#   .env      secretos y configuración (solo root lo lee; nunca en git)
+#   release/  backend y frontend ya compilados, los sube GitHub Actions en cada merge a main
+#
+# No se compila nada aquí: los contenedores son imágenes oficiales que ejecutan los archivos de release/.
+# Solo Caddy está abierto a Internet (80 y 443). La base de datos y las apps hablan por la red interna.
+
+name: cv
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_DATABASE}
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    # Solo desde el propio servidor (túnel SSH para cargar contenido); nunca abierto a Internet
+    ports: ["127.0.0.1:5432:5432"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      retries: 20
+
+  api:
+    image: node:22-alpine
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    working_dir: /app
+    command: ["node", "dist/server.mjs"]
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: "8080"
+      DATABASE_HOST: postgres
+      DATABASE_PORT: "5432"
+      RUN_MIGRATIONS_ON_START: "true"
+    volumes:
+      - ./release/api:/app:ro
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/api/v1/posts/count"]
+      interval: 15s
+      start_period: 20s
+      retries: 5
+
+  web:
+    image: node:22-alpine
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+    working_dir: /app
+    command: ["node", "server/server.mjs"]
+    environment:
+      NODE_ENV: production
+      PORT: "4000"
+      BACKEND_URL: http://api:8080
+      PUBLIC_SITE_URL: ${PUBLIC_SITE_URL}
+      ALLOWED_HOSTS: ${ALLOWED_HOSTS}
+    volumes:
+      - ./release/web:/app:ro
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on: [web]
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  postgres-data:
+  caddy-data:
+  caddy-config:

@@ -1,7 +1,7 @@
-# Pruebas en cada pull request y despliegue al hosting (cPanel) en cada cambio en main. Guía: DEPLOY.md
+# Pruebas en cada pull request y despliegue al VPS en cada cambio en main. Guía: DEPLOY.md
 #
-# Se compila aquí, no en el hosting (un plan compartido no tiene memoria para compilar Angular):
-# al servidor solo llegan el backend en un archivo (dist/server.mjs), sus migraciones y el frontend ya compilado.
+# Se compila aquí, no en el servidor: al VPS solo llegan el backend en un archivo (dist/server.mjs), sus migraciones,
+# el frontend ya compilado y la configuración de Docker Compose (deploy/vps). Allí lo ejecutan imágenes oficiales.
 # Ninguna credencial está en este archivo: todas son Secrets del repositorio (Settings → Secrets and variables).
 
 name: Pruebas y despliegue
@@ -53,14 +53,13 @@ jobs:
           npm run generate:api
           npm run build
 
-      - name: Preparar los paquetes para el hosting
+      - name: Preparar el paquete para el servidor
         run: |
           mkdir -p release/api/dist release/api/db release/web
           cp backend/dist/server.mjs backend/dist/server.mjs.map release/api/dist/
           cp -r backend/db/init release/api/db/init
-          cp backend/deploy/app.cjs release/api/
           cp -r frontend/dist/frontend/server frontend/dist/frontend/browser release/web/
-          cp frontend/deploy/app.cjs release/web/
+          cp deploy/vps/compose.yml deploy/vps/Caddyfile deploy/vps/backup.sh release/
 
       - uses: actions/upload-artifact@v4
         with:
@@ -69,7 +68,7 @@ jobs:
           retention-days: 7
 
   deploy:
-    name: Despliegue en el hosting
+    name: Despliegue en el VPS
     needs: build
     if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
@@ -78,8 +77,7 @@ jobs:
       SSH_HOST: ${{ secrets.SSH_HOST }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       SSH_USER: ${{ secrets.SSH_USER }}
-      API_DIR: ${{ secrets.API_DIR }}
-      WEB_DIR: ${{ secrets.WEB_DIR }}
+      DEPLOY_DIR: /opt/cv
       SITE_URL: ${{ vars.SITE_URL }}
     steps:
       - uses: actions/download-artifact@v4
@@ -98,19 +96,19 @@ jobs:
           # Huella del servidor guardada de antemano: si cambia, la conexión se rechaza (evita suplantaciones)
           printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
 
-      - name: Subir backend y frontend
+      - name: Subir backend, frontend y configuración
         run: |
           SSH="ssh -i ~/.ssh/deploy_key -p $SSH_PORT"
-          # --delete quita archivos viejos; se respetan los que crea cPanel (node_modules, tmp, .htaccess, logs)
-          EXCLUDES=(--exclude node_modules --exclude tmp --exclude .htaccess --exclude '*.log')
-          rsync -az --delete "${EXCLUDES[@]}" -e "$SSH" release/api/ "$SSH_USER@$SSH_HOST:$API_DIR/"
-          rsync -az --delete "${EXCLUDES[@]}" -e "$SSH" release/web/ "$SSH_USER@$SSH_HOST:$WEB_DIR/"
+          # --delete quita los archivos de la versión anterior
+          rsync -az --delete -e "$SSH" release/api/ "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/release/api/"
+          rsync -az --delete -e "$SSH" release/web/ "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/release/web/"
+          rsync -az -e "$SSH" release/compose.yml release/Caddyfile release/backup.sh "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/"
 
       - name: Reiniciar las aplicaciones
         run: |
-          # Passenger reinicia una app cuando cambia tmp/restart.txt; el backend aplica las migraciones al arrancar
+          # up -d aplica los cambios de compose.yml; restart carga los archivos nuevos (el backend migra al arrancar)
           ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
-            "mkdir -p '$API_DIR/tmp' '$WEB_DIR/tmp' && touch '$API_DIR/tmp/restart.txt' '$WEB_DIR/tmp/restart.txt'"
+            "cd '$DEPLOY_DIR' && chmod +x backup.sh && docker compose up -d --remove-orphans && docker compose restart api && docker compose restart web && docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile"
 
       - name: Comprobar que el sitio responde
         if: vars.SITE_URL != ''

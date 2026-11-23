@@ -44,7 +44,7 @@
 - Publicación en cesarcasares.com (decisión N, `DEPLOY.md`):
   - **Secretos:** `SecretStore` con dos implementaciones, Vault (desarrollo) y variables de entorno (`SECRETS_PROVIDER=env`, hosting compartido). Excepción escrita en la constitución.
   - **Backend:** `npm run build` genera `dist/server.mjs` con todas las dependencias (esbuild); migraciones con `schema_migrations` al arrancar o con `npm run db:migrate`.
-  - **Despliegue:** `.github/workflows/deploy.yml` prueba y compila en cada PR; en `main` sube por SSH a las apps de cPanel (`app.cjs` para Passenger) y las reinicia. Las portadas se generan en CI (`npm run build:images`).
+  - **Despliegue:** `.github/workflows/deploy.yml` prueba y compila en cada PR; en `main` sube por SSH al VPS (`/opt/cv`) y reinicia los contenedores de Docker Compose (`deploy/vps/`). Antes, hasta el 2026-11-22, publicaba en las apps de cPanel de Namecheap. Las portadas se generan en CI (`npm run build:images`).
   - **Verificado:** 119 pruebas del backend; el bundle aplica las 8 migraciones sobre una base vacía con secretos por variables de entorno; el paquete `release/` arranca con `node app.cjs` como en Passenger (portada SSR, proxy a la API, imágenes y blog).
 - Portales y bandera del idioma, HU-21 (rama `feat/portales-y-banderas`):
   - **Cabecera:** el nombre del autor sustituye a "CV 2026" (`SITE_NAME`, también en los títulos).
