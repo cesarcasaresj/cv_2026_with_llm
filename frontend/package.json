@@ -6,11 +6,12 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
+    "test": "vitest run --project unit",
     "generate:api": "openapi-typescript ../contracts/openapi.yaml -o src/app/core/api/generated.ts",
     "storybook": "ng run frontend:storybook",
     "build-storybook": "ng run frontend:build-storybook",
-    "serve:ssr:frontend": "node dist/frontend/server/server.mjs"
+    "serve:ssr:frontend": "node dist/frontend/server/server.mjs",
+    "test:stories": "vitest run --project storybook"
   },
   "private": true,
   "packageManager": "npm@11.16.0",
@@ -41,6 +42,7 @@
     "@angular/compiler-cli": "^22.2.0",
     "@storybook/addon-a11y": "^10.6.7",
     "@storybook/addon-docs": "^10.6.7",
+    "@storybook/addon-vitest": "^10.6.7",
     "@storybook/angular-vite": "^10.6.7",
     "@types/express": "^5.0.1",
     "@types/node": "^22.12.0",

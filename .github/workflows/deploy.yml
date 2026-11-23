@@ -46,11 +46,15 @@ jobs:
           npm run build
           npm run build:images
 
-      - name: Frontend · contrato y compilación
+      - name: Frontend · contrato, pruebas, historias y compilación
         working-directory: frontend
         run: |
           npm ci
           npm run generate:api
+          npm test
+          # Cada historia de Storybook se monta en Chromium: si un componente falla al renderizar, no se publica
+          npx playwright install --with-deps chromium
+          npm run test:stories
           npm run build
 
       - name: Preparar el paquete para el servidor

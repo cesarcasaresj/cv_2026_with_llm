@@ -9,7 +9,17 @@ const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(file
 // More info at: https://storybook.js.org/docs/next/writing-tests/integrations/vitest-addon
 export default defineConfig({
   test: {
-    projects: [{
+    projects: [
+    // Pruebas unitarias (*.spec.ts): funciones puras, en Node, sin navegador. npm test
+    {
+      test: {
+        name: 'unit',
+        environment: 'node',
+        include: ['src/**/*.spec.ts'],
+      },
+    },
+    // Historias de Storybook como pruebas, en Chromium. npm run test:stories
+    {
       extends: true,
       plugins: [// Forwards Angular build options (styles, assets, zoneless, …) into standalone vitest runs
       storybookAngularVitest({}),
