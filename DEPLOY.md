@@ -3,10 +3,13 @@
 Producción corre en un VPS propio (Contabo Cloud VPS 4, Ubuntu 24.04) con Docker Compose.
 Se monta una vez; después, cada cambio que llega a `main` se publica solo (GitHub Actions).
 
+**La IP del servidor no se escribe en este repositorio (es público):** está en el panel de Contabo y en el secret `SSH_HOST`.
+Con el proxy de Cloudflare activado, los visitantes solo ven IPs de Cloudflare; mantenerla fuera del repositorio ayuda a que siga oculta.
+
 ## Cómo queda montado
 
 ```
-Visitante → Cloudflare (DNS, caché, protección) → VPS 169.58.87.83
+Visitante → Cloudflare (DNS, caché, protección) → VPS <IP-del-VPS>
   caddy     HTTPS automático (Let's Encrypt), www → dominio principal       puertos 80 y 443
   web       frontend con SSR (node:22), reenvía /api, /sitemap.xml y /robots.txt al backend
   api       backend (node:22), aplica las migraciones al arrancar
@@ -56,6 +59,18 @@ Hecho el 2026-11-22. Para repetirlo en otro VPS (plan de mudanza), como root:
 
 7. **Copia diaria de la base de datos:** `/etc/cron.d/cv-backup` ejecuta `/opt/cv/backup.sh` a las 3:30.
    Guarda las últimas 14 copias en `/var/backups/cv`.
+8. **Copia fuera del servidor (Backblaze B2, gratis hasta 10 GB):** `rclone` instalado y `/etc/cv-backup.env`
+   (root, permisos 600, nunca en git) con:
+
+   ```
+   BACKUP_REMOTE=b2:<nombre-del-bucket>/cv
+   RCLONE_CONFIG_B2_TYPE=b2
+   RCLONE_CONFIG_B2_ACCOUNT=<keyID de la clave de aplicación>
+   RCLONE_CONFIG_B2_KEY=<applicationKey>
+   ```
+
+   Con ese archivo, `backup.sh` sube cada copia al bucket (privado) y borra allí las de más de 30 días.
+   La clave de aplicación se crea en Backblaze solo para ese bucket, con permiso de lectura y escritura.
 
 ## 2. DNS (Cloudflare)
 
@@ -63,9 +78,13 @@ El dominio está registrado en Namecheap, pero su DNS lo gestiona Cloudflare (pl
 
 1. Namecheap → Domain List → Manage → **Nameservers: Custom DNS** con los dos de Cloudflare.
 2. Cloudflare → DNS → Records:
-   - `A  cesarcasares.com  169.58.87.83`
-   - `A  www  169.58.87.83`
+   - `A  cesarcasares.com  <IP-del-VPS>`
+   - `A  www  <IP-del-VPS>`
 3. Cloudflare → SSL/TLS → modo **Full (strict)**: Caddy ya tiene un certificado válido en el servidor.
+4. Después, los dos registros en **Proxied** (nube naranja). **No** actives "Always Use HTTPS": Caddy ya redirige a HTTPS,
+   y esa opción impediría renovar el certificado de Let's Encrypt (la comprobación llega por HTTP).
+5. **Aviso si se cae:** UptimeRobot (gratis) vigila `https://cesarcasares.com/` y `/api/v1/posts/count` cada 5 minutos
+   y avisa por correo.
 
 ## 3. Secrets en GitHub
 
@@ -73,11 +92,11 @@ Repositorio → Settings → Secrets and variables → Actions:
 
 | Secret | Valor |
 |---|---|
-| `SSH_HOST` | `169.58.87.83` |
+| `SSH_HOST` | `<IP-del-VPS>` |
 | `SSH_PORT` | `22` |
 | `SSH_USER` | `deploy` |
 | `SSH_PRIVATE_KEY` | contenido de `cesarcasares_deploy` (la llave **privada**) |
-| `SSH_KNOWN_HOSTS` | salida de `ssh-keyscan -t ed25519 169.58.87.83` |
+| `SSH_KNOWN_HOSTS` | salida de `ssh-keyscan -t ed25519 <IP-del-VPS>` |
 
 Variable `SITE_URL` = `https://cesarcasares.com`. Los secretos `API_DIR` y `WEB_DIR` del hosting anterior ya no se usan.
 
@@ -88,7 +107,7 @@ La base no está abierta a Internet: los scripts se ejecutan desde tu PC por un 
 1. Túnel (déjalo abierto en una terminal):
 
    ```powershell
-   ssh -i "$HOME\.ssh\cesarcasares_deploy" -N -L 6543:127.0.0.1:5432 deploy@169.58.87.83
+   ssh -i "$HOME\.ssh\cesarcasares_deploy" -N -L 6543:127.0.0.1:5432 deploy@<IP-del-VPS>
    ```
 
 2. `.env.production.local` en la raíz (git lo ignora; **nunca** lo subas) con `SECRETS_PROVIDER=env`,
@@ -113,7 +132,7 @@ Para cambiar tus datos, edita `content/perfil/perfil.json` o los artículos y re
 
 ## Si algo falla
 
-- **Estado y errores:** `ssh deploy@169.58.87.83`, luego `cd /opt/cv && docker compose ps` y `docker compose logs api --tail 50`
+- **Estado y errores:** `ssh deploy@<IP-del-VPS>`, luego `cd /opt/cv && docker compose ps` y `docker compose logs api --tail 50`
   (o `web`, `caddy`). Los mensajes nunca muestran valores de secretos.
 - **Reiniciar:** `docker compose restart api web`.
 - **Restaurar una copia:** como root,
