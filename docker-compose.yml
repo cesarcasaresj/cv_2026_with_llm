@@ -4,7 +4,7 @@
 services:
   postgres:
     image: postgres:17
-    ports: ["5432:5432"]
+    ports: ["127.0.0.1:5432:5432"] # solo este PC, nunca la red (Wi-Fi público)
     environment:
       POSTGRES_DB: cv_app
       POSTGRES_USER: ${POSTGRES_USER}
@@ -19,7 +19,7 @@ services:
 
   vault:
     image: hashicorp/vault:1.18
-    ports: ["8200:8200"]
+    ports: ["127.0.0.1:8200:8200"] # solo este PC, nunca la red
     cap_add: [IPC_LOCK]
     environment:
       VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_DEV_TOKEN}
