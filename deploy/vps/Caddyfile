@@ -1,0 +1,12 @@
+# Caddy: HTTPS automático (Let's Encrypt) y reenvío al frontend, que a su vez reenvía /api al backend.
+# SITE_DOMAIN viene de /opt/cv/.env (por ejemplo, cesarcasares.com).
+
+{$SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy web:4000
+}
+
+# www → dominio principal
+www.{$SITE_DOMAIN} {
+	redir https://{$SITE_DOMAIN}{uri} permanent
+}
