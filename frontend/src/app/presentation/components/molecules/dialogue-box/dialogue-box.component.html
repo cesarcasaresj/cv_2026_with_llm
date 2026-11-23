@@ -1,0 +1,31 @@
+<!-- El texto completo, para lectores de pantalla y buscadores -->
+<div class="cdk-visually-hidden">
+  @for (paragraph of paragraphs(); track $index) {
+    <p>{{ paragraph }}</p>
+  }
+</div>
+
+<div class="dialogue">
+  <div class="dialogue__speaker" aria-hidden="true">
+    @if (portrait(); as src) {
+      <img class="dialogue__portrait" [src]="src" alt="" width="48" height="48" loading="lazy" decoding="async" />
+    }
+    <span class="dialogue__name">{{ speaker() }}</span>
+  </div>
+
+  <!-- El párrafo entero (invisible) reserva el alto: la caja no salta mientras se escribe -->
+  <div class="dialogue__text" aria-hidden="true">
+    <p class="dialogue__ghost">{{ current() }}</p>
+    <p class="dialogue__typed" [class.is-typing]="typing()">{{ shown() }}</p>
+  </div>
+
+  <div class="dialogue__footer">
+    <span class="dialogue__page" aria-hidden="true">{{ page() + 1 }} / {{ paragraphs().length }}</span>
+    @if (paragraphs().length > 1) {
+      <button type="button" class="dialogue__next" (click)="advance()">
+        {{ last() && !typing() ? restartLabel() : nextLabel() }}
+        <span class="dialogue__arrow" aria-hidden="true">{{ last() && !typing() ? '↺' : '▼' }}</span>
+      </button>
+    }
+  </div>
+</div>

@@ -1,0 +1,29 @@
+<div class="stat">
+  <span class="stat__badge" aria-hidden="true">{{ badge() }}</span>
+
+  <p class="stat__value">
+    <span aria-hidden="true">{{ display() }}</span>
+    <span class="cdk-visually-hidden">{{ value() }}{{ suffix() }}</span>
+  </p>
+  <p class="stat__label">{{ label() }}</p>
+
+  @if (variant() === 'open-source') {
+    <span class="stat__grid" aria-hidden="true">
+      @for (level of contributions; track $index) {
+        <span class="stat__cell" [attr.data-level]="level" [style.--cell-delay.ms]="$index * 28"></span>
+      }
+    </span>
+  } @else {
+    <span class="stat__xp" aria-hidden="true"><span class="stat__xp-fill"></span></span>
+  }
+
+  @if (achievement(); as text) {
+    <p class="stat__achievement">{{ text }}</p>
+  }
+
+  @if (href(); as url) {
+    <a class="stat__link" [href]="url" rel="noopener">
+      {{ linkLabel() }}<span aria-hidden="true"> ↗</span>
+    </a>
+  }
+</div>

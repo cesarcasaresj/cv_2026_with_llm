@@ -13,25 +13,44 @@
       @default {
         @let current = profile()!;
         <div class="about__layout">
-          <div class="about__text">
-            @for (paragraph of current.about; track $index) {
-              <p class="about__paragraph" [class.about__paragraph--lead]="$first" appReveal [revealDelay]="$index * 100">
-                {{ paragraph }}
-              </p>
-            }
-          </div>
+          <app-player-card
+            class="about__card"
+            [name]="current.name"
+            [role]="role()"
+            [level]="level()"
+            [levelLabel]="t().about.levelShort"
+            [alt]="t().about.portraitAlt(current.name)"
+            [image]="portrait"
+          />
 
-          @if (stats().length) {
-            <dl class="about__stats">
-              @for (stat of stats(); track stat.label) {
-                <div class="about__stat" appReveal [revealDelay]="$index * 120">
-                  <dt class="about__stat-label">{{ stat.label }}</dt>
-                  <dd class="about__stat-value">{{ stat.value }}</dd>
-                </div>
-              }
-            </dl>
-          }
+          <app-dialogue-box
+            class="about__dialogue"
+            [speaker]="current.name.split(' ')[0]"
+            [paragraphs]="current.about"
+            [portrait]="portrait + '-400.webp'"
+            [nextLabel]="t().about.dialogueNext"
+            [restartLabel]="t().about.dialogueRestart"
+          />
         </div>
+
+        @if (stats().length) {
+          <ul class="about__stats" role="list">
+            @for (stat of stats(); track stat.variant + stat.label) {
+              <li>
+                <app-level-stat
+                  [value]="stat.value"
+                  [suffix]="stat.suffix"
+                  [label]="stat.label"
+                  [achievement]="stat.achievement"
+                  [badge]="stat.badge"
+                  [variant]="stat.variant"
+                  [href]="stat.href"
+                  [linkLabel]="t().about.openSourceLink"
+                />
+              </li>
+            }
+          </ul>
+        }
       }
     }
   </div>

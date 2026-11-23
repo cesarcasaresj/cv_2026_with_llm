@@ -98,6 +98,16 @@ export const en: Messages = {
     years: (n: number): string => (n === 1 ? 'year of experience' : 'years of experience'),
     companies: (n: number): string => (n === 1 ? 'company' : 'companies'),
     projects: (n: number): string => (n === 1 ? 'public project' : 'public projects'),
+    portraitAlt: (name: string): string => `Portrait of ${name}`,
+    levelShort: 'LVL',
+    levelUp: 'LEVEL UP!',
+    yearsAchievement: (n: number): string => `Level ${n} reached`,
+    companiesAchievement: (n: number): string => `Company #${n} unlocked`,
+    openSource: 'OPEN SOURCE',
+    openSourceAchievement: 'Open code for everyone',
+    openSourceLink: 'See on GitHub',
+    dialogueNext: 'Next',
+    dialogueRestart: 'Start over',
   },
 
   projects: {

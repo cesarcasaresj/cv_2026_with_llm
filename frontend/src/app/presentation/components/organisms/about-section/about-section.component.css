@@ -29,67 +29,20 @@
   position: relative;
 }
 
+/* Tarjeta y diálogo: uno debajo del otro en móvil, lado a lado en pantallas anchas */
 .about__layout {
   display: grid;
-  gap: 2.5rem;
+  gap: 3rem;
+  align-items: center;
 }
 
-.about__text {
-  display: grid;
-  gap: 1rem;
-  max-width: 65ch;
-}
-
-.about__paragraph {
-  margin: 0;
-  font-size: 1.1rem;
-}
-
-.about__paragraph--lead {
-  font-family: var(--font-display);
-  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
-  font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.01em;
-}
-
-/* Cifras: el valor grande arriba aunque en el HTML vaya después de su etiqueta (dt/dd) */
 .about__stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-  gap: 1rem;
-  margin: 0;
-  align-content: start;
-}
-
-.about__stat {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.25rem;
-  padding: 1.25rem;
-  border-radius: var(--radius-card);
-  background: var(--color-background);
-  box-shadow: 0 20px 40px -28px rgb(91 63 214 / 0.55);
-  transition: transform 0.4s var(--ease-spring);
-}
-
-.about__stat:hover {
-  transform: translateY(-6px) rotate(-1.5deg);
-}
-
-.about__stat-value {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 2.6rem;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.04em;
-  color: var(--color-accent);
-}
-
-.about__stat-label {
-  color: var(--color-text-muted);
-  font-weight: 600;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.75rem 1.25rem;
+  margin: 3.5rem 0 0;
+  padding: 0;
+  list-style: none;
 }
 
 @media (min-width: 64rem) {
@@ -98,11 +51,7 @@
   }
 
   .about__layout {
-    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 4rem;
-  }
-
-  .about__stats {
-    grid-template-columns: 1fr;
   }
 }

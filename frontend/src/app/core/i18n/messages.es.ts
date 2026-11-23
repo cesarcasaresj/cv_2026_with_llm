@@ -108,6 +108,17 @@ export const es = {
     years: (n: number): string => (n === 1 ? 'año de experiencia' : 'años de experiencia'),
     companies: (n: number): string => (n === 1 ? 'empresa' : 'empresas'),
     projects: (n: number): string => (n === 1 ? 'proyecto público' : 'proyectos públicos'),
+    /** Tarjeta de personaje, diálogo y logros (HU-23). */
+    portraitAlt: (name: string): string => `Retrato de ${name}`,
+    levelShort: 'NIV',
+    levelUp: 'LEVEL UP!',
+    yearsAchievement: (n: number): string => `Nivel ${n} alcanzado`,
+    companiesAchievement: (n: number): string => `${n}.ª empresa desbloqueada`,
+    openSource: 'OPEN SOURCE',
+    openSourceAchievement: 'Código abierto para todos',
+    openSourceLink: 'Ver en GitHub',
+    dialogueNext: 'Siguiente',
+    dialogueRestart: 'Volver a empezar',
   },
 
   projects: {
