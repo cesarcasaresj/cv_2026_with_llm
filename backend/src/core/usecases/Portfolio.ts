@@ -43,14 +43,20 @@ export class GetProfile {
 
 export const MAX_PROJECTS = 9;
 
-/** Proyectos propios y activos: sin forks ni archivados, del último actualizado al más antiguo (HU-16). */
+/** Topic de GitHub con el que el autor marca sus proyectos destacados. */
+export const FEATURED_TOPIC = 'portfolio';
+
+/**
+ * Proyectos propios y activos: sin forks ni archivados, del último actualizado al más antiguo (HU-16).
+ * Si alguno lleva el topic "portfolio", solo se muestran esos (los destacados); si ninguno lo lleva, todos.
+ */
 export class ListProjects {
   constructor(private readonly source: ProjectSource) {}
 
   async execute(): Promise<Project[]> {
-    const projects = await this.source.listPublicProjects();
-    return projects
-      .filter((project) => !project.fork && !project.archived)
+    const own = (await this.source.listPublicProjects()).filter((project) => !project.fork && !project.archived);
+    const featured = own.filter((project) => project.topics.includes(FEATURED_TOPIC));
+    return (featured.length > 0 ? featured : own)
       .sort((a, b) => b.pushedAt.getTime() - a.pushedAt.getTime())
       .slice(0, MAX_PROJECTS);
   }

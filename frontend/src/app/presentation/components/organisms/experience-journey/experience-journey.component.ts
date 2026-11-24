@@ -34,7 +34,7 @@ interface Level {
   x: number;
   y: number;
   year: string;
-  /** Años de experiencia acumulados al empezar este puesto (contados desde el primero). */
+  /** Años de experiencia acumulados al terminar este puesto (el actual, hasta hoy), contados desde el primero. */
   xpYears: number;
 }
 
@@ -81,7 +81,7 @@ export class ExperienceJourneyComponent {
       x: index * STEP_X,
       y: (index % 2) * STEP_Y,
       year: position.startedOn.slice(0, 4),
-      xpYears: Math.floor(monthsBetween(oldest, position.startedOn) / 12),
+      xpYears: Math.floor(monthsBetween(oldest, position.finishedOn ?? currentYearMonth()) / 12),
     }));
   });
 
@@ -116,14 +116,14 @@ export class ExperienceJourneyComponent {
     return last > 0 ? this.active() / last : 0;
   });
 
-  /** Barra de XP: experiencia acumulada al empezar el nivel, sobre el total hasta hoy. */
+  /** Barra de XP: experiencia acumulada al terminar el nivel (el actual: hasta hoy, barra llena), sobre el total. */
   protected readonly xpPercent = computed(() => {
     const levels = this.levels();
     const level = this.current();
     if (!level) return 0;
     const oldest = levels[levels.length - 1].position.startedOn;
     const total = Math.max(monthsBetween(oldest, currentYearMonth()), 1);
-    return Math.round((monthsBetween(oldest, level.position.startedOn) / total) * 100);
+    return Math.round((monthsBetween(oldest, level.position.finishedOn ?? currentYearMonth()) / total) * 100);
   });
 
   constructor() {

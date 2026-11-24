@@ -39,6 +39,7 @@ export const en: Messages = {
 
   hero: {
     greeting: "Hi, I'm",
+    tagline: 'The lullaby of ideas in web development',
     projectsCta: 'See projects',
     blogCta: 'Read the blog',
     profilesLabel: 'Profiles',
@@ -99,9 +100,9 @@ export const en: Messages = {
     companies: (n: number): string => (n === 1 ? 'company' : 'companies'),
     projects: (n: number): string => (n === 1 ? 'public project' : 'public projects'),
     portraitAlt: (name: string): string => `Portrait of ${name}`,
-    levelShort: 'LVL',
+    xpShort: 'XP',
     levelUp: 'LEVEL UP!',
-    yearsAchievement: (n: number): string => `Level ${n} reached`,
+    yearsAchievement: (since: number): string => `In the game since ${since}`,
     companiesAchievement: (n: number): string => `Company #${n} unlocked`,
     openSource: 'OPEN SOURCE',
     openSourceAchievement: 'Open code for everyone',

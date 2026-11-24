@@ -134,6 +134,21 @@ describe('ListProjects', () => {
     expect(result.map((p) => p.name)).toEqual(['nuevo', 'viejo']);
   });
 
+  it('con algún proyecto marcado con el topic "portfolio", muestra solo los marcados', async () => {
+    const source = {
+      listPublicProjects: async () => [
+        project({ name: 'curso', pushedAt: new Date('2026-06-01') }),
+        project({ name: 'destacado-viejo', topics: ['angular', 'portfolio'], pushedAt: new Date('2025-01-01') }),
+        project({ name: 'destacado-fork', topics: ['portfolio'], fork: true }),
+        project({ name: 'destacado-nuevo', topics: ['portfolio'], pushedAt: new Date('2026-01-01') }),
+      ],
+    };
+
+    const result = await new ListProjects(source).execute();
+
+    expect(result.map((p) => p.name)).toEqual(['destacado-nuevo', 'destacado-viejo']);
+  });
+
   it(`muestra como máximo ${MAX_PROJECTS}`, async () => {
     const many = Array.from({ length: 20 }, (_, i) => project({ name: `r${i}` }));
     const result = await new ListProjects({ listPublicProjects: async () => many }).execute();

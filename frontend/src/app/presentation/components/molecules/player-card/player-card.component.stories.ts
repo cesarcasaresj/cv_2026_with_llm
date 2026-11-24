@@ -17,7 +17,7 @@ const meta: Meta<PlayerCardComponent> = {
   args: {
     name: 'Persona de Ejemplo',
     role: 'Arquitecta de software',
-    levelLabel: 'NIV',
+    levelLabel: 'XP',
     alt: 'Retrato de Persona de Ejemplo',
     image: '/images/perfil/cesar',
   },
@@ -26,6 +26,6 @@ export default meta;
 
 type Story = StoryObj<PlayerCardComponent>;
 
-export const ConNivel: Story = { args: { level: 10 } };
+export const ConExperiencia: Story = { args: { level: '10+' } };
 
 export const SinNivel: Story = { args: { level: null } };

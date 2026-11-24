@@ -22,7 +22,7 @@ export default meta;
 type Story = StoryObj<LevelStatComponent>;
 
 export const Anios: Story = {
-  args: { value: 10, suffix: '+', label: 'años de experiencia', achievement: 'Nivel 10 alcanzado' },
+  args: { value: 10, suffix: '+', label: 'años de experiencia', achievement: 'En el juego desde 2016' },
 };
 
 export const Empresas: Story = {

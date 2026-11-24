@@ -46,6 +46,8 @@ export const es = {
 
   hero: {
     greeting: 'Hola, soy',
+    /** Lema personal, bajo el titular (HU-14). */
+    tagline: 'El arrullo de las ideas en el desarrollo web',
     projectsCta: 'Ver proyectos',
     blogCta: 'Leer el blog',
     profilesLabel: 'Perfiles',
@@ -110,9 +112,9 @@ export const es = {
     projects: (n: number): string => (n === 1 ? 'proyecto público' : 'proyectos públicos'),
     /** Tarjeta de personaje, diálogo y logros (HU-23). */
     portraitAlt: (name: string): string => `Retrato de ${name}`,
-    levelShort: 'NIV',
+    xpShort: 'XP',
     levelUp: 'LEVEL UP!',
-    yearsAchievement: (n: number): string => `Nivel ${n} alcanzado`,
+    yearsAchievement: (since: number): string => `En el juego desde ${since}`,
     companiesAchievement: (n: number): string => `${n}.ª empresa desbloqueada`,
     openSource: 'OPEN SOURCE',
     openSourceAchievement: 'Código abierto para todos',

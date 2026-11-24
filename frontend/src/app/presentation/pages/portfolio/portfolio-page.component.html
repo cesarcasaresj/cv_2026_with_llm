@@ -6,11 +6,13 @@
 
 <app-project-grid [projects]="loadedProjects()" [state]="projectsState()" [githubUrl]="loadedProfile()?.links?.github ?? null" />
 
-<app-update-feed
-  [updates]="updates.hasValue() ? updates.value() : null"
-  [state]="updatesState()"
-  [linkedinUrl]="loadedProfile()?.links?.linkedin ?? null"
-/>
+@if (!hasNoUpdates()) {
+  <app-update-feed
+    [updates]="updates.hasValue() ? updates.value() : null"
+    [state]="updatesState()"
+    [linkedinUrl]="loadedProfile()?.links?.linkedin ?? null"
+  />
+}
 
 <!-- Puente al blog: también es una sección navegable, con su propio encabezado -->
 <section class="blog-teaser" aria-labelledby="blog-teaser-title">

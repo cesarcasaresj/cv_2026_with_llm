@@ -28,6 +28,8 @@ export class SectionPortalService {
   readonly request = signal<PortalRequest | null>(null);
   /** Años de la experiencia, del más antiguo al más reciente, para el túnel del tiempo. */
   readonly years = signal<number[]>([]);
+  /** Secciones sin contenido: no se muestran ni en la página ni en el menú (una sección vacía resta). */
+  readonly hidden = signal<ReadonlySet<PortalSection>>(new Set());
 
   /** Llamar en el (click) del enlace: si el clic es una navegación normal, abre el portal de esa sección. */
   play(section: PortalSection, event?: MouseEvent): void {

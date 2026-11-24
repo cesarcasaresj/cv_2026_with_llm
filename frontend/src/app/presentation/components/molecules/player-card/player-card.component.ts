@@ -24,8 +24,8 @@ export class PlayerCardComponent {
   readonly name = input.required<string>();
   /** Clase del personaje: el rol principal, por ejemplo "Frontend Engineer". */
   readonly role = input.required<string>();
-  /** Nivel que muestra la insignia (años de experiencia). */
-  readonly level = input<number | null>(null);
+  /** Valor de la insignia, por ejemplo la experiencia ("10+"). Sin valor, no hay insignia. */
+  readonly level = input<string | number | null>(null);
   readonly levelLabel = input('LVL');
   readonly alt = input.required<string>();
   /** Ruta de las imágenes sin tamaño ni extensión: `/images/perfil/cesar` → cesar-400.avif, cesar-800.webp… */
