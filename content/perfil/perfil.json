@@ -2,8 +2,8 @@
   "name": "Cesar Casares",
   "location": null,
   "headline": {
-    "es": "Frontend Engineer · Angular, React y Node.js · El arrullo de las ideas en el desarrollo web",
-    "en": "Frontend Engineer · Angular, React & Node.js · The lullaby of ideas in web development"
+    "es": "Frontend Engineer · Construyo interfaces seguras para banca a gran escala",
+    "en": "Frontend Engineer · I build secure interfaces for large-scale banking"
   },
   "about": {
     "es": [
@@ -28,8 +28,8 @@
       "startedOn": "2025-02",
       "finishedOn": null,
       "title": {
-        "es": "Web UI Semi Senior Advanced · BBVA",
-        "en": "Web UI Semi Senior Advanced · BBVA"
+        "es": "Frontend Engineer · Capa de seguridad (BBVA)",
+        "en": "Frontend Engineer · Security layer (BBVA)"
       },
       "description": {
         "es": "Desarrollo la capa de seguridad de la app de BBVA, por la que pasan más de 50 flujos del banco: verifica token, biometría, certificados y dispositivo antes de cada transferencia o consulta sensible. Son web components con Lit dentro de la app, comunicados con las bibliotecas nativas de Android e iOS mediante Cells, el framework de BBVA. Migré componentes de Polymer a Lit mejorando el rendimiento, con un índice de aceptación del cliente del 76 %, y resolví incidencias críticas de producción.",
@@ -43,8 +43,8 @@
       "startedOn": "2024-07",
       "finishedOn": "2024-11",
       "title": {
-        "es": "Web UI Semi Senior Advanced · Yanbal",
-        "en": "Web UI Semi Senior Advanced · Yanbal"
+        "es": "Frontend Engineer · Yanbal",
+        "en": "Frontend Engineer · Yanbal"
       },
       "description": {
         "es": "Proyecto para Yanbal Unique: interfaces con Angular construidas sobre patrones de diseño, en remoto.",
@@ -58,8 +58,8 @@
       "startedOn": "2022-05",
       "finishedOn": "2024-06",
       "title": {
-        "es": "Web UI Semi Senior Advanced · BCP Cocos y Lucas",
-        "en": "Web UI Semi Senior Advanced · BCP Cocos y Lucas"
+        "es": "Frontend Engineer · Pagos y transferencias (BCP)",
+        "en": "Frontend Engineer · Payments and transfers (BCP)"
       },
       "description": {
         "es": "Frontend en Angular de Cocos y Lucas, la plataforma del BCP para cambiar soles y dólares en línea. Integré las transferencias interbancarias y el pago con Visa y Mastercard, y optimicé su rendimiento y SEO, siempre bajo los estándares de seguridad del banco. En 2024 sus funcionalidades pasaron a Yape.",

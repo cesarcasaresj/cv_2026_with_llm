@@ -12,6 +12,14 @@ export function monthsBetween(from: string, to: string): number {
   return (toYear - fromYear) * 12 + (toMonth - fromMonth);
 }
 
+/**
+ * Años de experiencia: años completos desde el primer puesto hasta hoy (spec.md, HU-23).
+ * Es la única cifra de años del sitio: la usan la portada, la tarjeta y el viaje de la experiencia.
+ */
+export function yearsSince(startedOn: string, today = new Date()): number {
+  return Math.floor(monthsBetween(startedOn, currentYearMonth(today)) / 12);
+}
+
 /** El mes actual como "AAAA-MM". */
 export function currentYearMonth(today = new Date()): string {
   return `${today.getUTCFullYear()}-${String(today.getUTCMonth() + 1).padStart(2, '0')}`;

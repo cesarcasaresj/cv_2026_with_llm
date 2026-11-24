@@ -6,6 +6,7 @@ import { PlayerCardComponent } from '../../molecules/player-card/player-card.com
 import { DialogueBoxComponent } from '../../molecules/dialogue-box/dialogue-box.component';
 import { LevelStatComponent } from '../../molecules/level-stat/level-stat.component';
 import { I18nService } from '../../../../core/i18n/i18n.service';
+import { yearsSince } from '../../../journey/dates';
 
 /** Retrato de la tarjeta (public/images/perfil): cesar-400.avif, cesar-800.webp… */
 const PORTRAIT = '/images/perfil/cesar';
@@ -39,12 +40,13 @@ export class AboutSectionComponent {
   /** Número de proyectos públicos, o null si aún no se conoce. */
   readonly projectCount = input<number | null>(null);
 
-  /** Años desde el primer puesto (al menos 1), o null sin experiencia. */
+  /** Primer puesto ("AAAA-MM"), o null sin experiencia. */
+  private readonly firstStart = computed(() => this.profile()?.experience.map((p) => p.startedOn).sort()[0] ?? null);
+
+  /** Años desde el primer puesto (al menos 1): el mismo cálculo que el viaje de la experiencia. */
   private readonly years = computed(() => {
-    const firstYear = this.profile()
-      ?.experience.map((p) => Number(p.startedOn.slice(0, 4)))
-      .sort()[0];
-    return firstYear ? Math.max(new Date().getUTCFullYear() - firstYear, 1) : null;
+    const first = this.firstStart();
+    return first ? Math.max(yearsSince(first), 1) : null;
   });
 
   /** Clase del personaje: la primera parte del titular ("Frontend Engineer · Angular…" → "Frontend Engineer"). */
@@ -62,7 +64,7 @@ export class AboutSectionComponent {
         value: years,
         suffix: '+',
         label: text.years(years),
-        achievement: text.yearsAchievement(years),
+        achievement: text.yearsAchievement(Number(this.firstStart()!.slice(0, 4))),
         badge: text.levelUp,
         variant: 'level',
         href: null,
@@ -95,5 +97,9 @@ export class AboutSectionComponent {
     return stats;
   });
 
-  protected readonly level = computed(() => this.years());
+  /** Insignia de la tarjeta: la experiencia (XP), no un nivel, para no chocar con los niveles del viaje (uno por puesto). */
+  protected readonly xp = computed(() => {
+    const years = this.years();
+    return years ? `${years}+` : null;
+  });
 }

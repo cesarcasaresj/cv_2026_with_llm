@@ -64,12 +64,13 @@ export class SiteHeaderComponent {
   /** Las anclas (#experiencia…) no cambian con el idioma: los enlaces compartidos siguen funcionando. */
   protected readonly items = computed<NavItem[]>(() => {
     const header = this.t().header;
-    return [
+    const items: NavItem[] = [
       { label: header.experience, path: '/', fragment: 'experiencia', section: 'experience' },
       { label: header.about, path: '/', fragment: 'sobre-mi', section: 'about' },
       { label: header.projects, path: '/', fragment: 'proyectos', section: 'projects' },
       { label: header.updates, path: '/', fragment: 'actualidad', section: 'updates' },
     ];
+    return items.filter((item) => !this.portals.hidden().has(item.section));
   });
 
   /** Pulsar un enlace: su texto cuenta la sección y se abre el portal mientras la página navega por debajo. */

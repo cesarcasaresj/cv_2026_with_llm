@@ -64,13 +64,24 @@
   animation-delay: calc(0.15s + var(--word-index, 0) * 0.12s), 1.5s;
 }
 
+/* Titular: la propuesta de valor, lo primero que lee un reclutador */
 .hero__headline {
   max-width: 36rem;
   margin: 1.25rem 0 0;
-  color: var(--color-on-night-muted);
+  color: var(--color-on-night);
   font-size: clamp(1.1rem, 3.6vw, 1.45rem);
+  font-weight: 600;
   line-height: 1.4;
   animation: hero-fade-up 0.9s var(--ease-out) 0.55s both;
+}
+
+/* Lema personal, más discreto */
+.hero__tagline {
+  max-width: 36rem;
+  margin: 0.5rem 0 0;
+  color: var(--color-on-night-muted);
+  font-style: italic;
+  animation: hero-fade-up 0.9s var(--ease-out) 0.65s both;
 }
 
 .hero__location {
@@ -224,6 +235,7 @@
 
   .hero__eyebrow,
   .hero__headline,
+  .hero__tagline,
   .hero__location,
   .hero__actions,
   .hero__social,

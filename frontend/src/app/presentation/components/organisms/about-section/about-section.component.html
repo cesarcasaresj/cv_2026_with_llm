@@ -17,8 +17,8 @@
             class="about__card"
             [name]="current.name"
             [role]="role()"
-            [level]="level()"
-            [levelLabel]="t().about.levelShort"
+            [level]="xp()"
+            [levelLabel]="t().about.xpShort"
             [alt]="t().about.portraitAlt(current.name)"
             [image]="portrait"
           />

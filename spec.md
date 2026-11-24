@@ -199,11 +199,13 @@ Criterios de aceptación:
 ### HU-16: Proyectos de GitHub (visitante)
 **Endpoint:** `GET /api/v1/projects`
 - [x] Repositorios públicos del usuario `GITHUB_USERNAME`, sin forks ni archivados, del último actualizado al más antiguo (máximo 9).
+- [x] Si algún repositorio lleva el topic `portfolio` en GitHub, solo se muestran los que lo llevan (proyectos destacados, sin prácticas de cursos); si ninguno lo lleva, se muestran todos.
 - [x] El backend guarda la respuesta de GitHub una hora y, si GitHub falla, sirve la última copia; sin copia responde 503 y la portada ofrece el enlace al perfil (decisión L).
 
 ### HU-17: Actualidad (visitante)
 **Endpoint:** `GET /api/v1/updates`
 - [x] Las publicaciones más recientes del autor en LinkedIn (máximo 6), solo las visibles para cualquiera (decisión K).
+- [x] Sin publicaciones, la sección no aparece ni en la página ni en el menú (una sección vacía resta). Si la carga falla, se queda con su mensaje de error.
 
 ### HU-18: Elegir el idioma, español o inglés (visitante)
 **Como** visitante, **quiero** ver el sitio en español o en inglés, **para** leerlo en el idioma que entiendo mejor.
@@ -282,6 +284,7 @@ Criterios de aceptación:
 - [x] Las cifras (años, empresas, proyectos públicos) cuentan desde 0 al entrar en pantalla, llenan una barra de experiencia y muestran "LEVEL UP!" con su logro ("Nivel 10 alcanzado", "6.ª empresa desbloqueada"). Los proyectos públicos llevan la insignia OPEN SOURCE, un calendario de contribuciones que se enciende y el enlace a GitHub.
 - [x] El HTML del servidor trae los valores finales; con "reducir movimiento" no hay balanceo, ni inclinación, ni conteo, ni máquina de escribir. Los lectores de pantalla leen solo el valor final de cada cifra. Nada suena al hacer scroll (HU-19).
 - [x] Sin librerías 3D: CSS (transformaciones, `@property`) y un retrato en AVIF/WebP/PNG de pocos KB.
+- [x] Una sola cifra de años en todo el sitio: años completos desde el primer puesto hasta hoy. La insignia de la tarjeta muestra esa experiencia (XP, "10+"), no un nivel: los niveles son los puestos del viaje (HU-20), cuya XP es la acumulada al terminar cada puesto (el actual, hasta hoy).
 
 ---
 
