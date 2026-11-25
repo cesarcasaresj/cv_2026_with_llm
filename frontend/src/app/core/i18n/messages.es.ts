@@ -123,6 +123,27 @@ export const es = {
     dialogueRestart: 'Volver a empezar',
   },
 
+  /** "Pregúntale a mi CV" (HU-24). */
+  assistant: {
+    launcher: 'Pregúntale a mi CV',
+    title: 'Pregúntale a mi CV',
+    close: 'Cerrar',
+    greeting: (name: string): string =>
+      `¡Hola! 👋 Soy el asistente del CV de ${name}. Pregúntame por su experiencia, sus proyectos o las tecnologías con las que trabaja.`,
+    you: 'Tú',
+    thinking: 'El asistente está escribiendo…',
+    suggestionsLabel: 'Preguntas sugeridas',
+    suggestions: ['¿Qué hace en BBVA?', '¿Con qué tecnologías trabaja?', '¿Qué aportaría a mi equipo?'],
+    fieldLabel: 'Tu pregunta',
+    placeholder: 'Escribe tu pregunta…',
+    send: 'Enviar',
+    limitReached: 'Llegaste al máximo de preguntas de esta conversación.',
+    restart: 'Empezar de nuevo',
+    disclaimer: 'Las respuestas las genera IA (Claude) a partir de este CV y pueden contener errores.',
+    errorLimit: 'Hiciste muchas preguntas seguidas. Vuelve a intentarlo más tarde.',
+    errorGeneric: 'El asistente no puede responder ahora. Intenta de nuevo en unos minutos.',
+  },
+
   projects: {
     title: 'Proyectos',
     intro: 'Lo último en lo que he trabajado, directo de mis repositorios públicos de GitHub.',

@@ -54,9 +54,11 @@ export function createSecretStore(env: NodeJS.ProcessEnv = process.env): SecretS
 }
 
 /** Rutas de los secretos del sistema. Con SECRETS_PROVIDER=env deciden el prefijo de las variables. */
-export function secretPaths(env: NodeJS.ProcessEnv = process.env): { database: string; jwt: string } {
+export function secretPaths(env: NodeJS.ProcessEnv = process.env): { database: string; jwt: string; anthropic: string } {
   return {
     database: env.VAULT_POSTS_DB_PATH ?? 'cv-app/database',
     jwt: env.VAULT_JWT_PATH ?? 'cv-app/jwt',
+    // Clave de la API de Claude para "Pregúntale a mi CV" (HU-24). Con SECRETS_PROVIDER=env: ANTHROPIC_API_KEY
+    anthropic: env.VAULT_ANTHROPIC_PATH ?? 'cv-app/anthropic',
   };
 }

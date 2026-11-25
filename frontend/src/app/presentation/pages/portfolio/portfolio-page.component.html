@@ -22,3 +22,11 @@
     <a class="blog-teaser__cta" routerLink="/blog">{{ t().teaser.cta }} <span aria-hidden="true">→</span></a>
   </div>
 </section>
+
+<!-- Pregúntale a mi CV (HU-24): botón flotante, solo si el asistente está disponible -->
+@if (loadedProfile(); as current) {
+  <!-- Se descarga cuando el navegador queda libre: no pesa en la carga inicial -->
+  @defer (on idle) {
+    <app-cv-assistant-host [name]="current.name.split(' ')[0]" />
+  }
+}

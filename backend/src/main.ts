@@ -34,6 +34,10 @@ import { GetProfile, ListProjects, ListUpdates } from './core/usecases/Portfolio
 import type { ProjectSource } from './core/domain/Profile';
 import { PostgresProfileRepository } from './infrastructure/database/PostgresProfileRepository';
 import { CachedProjectSource, GithubProjectSource } from './infrastructure/github/GithubProjectSource';
+import { AskAboutCv } from './core/usecases/AskAboutCv';
+import { ClaudeCvAssistant } from './infrastructure/ai/ClaudeCvAssistant';
+import { MemoryQuestionQuota } from './infrastructure/ai/MemoryQuestionQuota';
+import { assistantRoutes } from './infrastructure/controllers/assistantRoutes';
 import { portfolioRoutes } from './infrastructure/controllers/portfolioRoutes';
 
 const GITHUB_CACHE_MS = 60 * 60 * 1000; // 1 hora: muy por debajo del límite de 60 peticiones/hora sin token
@@ -108,8 +112,30 @@ async function start(): Promise<void> {
     linkedin: optionalHttpsUrl('LINKEDIN_PROFILE_URL'),
   };
 
+  // "Pregúntale a mi CV" (spec.md, HU-24): opcional. Sin clave de la API de Claude, la portada no muestra el botón
+  const getProfile = new GetProfile(profiles);
+  const listProjects = new ListProjects(projectSource);
+  let askAboutCv: AskAboutCv | null = null;
+  const anthropicKey = await secrets
+    .readSecret(paths.anthropic)
+    .then((secret) => secret.api_key ?? null)
+    .catch(() => null);
+  if (anthropicKey) {
+    const dailyLimit = Number(process.env.ASSISTANT_DAILY_LIMIT ?? 100);
+    askAboutCv = new AskAboutCv(
+      getProfile,
+      listProjects,
+      links,
+      new ClaudeCvAssistant(anthropicKey),
+      new MemoryQuestionQuota(10, Number.isFinite(dailyLimit) && dailyLimit > 0 ? dailyLimit : 100),
+    );
+  } else {
+    console.log('Asistente "Pregúntale a mi CV" desactivado: no hay clave de la API de Claude');
+  }
+
   const app = express();
-  app.use(express.json());
+  // Detrás de Caddy y del frontend: request.ip es la del proxy; el visitante se identifica por X-Forwarded-For
+  app.use(express.json({ limit: '32kb' }));
   app.use(
     '/api/v1/posts',
     postRoutes(
@@ -146,8 +172,9 @@ async function start(): Promise<void> {
   );
   app.use(
     '/api/v1',
-    portfolioRoutes(new GetProfile(profiles), new ListProjects(projectSource), new ListUpdates(profiles), links),
+    portfolioRoutes(getProfile, listProjects, new ListUpdates(profiles), links),
   );
+  app.use('/api/v1/assistant', assistantRoutes(askAboutCv));
   app.use(seoRoutes(new ListSitemapEntries(posts), siteUrl));
   app.use(errorHandler);
 

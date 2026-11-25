@@ -1,0 +1,81 @@
+@let text = t().assistant;
+
+@if (open()) {
+  <section id="cv-assistant-panel" class="panel" role="dialog" aria-modal="false" aria-labelledby="cv-assistant-title">
+    <header class="panel__header">
+      <h2 id="cv-assistant-title" class="panel__title"><span aria-hidden="true">✦</span> {{ text.title }}</h2>
+      <button type="button" class="panel__close" (click)="close()">
+        <span aria-hidden="true">✕</span><span class="cdk-visually-hidden">{{ text.close }}</span>
+      </button>
+    </header>
+
+    <div #log class="panel__log" role="log" aria-live="polite" aria-relevant="additions">
+      <p class="bubble bubble--assistant">{{ text.greeting(name()) }}</p>
+
+      @for (message of messages(); track $index) {
+        <p class="bubble" [class.bubble--assistant]="message.role === 'assistant'" [class.bubble--user]="message.role === 'user'">
+          <span class="cdk-visually-hidden">{{ message.role === 'user' ? text.you : text.title }}: </span>{{ message.content }}
+        </p>
+      }
+
+      @if (pending()) {
+        <p class="bubble bubble--assistant bubble--typing">
+          <span class="cdk-visually-hidden">{{ text.thinking }}</span>
+          <span class="dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        </p>
+      }
+    </div>
+
+    @if (error(); as message) {
+      <p class="panel__error" role="alert">{{ message }}</p>
+    }
+
+    @if (messages().length === 0) {
+      <ul class="panel__suggestions" [attr.aria-label]="text.suggestionsLabel">
+        @for (suggestion of text.suggestions; track suggestion) {
+          <li><button type="button" class="chip" [disabled]="pending()" (click)="send(suggestion)">{{ suggestion }}</button></li>
+        }
+      </ul>
+    }
+
+    @if (remaining() > 0) {
+      <form class="panel__form" (submit)="$event.preventDefault(); send()">
+        <label class="cdk-visually-hidden" for="cv-assistant-field">{{ text.fieldLabel }}</label>
+        <textarea
+          #field
+          id="cv-assistant-field"
+          class="panel__field"
+          rows="2"
+          [maxLength]="maxLength"
+          [placeholder]="text.placeholder"
+          [value]="draft()"
+          (input)="onInput($event)"
+          (keydown)="onFieldKeydown($event)"
+        ></textarea>
+        <button type="submit" class="panel__send" [disabled]="!canSend()">
+          <span aria-hidden="true">➤</span><span class="cdk-visually-hidden">{{ text.send }}</span>
+        </button>
+      </form>
+    } @else {
+      <div class="panel__end">
+        <p>{{ text.limitReached }}</p>
+        <button type="button" class="chip" (click)="restarted.emit()">{{ text.restart }}</button>
+      </div>
+    }
+
+    <p class="panel__disclaimer">{{ text.disclaimer }}</p>
+  </section>
+}
+
+<button
+  #launcher
+  type="button"
+  class="launcher"
+  [class.launcher--open]="open()"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="open() ? 'cv-assistant-panel' : null"
+  (click)="toggle()"
+>
+  <span class="launcher__icon" aria-hidden="true">{{ open() ? '✕' : '✦' }}</span>
+  <span class="launcher__label">{{ open() ? text.close : text.launcher }}</span>
+</button>

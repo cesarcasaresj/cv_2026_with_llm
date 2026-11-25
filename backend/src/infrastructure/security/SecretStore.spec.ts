@@ -39,7 +39,11 @@ describe('createSecretStore', () => {
 
 describe('secretPaths', () => {
   it('usa las rutas del entorno o las de siempre', () => {
-    expect(secretPaths({})).toEqual({ database: 'cv-app/database', jwt: 'cv-app/jwt' });
-    expect(secretPaths({ VAULT_POSTS_DB_PATH: 'a/b', VAULT_JWT_PATH: 'c/d' })).toEqual({ database: 'a/b', jwt: 'c/d' });
+    expect(secretPaths({})).toEqual({ database: 'cv-app/database', jwt: 'cv-app/jwt', anthropic: 'cv-app/anthropic' });
+    expect(secretPaths({ VAULT_POSTS_DB_PATH: 'a/b', VAULT_JWT_PATH: 'c/d', VAULT_ANTHROPIC_PATH: 'e/f' })).toEqual({
+      database: 'a/b',
+      jwt: 'c/d',
+      anthropic: 'e/f',
+    });
   });
 });
