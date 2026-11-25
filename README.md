@@ -1,5 +1,9 @@
 # Enterprise Decoupled Architecture: Angular (Zoneless) & Node.js Monorepo
 
+[![Pruebas y despliegue](https://github.com/cesarcasaresj/cv_2026_with_llm/actions/workflows/deploy.yml/badge.svg)](https://github.com/cesarcasaresj/cv_2026_with_llm/actions/workflows/deploy.yml)
+[![Revisión de seguridad](https://github.com/cesarcasaresj/cv_2026_with_llm/actions/workflows/security-scan.yml/badge.svg)](https://github.com/cesarcasaresj/cv_2026_with_llm/actions/workflows/security-scan.yml)
+[![Dependabot](https://img.shields.io/badge/Dependabot-activo-025E8C?logo=dependabot)](https://github.com/cesarcasaresj/cv_2026_with_llm/blob/main/.github/dependabot.yml)
+
 Este proyecto es una muestra de arquitectura de software empresarial, diseñada bajo un modelo desacoplado y gobernado por reglas estrictas de desarrollo guiado por especificación (SDD). El sistema se comunica mediante **REST/JSON con contrato OpenAPI**, gestiona los secretos con **HashiCorp Vault**, persiste en **PostgreSQL**, usa reactividad nativa con **Signals** en el cliente y pone la accesibilidad universal (**A11y**) como requisito de entrega.
 
 ## 🚀 Pilares tecnológicos
@@ -8,6 +12,7 @@ Este proyecto es una muestra de arquitectura de software empresarial, diseñada 
 * **Diseño modular controlado:** Interfaz organizada con **Atomic Design**, documentada y validada de forma aislada en **Storybook** (incluido el panel de accesibilidad).
 * **Contrato tipado de extremo a extremo:** La API se define en **OpenAPI 3.1** (`contracts/openapi.yaml`) y los tipos TypeScript de backend y frontend se generan desde ahí.
 * **Seguridad Zero-Trust:** Ningún secreto vive en texto plano ni llega al navegador. El backend lee las credenciales de **HashiCorp Vault** en tiempo de ejecución, y la sesión usa un JWT en cookie `HttpOnly`.
+* **Seguridad continua de la cadena de suministro:** **Dependabot** abre PRs con el parche en cuanto se publica una vulnerabilidad que afecta a las dependencias (npm, imágenes Docker, GitHub Actions). Una revisión semanal con **npm audit** y **Trivy** inspecciona las imágenes de producción y abre un issue si encuentra fallos altos o críticos. El CI bloquea cualquier publicación cuyas pruebas fallen.
 * **Backend con Clean Architecture:** **Node.js + TypeScript + Express 5**, con dominio y casos de uso independientes de la infraestructura.
 * **Accesibilidad universal (A11y):** HTML5 semántico y directrices **WAI-ARIA** para una navegación por teclado predecible y compatible con lectores de pantalla.
 
