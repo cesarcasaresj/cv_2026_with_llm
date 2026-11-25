@@ -1,5 +1,6 @@
 import { Component, ElementRef, afterRenderEffect, computed, inject, input, output, signal, viewChild } from '@angular/core';
 import { I18nService } from '../../../../core/i18n/i18n.service';
+import { AssistantOrbComponent } from '../../atoms/assistant-orb/assistant-orb.component';
 import { MAX_QUESTION_LENGTH, type AssistantMessage } from '../../../../core/assistant/assistant.service';
 
 /**
@@ -11,6 +12,7 @@ import { MAX_QUESTION_LENGTH, type AssistantMessage } from '../../../../core/ass
  * - Enter envía; Mayús + Enter hace un salto de línea.
  */
 @Component({
+  imports: [AssistantOrbComponent],
   selector: 'app-cv-assistant',
   templateUrl: './cv-assistant.component.html',
   styleUrl: './cv-assistant.component.css',
@@ -34,6 +36,8 @@ export class CvAssistantComponent {
   readonly asked = output<string>();
   readonly restarted = output<void>();
 
+  /** Cursor o foco en el botón: la esfera se activa. */
+  protected readonly excited = signal(false);
   protected readonly draft = signal('');
   protected readonly canSend = computed(
     () => !this.pending() && this.remaining() > 0 && this.draft().trim().length > 0,

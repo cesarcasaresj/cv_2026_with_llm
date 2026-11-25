@@ -52,15 +52,45 @@
   font-size: 0.95rem;
 }
 
-/* Brillo que invita a pulsar, solo cuando está cerrado */
-.launcher:not(.launcher--open) .launcher__icon {
-  animation: launcher-glow 2.6s ease-in-out infinite;
+/* Cerrado: la esfera 3D sobresale por la izquierda de la píldora y el texto lleva un destello que la recorre */
+.launcher:not(.launcher--open) {
+  padding-left: 0.6rem;
 }
 
-@keyframes launcher-glow {
-  50% {
-    box-shadow: 0 0 0 6px rgb(255 209 102 / 0.25);
+.launcher__orb {
+  --orb-size: 5.6rem;
+  margin: -2rem -1rem -2rem -2.6rem;
+}
+
+.launcher:not(.launcher--open) .launcher__label {
+  background: linear-gradient(
+      100deg,
+      var(--color-on-night) 0 40%,
+      #ffd166 47%,
+      #7be0ff 53%,
+      var(--color-on-night) 60% 100%
+    )
+    0 0 / 250% 100%;
+  background-clip: text;
+  color: transparent;
+  animation: launcher-shine 4.5s ease-in-out infinite;
+}
+
+@keyframes launcher-shine {
+  from {
+    background-position: 100% 0;
   }
+
+  60%,
+  to {
+    background-position: 0 0;
+  }
+}
+
+.launcher:not(.launcher--open):hover {
+  box-shadow:
+    0 18px 36px -16px rgb(11 16 32 / 0.7),
+    0 0 1.6rem -0.2rem rgb(255 209 102 / 0.55);
 }
 
 /* ---------- Panel ---------- */
@@ -312,6 +342,19 @@
   .launcher {
     padding: 0.75rem;
   }
+
+  /* Solo la esfera, sin píldora alrededor */
+  .launcher:not(.launcher--open) {
+    padding: 0;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .launcher__orb {
+    --orb-size: 5.2rem;
+    margin: 0;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -322,6 +365,7 @@
   }
 
   .launcher__icon,
+  .launcher__label,
   .dots span,
   .panel {
     animation: none !important;
