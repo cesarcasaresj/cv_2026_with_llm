@@ -1,0 +1,131 @@
+# Revisión semanal de vulnerabilidades (DEPLOY.md, "Seguridad de dependencias").
+# Complementa a Dependabot: además de las librerías npm, mira dentro de las imágenes que corren en el VPS
+# (postgres:17, node:22-alpine, caddy:2). Solo avisa de fallos altos o críticos que ya tienen arreglo publicado.
+# Si encuentra algo, abre un issue (o comenta en el que ya esté abierto) y GitHub te avisa por correo.
+name: Revisión de seguridad
+
+on:
+  schedule:
+    - cron: '0 12 * * 1' # lunes, 7:00 en Lima
+  workflow_dispatch: # para lanzarla a mano cuando salga una noticia gorda
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: security-scan
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Solo las dependencias que llegan a producción: las de desarrollo no corren en el servidor
+      - name: npm audit (backend)
+        id: npm_backend
+        continue-on-error: true
+        working-directory: backend
+        run: npm audit --omit=dev --audit-level=high 2>&1 | tee ../npm-backend.txt; exit "${PIPESTATUS[0]}"
+
+      - name: npm audit (frontend)
+        id: npm_frontend
+        continue-on-error: true
+        working-directory: frontend
+        run: npm audit --omit=dev --audit-level=high 2>&1 | tee ../npm-frontend.txt; exit "${PIPESTATUS[0]}"
+
+      # Acción fijada por commit (v0.36.0): una etiqueta se puede mover, un commit no
+      - name: Trivy (postgres:17)
+        id: trivy_postgres
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          version: v0.76.2
+          image-ref: postgres:17
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          output: trivy-postgres.txt
+
+      - name: Trivy (node:22-alpine)
+        id: trivy_node
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          version: v0.76.2
+          skip-setup-trivy: true
+          image-ref: node:22-alpine
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          output: trivy-node.txt
+
+      - name: Trivy (caddy:2)
+        id: trivy_caddy
+        continue-on-error: true
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          version: v0.76.2
+          skip-setup-trivy: true
+          image-ref: caddy:2
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
+          output: trivy-caddy.txt
+
+      - name: Abrir o actualizar el issue
+        if: >-
+          steps.npm_backend.outcome == 'failure' || steps.npm_frontend.outcome == 'failure' ||
+          steps.trivy_postgres.outcome == 'failure' || steps.trivy_node.outcome == 'failure' ||
+          steps.trivy_caddy.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NPM_BACKEND: ${{ steps.npm_backend.outcome }}
+          NPM_FRONTEND: ${{ steps.npm_frontend.outcome }}
+          TRIVY_POSTGRES: ${{ steps.trivy_postgres.outcome }}
+          TRIVY_NODE: ${{ steps.trivy_node.outcome }}
+          TRIVY_CADDY: ${{ steps.trivy_caddy.outcome }}
+        run: |
+          TITLE="Vulnerabilidades altas o críticas pendientes"
+          section() { # $1 título, $2 resultado del paso, $3 archivo
+            [ "$2" = failure ] || return 0
+            printf '\n<details><summary><b>%s</b></summary>\n\n```\n' "$1"
+            tail -c 15000 "$3" 2>/dev/null || echo "(sin salida)"
+            printf '\n```\n</details>\n'
+          }
+          {
+            echo "La revisión semanal encontró fallos **altos o críticos con arreglo publicado**."
+            echo
+            echo "- npm: si Dependabot ya abrió un PR, basta con hacer merge; si no, \`npm audit fix\` en la carpeta."
+            echo "- Imágenes: el siguiente despliegue (merge a main) hace \`docker compose pull\` y trae el parche."
+            echo "  Si el fallo sigue, la imagen oficial aún no lo publicó: vuelve a lanzar esta revisión en unos días."
+            echo
+            echo "Ejecución: $RUN_URL"
+            section "npm audit · backend" "$NPM_BACKEND" npm-backend.txt
+            section "npm audit · frontend" "$NPM_FRONTEND" npm-frontend.txt
+            section "Trivy · postgres:17" "$TRIVY_POSTGRES" trivy-postgres.txt
+            section "Trivy · node:22-alpine" "$TRIVY_NODE" trivy-node.txt
+            section "Trivy · caddy:2" "$TRIVY_CADDY" trivy-caddy.txt
+          } > body.md
+          # Un solo issue abierto: si ya existe, se comenta en él en vez de abrir otro cada semana
+          NUMBER=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
+          if [ -n "$NUMBER" ]; then
+            gh issue comment "$NUMBER" --body-file body.md
+          else
+            gh issue create --title "$TITLE" --body-file body.md
+          fi
+
+      - name: Todo en orden
+        if: >-
+          steps.npm_backend.outcome == 'success' && steps.npm_frontend.outcome == 'success' &&
+          steps.trivy_postgres.outcome == 'success' && steps.trivy_node.outcome == 'success' &&
+          steps.trivy_caddy.outcome == 'success'
+        run: echo "Sin vulnerabilidades altas o críticas con arreglo publicado."

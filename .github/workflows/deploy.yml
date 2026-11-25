@@ -110,9 +110,11 @@ jobs:
 
       - name: Reiniciar las aplicaciones
         run: |
-          # up -d aplica los cambios de compose.yml; restart carga los archivos nuevos (el backend migra al arrancar)
+          # pull trae los parches de seguridad de las imágenes (postgres:17, node:22-alpine y caddy:2 son etiquetas
+          # que se mueven con cada parche); up -d aplica eso y los cambios de compose.yml; restart carga los archivos
+          # nuevos (el backend migra al arrancar)
           ssh -i ~/.ssh/deploy_key -p "$SSH_PORT" "$SSH_USER@$SSH_HOST" \
-            "cd '$DEPLOY_DIR' && chmod +x backup.sh && docker compose up -d --remove-orphans && docker compose restart api && docker compose restart web && docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile"
+            "cd '$DEPLOY_DIR' && chmod +x backup.sh && docker compose pull --quiet && docker compose up -d --remove-orphans && docker compose restart api && docker compose restart web && docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile"
 
       - name: Comprobar que el sitio responde
         if: vars.SITE_URL != ''
