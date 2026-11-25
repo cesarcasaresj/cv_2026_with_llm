@@ -45,7 +45,7 @@
     "@storybook/addon-vitest": "^10.6.7",
     "@storybook/angular-vite": "^10.6.7",
     "@types/express": "^5.0.1",
-    "@types/node": "^22.12.0",
+    "@types/node": "^26.6.6",
     "@types/three": "^0.180.0",
     "@vitest/browser-playwright": "latest",
     "@vitest/coverage-v8": "latest",
