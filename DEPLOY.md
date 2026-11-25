@@ -140,6 +140,16 @@ La base no está abierta a Internet: los scripts se ejecutan desde tu PC por un 
 Haz merge a `main`. GitHub prueba, compila, sube por SSH y reinicia los contenedores. Si las pruebas fallan, no se publica nada.
 Para cambiar tus datos, edita `content/perfil/perfil.json` o los artículos y repite el paso 4 (solo el script que corresponda).
 
+## Seguridad de dependencias
+
+- **Dependabot** (`.github/dependabot.yml`) vigila las librerías npm del backend y del frontend, las imágenes del VPS
+  y las GitHub Actions. Activa en Settings → Code security: **Dependabot alerts** y **Dependabot security updates**.
+  Cuando sale una vulnerabilidad que te afecta, abre un PR con el arreglo; si el CI sale en verde, merge y se publica.
+  Los lunes propone además las actualizaciones normales, agrupadas.
+- **Imágenes:** cada despliegue hace `docker compose pull`, así que los parches de `postgres:17`, `node:22-alpine` y
+  `caddy:2` llegan con el siguiente merge. Los saltos de versión mayor (Postgres 18, Node 24) se hacen a mano.
+- **Sistema operativo:** `unattended-upgrades` instala solo los parches de seguridad de Ubuntu.
+
 ## Si algo falla
 
 - **Estado y errores:** `ssh deploy@<IP-del-VPS>`, luego `cd /opt/cv && docker compose ps` y `docker compose logs api --tail 50`
