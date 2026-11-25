@@ -10,6 +10,13 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # Van atados a otra pieza: TypeScript, a la versión que soporta Angular; @types/node, al Node 22 que corre
+    # en el VPS. Sus saltos mayores se hacen a mano, junto con esa pieza.
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
     groups:
       backend-menores:
         update-types: [minor, patch]
@@ -20,6 +27,13 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    # Van atados a otra pieza: TypeScript, a la versión que soporta Angular; @types/node, al Node 22 que corre
+    # en el VPS. Sus saltos mayores se hacen a mano, junto con esa pieza.
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
+      - dependency-name: '@types/node'
+        update-types: [version-update:semver-major]
     groups:
       # Angular se actualiza entero o no se actualiza: sus paquetes deben ir en la misma versión
       angular:
