@@ -286,6 +286,19 @@ Criterios de aceptación:
 - [x] Sin librerías 3D: CSS (transformaciones, `@property`) y un retrato en AVIF/WebP/PNG de pocos KB.
 - [x] Una sola cifra de años en todo el sitio: años completos desde el primer puesto hasta hoy. La insignia de la tarjeta muestra esa experiencia (XP, "10+"), no un nivel: los niveles son los puestos del viaje (HU-20), cuya XP es la acumulada al terminar cada puesto (el actual, hasta hoy).
 
+### HU-24: Pregúntale a mi CV (visitante)
+**Como** reclutador, **quiero** preguntarle al CV en lenguaje natural (por ejemplo, "¿qué hizo en BBVA?"), **para** encontrar rápido lo que me interesa del perfil.
+**Endpoints:** `GET /api/v1/assistant` y `POST /api/v1/assistant/questions`
+
+Criterios de aceptación:
+- [x] Un botón flotante "Pregúntale a mi CV" abre un panel de chat en la portada, con preguntas sugeridas. Solo aparece si el asistente está disponible (hay clave de la API de Claude en el servidor).
+- [x] Responde Claude (`claude-opus-5-5`, esfuerzo bajo) en el idioma de la página, en texto breve y en tercera persona, usando **solo** los datos públicos del sitio: perfil, experiencia y proyectos. Si algo no está en esos datos, lo dice y sugiere contactar por LinkedIn; nunca inventa. Las preguntas ajenas al perfil profesional se redirigen con amabilidad.
+- [x] La clave de la API vive solo en el backend (`SecretStore`, ruta `cv-app/anthropic`); nunca llega al navegador ni a los registros.
+- [x] Límites para proteger el saldo: preguntas de 500 caracteres como máximo, 6 por conversación, 10 por visitante y hora, y un tope diario global (`ASSISTANT_DAILY_LIMIT`, 100 por defecto). Al superarlos responde 429 con un mensaje que dice cuándo volver.
+- [x] Las instrucciones y los datos del CV van en un `system` estable con caché de prompts; el historial lo envía el navegador (el servidor no guarda conversaciones).
+- [x] Si Claude rechaza o no responde, el visitante ve un mensaje amable (503); el detalle técnico solo queda en los registros, sin el texto de las preguntas.
+- [x] Accesible: el panel se abre y se cierra con teclado (Esc), las respuestas se anuncian (`aria-live`) y el foco vuelve al botón al cerrar. Un aviso indica que las respuestas las genera IA y pueden contener errores.
+
 ---
 
 ## 4. Requisitos transversales

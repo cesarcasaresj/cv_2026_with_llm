@@ -55,7 +55,14 @@ Hecho el 2026-11-22. Para repetirlo en otro VPS (plan de mudanza), como root:
    IMAGE_BASE_URL=/images/articulos
    GITHUB_USERNAME=cesarcasaresj
    LINKEDIN_PROFILE_URL=https://www.linkedin.com/in/cesarcasaresse/
+   # Opcional, "Pregúntale a mi CV" (HU-24): sin clave, el botón no aparece
+   ANTHROPIC_API_KEY=<clave de console.anthropic.com>
+   ASSISTANT_DAILY_LIMIT=100
    ```
+
+   La clave de la API de Claude se escribe directamente en el servidor (nunca en el chat ni en git) y conviene
+   ponerle un **límite de gasto mensual** en la consola de Anthropic (Settings → Limits). Después:
+   `docker compose up -d api` para que el backend la lea.
 
 7. **Copia diaria de la base de datos:** `/etc/cron.d/cv-backup` ejecuta `/opt/cv/backup.sh` a las 3:30.
    Guarda las últimas 14 copias en `/var/backups/cv`.

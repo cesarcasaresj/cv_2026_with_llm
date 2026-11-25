@@ -41,6 +41,7 @@ services:
       VAULT_TOKEN: ${VAULT_DEV_TOKEN}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     volumes:
       - ./.vault/seed.sh:/seed.sh:ro
     entrypoint: ["sh", "/seed.sh"]

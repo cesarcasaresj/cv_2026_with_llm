@@ -41,6 +41,13 @@ export class ServiceUnavailableError extends AppError {
   }
 }
 
+/** Se alcanzó un límite de uso (por ejemplo, las preguntas al asistente de HU-24). */
+export class TooManyRequestsError extends AppError {
+  constructor(message: string) {
+    super(429, 'TOO_MANY_REQUESTS', message);
+  }
+}
+
 /** Los datos enviados no cumplen el contrato. */
 export class ValidationError extends AppError {
   constructor(message: string) {

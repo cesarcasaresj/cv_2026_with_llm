@@ -12,6 +12,7 @@ import { AboutSectionComponent } from '../../components/organisms/about-section/
 import { ProjectGridComponent } from '../../components/organisms/project-grid/project-grid.component';
 import { UpdateFeedComponent } from '../../components/organisms/update-feed/update-feed.component';
 import { RevealDirective } from '../../motion/reveal.directive';
+import { CvAssistantHostComponent } from '../../assistant/cv-assistant-host.component';
 
 /**
  * Portada (spec.md, HU-14 a HU-17): inicio, experiencia, acerca de mí, proyectos y actualidad.
@@ -26,6 +27,7 @@ import { RevealDirective } from '../../motion/reveal.directive';
     AboutSectionComponent,
     ProjectGridComponent,
     UpdateFeedComponent,
+    CvAssistantHostComponent,
   ],
   selector: 'app-portfolio-page',
   templateUrl: './portfolio-page.component.html',

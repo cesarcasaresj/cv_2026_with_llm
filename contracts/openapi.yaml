@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.7.0
+  version: 1.8.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -449,6 +449,56 @@ paths:
         default:
           $ref: '#/components/responses/SystemError'
 
+  /api/v1/assistant:
+    get:
+      operationId: getAssistantStatus
+      summary: Indica si el asistente "Pregúntale a mi CV" está disponible (spec.md, HU-24).
+      tags: [assistant]
+      responses:
+        '200':
+          description: Sin clave de la API de Claude configurada, el asistente no está disponible y la portada no muestra el botón.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssistantStatus'
+        default:
+          $ref: '#/components/responses/SystemError'
+
+  /api/v1/assistant/questions:
+    post:
+      operationId: askAssistant
+      summary: Responde una pregunta sobre el perfil profesional del autor con Claude, usando solo sus datos públicos (spec.md, HU-24).
+      tags: [assistant]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssistantQuestion'
+      responses:
+        '200':
+          description: Respuesta del asistente, en el idioma pedido.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssistantAnswer'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '429':
+          description: Se alcanzó el límite de preguntas (por visitante o diario). El mensaje dice cuándo volver a intentarlo.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        '503':
+          description: El asistente no está configurado o Claude no responde.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
   /sitemap.xml:
     get:
       operationId: getSitemap
@@ -733,6 +783,48 @@ components:
         categoryId:
           type: integer
           minimum: 1
+
+    AssistantStatus:
+      type: object
+      required: [available]
+      properties:
+        available:
+          type: boolean
+
+    AssistantMessage:
+      type: object
+      required: [role, content]
+      properties:
+        role:
+          type: string
+          enum: [user, assistant]
+        content:
+          type: string
+          minLength: 1
+          maxLength: 2000
+          description: Las preguntas del visitante (role user) tienen como máximo 500 caracteres.
+
+    AssistantQuestion:
+      type: object
+      required: [lang, messages]
+      properties:
+        lang:
+          $ref: '#/components/schemas/Lang'
+        messages:
+          type: array
+          minItems: 1
+          maxItems: 11
+          description: Conversación completa, alternando user / assistant, empezando y terminando con una pregunta del visitante (como máximo 6 preguntas).
+          items:
+            $ref: '#/components/schemas/AssistantMessage'
+
+    AssistantAnswer:
+      type: object
+      required: [answer]
+      properties:
+        answer:
+          type: string
+          description: Texto plano, sin Markdown.
 
     Lang:
       type: string
