@@ -55,16 +55,16 @@ export class PortfolioPageComponent {
   protected readonly profileState = computed<ListState>(() => (this.loadedProfile() ? 'ready' : stateOf(this.profile)));
   protected readonly projectsState = computed(() => stateOf(this.projects));
   protected readonly updatesState = computed(() => stateOf(this.updates));
-  /** Actualidad cargada y vacía. Si falla la carga, la sección se queda (con su mensaje de error). */
-  protected readonly hasNoUpdates = computed(() => this.updates.hasValue() && this.updates.value().length === 0);
+  /** Actualidad con publicaciones: solo entonces se ve (si la carga falla, se queda con su mensaje de error). */
+  protected readonly hasUpdates = computed(() => this.updates.hasValue() && this.updates.value().length > 0);
 
   protected readonly loadedProjects = computed(() => (this.projects.hasValue() ? this.projects.value() : null));
 
   constructor() {
     // El túnel del tiempo del portal de Experiencia usa los años reales de la trayectoria (HU-21)
     const portals = inject(SectionPortalService);
-    // Sin publicaciones, Actualidad desaparece de la página y del menú hasta que tenga contenido
-    effect(() => portals.hidden.set(new Set(this.hasNoUpdates() ? ['updates'] : [])));
+    // Actualidad solo está en el menú cuando tiene publicaciones (mientras carga o sin ellas, no)
+    effect(() => portals.hidden.set(new Set(this.hasUpdates() ? [] : ['updates'])));
 
     effect(() => {
       const experience = this.loadedProfile()?.experience ?? [];

@@ -6,7 +6,7 @@
 
 <app-project-grid [projects]="loadedProjects()" [state]="projectsState()" [githubUrl]="loadedProfile()?.links?.github ?? null" />
 
-@if (!hasNoUpdates()) {
+@if (hasUpdates() || updates.error()) {
   <app-update-feed
     [updates]="updates.hasValue() ? updates.value() : null"
     [state]="updatesState()"
