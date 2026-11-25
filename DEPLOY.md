@@ -149,7 +149,8 @@ Para cambiar tus datos, edita `content/perfil/perfil.json` o los artículos y re
 - **Imágenes:** cada despliegue hace `docker compose pull`, así que los parches de `postgres:17`, `node:22-alpine` y
   `caddy:2` llegan con el siguiente merge. Los saltos de versión mayor (Postgres 18, Node 24) se hacen a mano.
 - **Revisión semanal** (`.github/workflows/security-scan.yml`, lunes 7:00 en Lima, o a mano desde Actions):
-  `npm audit` de lo que va a producción y Trivy dentro de las tres imágenes. Si hay fallos altos o críticos con
+  `npm audit` de lo que va a producción y Trivy dentro de las tres imágenes (sin `gosu` ni el npm interno de la imagen de Node, que no se
+  ejecutan con datos de fuera). Si hay fallos altos o críticos con
   arreglo publicado, abre un issue "Vulnerabilidades altas o críticas pendientes" (o comenta en el abierto).
 - **Avisos oficiales:** suscripción a nodejs.org/en/blog/vulnerability y postgresql.org/support/security.
 - **Sistema operativo:** `unattended-upgrades` instala solo los parches de seguridad de Ubuntu.
