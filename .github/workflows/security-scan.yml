@@ -52,7 +52,8 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
-          output: trivy-postgres.txt
+          format: json
+          output: trivy-postgres.json
 
       - name: Trivy (node:22-alpine)
         id: trivy_node
@@ -65,7 +66,8 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
-          output: trivy-node.txt
+          format: json
+          output: trivy-node.json
 
       - name: Trivy (caddy:2)
         id: trivy_caddy
@@ -78,7 +80,8 @@ jobs:
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
-          output: trivy-caddy.txt
+          format: json
+          output: trivy-caddy.json
 
       - name: Abrir o actualizar el issue
         if: >-
@@ -101,6 +104,15 @@ jobs:
             tail -c 15000 "$3" 2>/dev/null || echo "(sin salida)"
             printf '\n```\n</details>\n'
           }
+          trivy_section() { # Una fila por paquete: dónde está, versión instalada, versión con el arreglo y CVE
+            [ "$2" = failure ] || return 0
+            printf '\n### %s\n\n| Dónde | Paquete | Arreglado en | Críticas / total | CVE |\n|---|---|---|---|---|\n' "$1"
+            jq -r '[.Results[]? | .Target as $t | .Vulnerabilities[]?
+                | {t: $t, p: .PkgName, v: .InstalledVersion, f: .FixedVersion, id: .VulnerabilityID, s: .Severity}]
+              | group_by(.t, .p)[]
+              | "| `\(.[0].t)` | \(.[0].p) \(.[0].v) | \(map(.f) | unique | join(", ") | .[0:60]) | \(map(select(.s == "CRITICAL")) | length) / \(length) | \(map(.id) | unique | .[0:4] | join(" "))\(if length > 4 then " …" else "" end) |"' \
+              "$3" 2>/dev/null || echo "| (sin salida) | | | | |"
+          }
           {
             echo "La revisión semanal encontró fallos **altos o críticos con arreglo publicado**."
             echo
@@ -111,9 +123,9 @@ jobs:
             echo "Ejecución: $RUN_URL"
             section "npm audit · backend" "$NPM_BACKEND" npm-backend.txt
             section "npm audit · frontend" "$NPM_FRONTEND" npm-frontend.txt
-            section "Trivy · postgres:17" "$TRIVY_POSTGRES" trivy-postgres.txt
-            section "Trivy · node:22-alpine" "$TRIVY_NODE" trivy-node.txt
-            section "Trivy · caddy:2" "$TRIVY_CADDY" trivy-caddy.txt
+            trivy_section "Trivy · postgres:17" "$TRIVY_POSTGRES" trivy-postgres.json
+            trivy_section "Trivy · node:22-alpine" "$TRIVY_NODE" trivy-node.json
+            trivy_section "Trivy · caddy:2" "$TRIVY_CADDY" trivy-caddy.json
           } > body.md
           # Un solo issue abierto: si ya existe, se comenta en él en vez de abrir otro cada semana
           NUMBER=$(gh issue list --state open --search "\"$TITLE\" in:title" --json number --jq '.[0].number')
