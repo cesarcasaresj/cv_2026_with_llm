@@ -49,6 +49,9 @@ jobs:
         with:
           version: v0.76.2
           image-ref: postgres:17
+          scanners: vuln
+          # gosu solo cambia de usuario al arrancar: no recibe datos ni toca la red, y sus avisos de Go no aplican
+          skip-files: usr/local/bin/gosu
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
@@ -63,6 +66,9 @@ jobs:
           version: v0.76.2
           skip-setup-trivy: true
           image-ref: node:22-alpine
+          scanners: vuln
+          # El npm que trae la imagen no se ejecuta en producción (solo node server.mjs)
+          skip-dirs: usr/local/lib/node_modules/npm
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
@@ -77,6 +83,7 @@ jobs:
           version: v0.76.2
           skip-setup-trivy: true
           image-ref: caddy:2
+          scanners: vuln
           severity: HIGH,CRITICAL
           ignore-unfixed: true
           exit-code: '1'
