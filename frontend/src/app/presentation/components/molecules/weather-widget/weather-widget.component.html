@@ -1,0 +1,38 @@
+@let text = t().weather;
+
+<button
+  type="button"
+  class="weather__button"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="open() ? 'weather-panel' : null"
+  [attr.aria-label]="label()"
+  (click)="toggle()"
+>
+  <app-weather-scene class="weather__icon" [condition]="weather().condition" [isDay]="weather().isDay" size="1.9rem" />
+  <span class="weather__temp" aria-hidden="true">{{ temperature() }}</span>
+</button>
+
+@if (open()) {
+  <div #panel id="weather-panel" class="weather__panel" role="dialog" aria-modal="false" tabindex="-1" [attr.aria-label]="label()">
+    <app-weather-scene class="weather__big" [condition]="weather().condition" [isDay]="weather().isDay" size="5.5rem" />
+    <!-- Al usar la ubicación exacta, el clima nuevo se anuncia -->
+    <div class="weather__details" aria-live="polite">
+      <p class="weather__title">{{ temperature() }}</p>
+      <p class="weather__condition">{{ conditionText() }}</p>
+      <p class="weather__place"><span aria-hidden="true">◉</span> {{ placeText() }}</p>
+    </div>
+
+    @if (weather().source !== 'browser' && canLocate()) {
+      <button type="button" class="weather__locate" [disabled]="locating()" (click)="requestLocation(panel)">
+        {{ locating() ? text.locating : text.useLocation }}
+      </button>
+    }
+    @if (locationFailed()) {
+      <p class="weather__note" role="status">{{ text.locationFailed }}</p>
+    }
+    <p class="weather__note">
+      {{ weather().source === 'browser' ? text.preciseNote : text.approxNote }}
+      <a href="https://open-meteo.com/" rel="noopener">Open-Meteo</a>
+    </p>
+  </div>
+}

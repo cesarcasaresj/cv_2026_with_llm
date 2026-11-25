@@ -1,3 +1,4 @@
+import { WeatherHostComponent } from '../../../weather/weather-host.component';
 import { Component, PLATFORM_ID, afterNextRender, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -32,7 +33,16 @@ interface NavItem {
  * En móvil, las cinco secciones van en columnas debajo de la marca, con su icono encima.
  */
 @Component({
-  imports: [RouterLink, RouterLinkActive, LanguageSwitchComponent, LanguageFlagComponent, NavLabelComponent, NavPreviewComponent, ThemeToggleComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    LanguageSwitchComponent,
+    LanguageFlagComponent,
+    NavLabelComponent,
+    NavPreviewComponent,
+    ThemeToggleComponent,
+    WeatherHostComponent,
+  ],
   selector: 'app-site-header',
   templateUrl: './site-header.component.html',
   styleUrl: './site-header.component.css',

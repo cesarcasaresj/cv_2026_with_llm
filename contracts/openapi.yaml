@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.8.0
+  version: 1.9.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -499,6 +499,48 @@ paths:
         default:
           $ref: '#/components/responses/SystemError'
 
+  /api/v1/weather:
+    get:
+      operationId: getWeather
+      summary: Clima actual cerca del visitante para el widget de la cabecera (spec.md, HU-25).
+      description: >
+        Ubicación, por orden: las coordenadas que manda el navegador (solo si la persona aceptó compartirlas),
+        la ubicación aproximada que añade Cloudflare a la petición, o Lima. Las coordenadas se redondean a un decimal
+        (unos 10 km) antes de consultar Open-Meteo, y la respuesta se guarda en caché 30 minutos.
+      tags: [weather]
+      parameters:
+        - name: lat
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: -90
+            maximum: 90
+        - name: lon
+          in: query
+          required: false
+          schema:
+            type: number
+            minimum: -180
+            maximum: 180
+      responses:
+        '200':
+          description: Clima actual. La temperatura va en grados Celsius; el frontend la muestra en Fahrenheit en inglés.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Weather'
+        '422':
+          $ref: '#/components/responses/ValidationFailed'
+        '503':
+          description: El servicio del clima no responde.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
+        default:
+          $ref: '#/components/responses/SystemError'
+
   /sitemap.xml:
     get:
       operationId: getSitemap
@@ -825,6 +867,25 @@ components:
         answer:
           type: string
           description: Texto plano, sin Markdown.
+
+    Weather:
+      type: object
+      required: [condition, temperatureC, isDay, place, source]
+      properties:
+        condition:
+          type: string
+          enum: [clear, partly-cloudy, cloudy, fog, drizzle, rain, snow, thunder]
+        temperatureC:
+          type: number
+        isDay:
+          type: boolean
+        place:
+          type: [string, 'null']
+          description: Ciudad aproximada (Cloudflare) o Lima; null con la ubicación del navegador.
+        source:
+          type: string
+          enum: [browser, network, default]
+          description: De dónde salió la ubicación.
 
     Lang:
       type: string

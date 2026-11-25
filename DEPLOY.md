@@ -90,7 +90,10 @@ El dominio está registrado en Namecheap, pero su DNS lo gestiona Cloudflare (pl
 3. Cloudflare → SSL/TLS → modo **Full (strict)**: Caddy ya tiene un certificado válido en el servidor.
 4. Después, los dos registros en **Proxied** (nube naranja). **No** actives "Always Use HTTPS": Caddy ya redirige a HTTPS,
    y esa opción impediría renovar el certificado de Let's Encrypt (la comprobación llega por HTTP).
-5. **Aviso si se cae:** UptimeRobot (gratis) vigila `https://cesarcasares.com/` y `/api/v1/posts/count` cada 5 minutos
+5. **Clima del visitante (HU-25):** Cloudflare → Rules → Settings → Managed Transforms → activa
+   **"Add visitor location headers"**. Así el backend recibe la ciudad aproximada del visitante (`cf-ipcity`,
+   `cf-iplatitude`, `cf-iplongitude`) sin enviar su IP a nadie. Sin esto (o con la nube gris), el widget muestra Lima.
+6. **Aviso si se cae:** UptimeRobot (gratis) vigila `https://cesarcasares.com/` y `/api/v1/posts/count` cada 5 minutos
    y avisa por correo.
 
 ## 3. Secrets en GitHub

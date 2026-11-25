@@ -1,0 +1,330 @@
+/* Todo se mide en "em" sobre --scene-size: la misma escena sirve en la cabecera y en el panel */
+:host {
+  --cloud-color: light-dark(#ffffff, #dfe4f5);
+  --cloud-shade: light-dark(#cfd6ea, #9aa3c4);
+  display: inline-block;
+  width: var(--scene-size);
+  height: var(--scene-size);
+  font-size: var(--scene-size);
+  perspective: 6em;
+  flex: none;
+  /* Decorativa: al girar en 3D ocupa algo más que su caja, y nunca debe tapar los clics de lo que tiene al lado */
+  pointer-events: none;
+}
+
+:host(.scene--thunder),
+:host(.scene--rain) {
+  --cloud-color: light-dark(#a9b3cf, #7c86a8);
+  --cloud-shade: light-dark(#7f8aab, #5b6588);
+}
+
+.scene__stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  /* Balanceo lento: la escena gira un poco y deja ver la profundidad entre capas */
+  animation: scene-sway 6s ease-in-out infinite alternate;
+}
+
+@keyframes scene-sway {
+  from {
+    transform: rotateY(-16deg) rotateX(6deg);
+  }
+
+  to {
+    transform: rotateY(16deg) rotateX(-4deg);
+  }
+}
+
+.scene__stage > * {
+  position: absolute;
+}
+
+/* ---------- Sol ---------- */
+
+.sun {
+  top: 0.12em;
+  left: 0.12em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #fff3b0, #ffd166 45%, #ff9f43);
+  box-shadow: 0 0 0.25em rgb(255 190 70 / 0.7);
+  transform: translateZ(-0.6em);
+}
+
+:host(.scene--clear) .sun {
+  top: 0.22em;
+  left: 0.22em;
+  width: 0.56em;
+  height: 0.56em;
+}
+
+.sun__rays {
+  position: absolute;
+  inset: -0.18em;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgb(255 196 70 / 0.9) 0 10deg, transparent 10deg 30deg);
+  mask: radial-gradient(circle, transparent 58%, #000 60% 72%, transparent 74%);
+  animation: sun-spin 12s linear infinite;
+}
+
+@keyframes sun-spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* ---------- Noche ---------- */
+
+.moon {
+  top: 0.18em;
+  left: 0.2em;
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  box-shadow: inset -0.14em -0.06em 0 0 #f4f1d0;
+  filter: drop-shadow(0 0 0.08em rgb(244 241 208 / 0.7));
+  transform: translateZ(-0.6em) rotate(-20deg);
+}
+
+.star {
+  width: 0.06em;
+  height: 0.06em;
+  border-radius: 50%;
+  background: #f4f1d0;
+  animation: star-twinkle 2.4s ease-in-out infinite;
+}
+
+.star--1 {
+  top: 0.15em;
+  right: 0.2em;
+}
+
+.star--2 {
+  top: 0.45em;
+  right: 0.08em;
+  animation-delay: 1.2s;
+}
+
+@keyframes star-twinkle {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+/* ---------- Nubes: una lejos, otra cerca, a la deriva en sentidos opuestos ---------- */
+
+.cloud {
+  width: 0.56em;
+  height: 0.2em;
+  border-radius: 0.2em;
+  background: var(--cloud-color);
+  box-shadow: inset 0 -0.04em 0 var(--cloud-shade);
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::before {
+  left: 0.08em;
+  bottom: 0.1em;
+  width: 0.24em;
+  height: 0.24em;
+}
+
+.cloud::after {
+  left: 0.24em;
+  bottom: 0.08em;
+  width: 0.3em;
+  height: 0.3em;
+}
+
+.cloud--back {
+  top: 0.24em;
+  left: 0.06em;
+  opacity: 0.85;
+  transform: translateZ(-0.3em) scale(0.85);
+  animation: cloud-drift-back 7s ease-in-out infinite alternate;
+}
+
+.cloud--front {
+  top: 0.42em;
+  left: 0.32em;
+  transform: translateZ(0.4em);
+  animation: cloud-drift-front 5s ease-in-out infinite alternate;
+}
+
+:host(.scene--partly-cloudy) .cloud--front {
+  top: 0.46em;
+  left: 0.36em;
+}
+
+@keyframes cloud-drift-back {
+  to {
+    transform: translateZ(-0.3em) translateX(0.12em) scale(0.85);
+  }
+}
+
+@keyframes cloud-drift-front {
+  to {
+    transform: translateZ(0.4em) translateX(-0.1em);
+  }
+}
+
+/* ---------- Lluvia, llovizna y nieve ---------- */
+
+.drop,
+.flake {
+  top: 0.62em;
+  left: calc(0.24em + var(--i) * 0.11em);
+  transform: translateZ(0.2em);
+}
+
+.drop {
+  width: 0.03em;
+  height: 0.12em;
+  border-radius: 0.02em;
+  background: linear-gradient(transparent, #5fb4ff);
+  animation: drop-fall 0.9s linear infinite;
+  animation-delay: calc(var(--i) * -0.19s);
+}
+
+:host(.scene--drizzle) .drop {
+  height: 0.07em;
+  animation-duration: 1.4s;
+}
+
+@keyframes drop-fall {
+  from {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    translate: -0.06em 0.3em;
+  }
+}
+
+.flake {
+  width: 0.07em;
+  height: 0.07em;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0.03em rgb(120 140 200 / 0.8);
+  animation: flake-fall 2.2s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.45s);
+}
+
+@keyframes flake-fall {
+  from {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  50% {
+    translate: 0.05em 0.15em;
+  }
+
+  to {
+    opacity: 0;
+    translate: -0.04em 0.32em;
+  }
+}
+
+/* ---------- Rayo ---------- */
+
+.bolt {
+  top: 0.56em;
+  left: 0.44em;
+  width: 0.16em;
+  height: 0.3em;
+  background: #ffd166;
+  clip-path: polygon(55% 0, 15% 55%, 45% 55%, 30% 100%, 85% 40%, 55% 40%, 75% 0);
+  filter: drop-shadow(0 0 0.06em #ffd166);
+  transform: translateZ(0.5em);
+  animation: bolt-flash 3s steps(1) infinite;
+}
+
+@keyframes bolt-flash {
+  0%,
+  8%,
+  14% {
+    opacity: 1;
+  }
+
+  4%,
+  11%,
+  20%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Niebla ---------- */
+
+.fog {
+  left: 0.12em;
+  height: 0.05em;
+  border-radius: 0.05em;
+  background: var(--cloud-shade);
+  transform: translateZ(0.5em);
+  animation: fog-slide 4s ease-in-out infinite alternate;
+}
+
+.fog--1 {
+  top: 0.66em;
+  width: 0.62em;
+}
+
+.fog--2 {
+  top: 0.76em;
+  left: 0.22em;
+  width: 0.56em;
+  animation-delay: -1.5s;
+}
+
+.fog--3 {
+  top: 0.86em;
+  width: 0.5em;
+  animation-delay: -3s;
+}
+
+@keyframes fog-slide {
+  to {
+    translate: 0.12em 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene__stage,
+  .scene__stage > *,
+  .sun__rays {
+    animation: none !important;
+  }
+
+  .bolt {
+    opacity: 1;
+  }
+
+  .drop,
+  .flake {
+    opacity: 1;
+    translate: 0 0.12em;
+  }
+}

@@ -123,6 +123,29 @@ export const es = {
     dialogueRestart: 'Volver a empezar',
   },
 
+  /** Clima del visitante en la cabecera (HU-25). */
+  weather: {
+    label: (temperature: string, condition: string, place: string): string => `Clima: ${temperature}, ${condition}, ${place}`,
+    conditions: {
+      clear: 'Despejado',
+      'partly-cloudy': 'Parcialmente nublado',
+      cloudy: 'Nublado',
+      fog: 'Niebla',
+      drizzle: 'Llovizna',
+      rain: 'Lluvia',
+      snow: 'Nieve',
+      thunder: 'Tormenta',
+    },
+    inPlace: (place: string): string => `en ${place}`,
+    nearYou: 'cerca de ti',
+    yourLocation: 'en tu ubicación',
+    useLocation: 'Usar mi ubicación exacta',
+    locating: 'Buscando tu ubicación…',
+    locationFailed: 'No pudimos usar tu ubicación. Mostramos una aproximada.',
+    approxNote: 'Ubicación aproximada, sin guardar datos. Clima de',
+    preciseNote: 'Tu ubicación solo se usa para esta consulta (redondeada a ~10 km). Clima de',
+  },
+
   /** "Pregúntale a mi CV" (HU-24). */
   assistant: {
     launcher: 'Pregúntale a mi CV',

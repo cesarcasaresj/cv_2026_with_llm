@@ -299,6 +299,17 @@ Criterios de aceptación:
 - [x] Si Claude rechaza o no responde, el visitante ve un mensaje amable (503); el detalle técnico solo queda en los registros, sin el texto de las preguntas.
 - [x] Accesible: el panel se abre y se cierra con teclado (Esc), las respuestas se anuncian (`aria-live`) y el foco vuelve al botón al cerrar. Un aviso indica que las respuestas las genera IA y pueden contener errores.
 
+### HU-25: Clima del visitante en la cabecera (visitante)
+**Como** visitante, **quiero** ver el clima de donde estoy con una animación, **para** sentir que el sitio está vivo.
+**Endpoint:** `GET /api/v1/weather`
+
+Criterios de aceptación:
+- [x] Un widget en la cabecera muestra una escena 3D animada (sol o luna, nubes en capas, lluvia, llovizna, nieve, niebla o tormenta) y la temperatura: °C en español y °F en inglés. Al pulsarlo, un panel da el detalle (condición y lugar).
+- [x] Ubicación sin pedir permisos al entrar: la aproximada que añade Cloudflare a la petición (ciudad) o, si no hay, Lima. "Usar mi ubicación exacta" pide permiso al navegador solo si la persona lo pulsa.
+- [x] Privacidad: el clima lo consulta el backend en Open-Meteo con las coordenadas redondeadas a un decimal (~10 km), nunca con la IP; no se guarda nada del visitante. El backend guarda cada punto 30 minutos y, si Open-Meteo falla, sirve la última copia.
+- [x] Solo en el navegador y cargado con `@defer`: no entra en el HTML del servidor ni en la carga inicial. Con "reducir movimiento", la escena queda quieta.
+- [x] Accesible: el botón dice el clima completo ("Clima: 25 °C, Parcialmente nublado, en Lima"); Esc y un clic fuera cierran el panel; el clima nuevo se anuncia. En móvil cabe en la primera fila de la cabecera.
+
 ---
 
 ## 4. Requisitos transversales

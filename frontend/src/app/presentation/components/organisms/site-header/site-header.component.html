@@ -42,6 +42,12 @@
       </ul>
     </nav>
 
+    <!-- Clima del visitante (HU-25): solo en el navegador; se descarga cuando el navegador queda libre -->
+    <div class="site-header__weather">
+      @defer (on idle) {
+        <app-weather-host />
+      }
+    </div>
     <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="changeLang($event)" />
     <app-theme-toggle class="site-header__theme" [dark]="theme.theme() === 'dark'" (toggled)="theme.toggle($event)" />
   </div>
