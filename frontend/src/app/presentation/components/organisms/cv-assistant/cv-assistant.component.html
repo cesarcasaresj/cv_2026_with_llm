@@ -75,7 +75,15 @@
   [attr.aria-expanded]="open()"
   [attr.aria-controls]="open() ? 'cv-assistant-panel' : null"
   (click)="toggle()"
+  (pointerenter)="excited.set(true)"
+  (pointerleave)="excited.set(false)"
+  (focus)="excited.set(true)"
+  (blur)="excited.set(false)"
 >
-  <span class="launcher__icon" aria-hidden="true">{{ open() ? '✕' : '✦' }}</span>
+  @if (open()) {
+    <span class="launcher__icon" aria-hidden="true">✕</span>
+  } @else {
+    <app-assistant-orb class="launcher__orb" [excited]="excited()" />
+  }
   <span class="launcher__label">{{ open() ? text.close : text.launcher }}</span>
 </button>
