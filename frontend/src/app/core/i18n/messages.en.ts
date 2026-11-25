@@ -111,6 +111,28 @@ export const en: Messages = {
     dialogueRestart: 'Start over',
   },
 
+  weather: {
+    label: (temperature: string, condition: string, place: string): string => `Weather: ${temperature}, ${condition}, ${place}`,
+    conditions: {
+      clear: 'Clear',
+      'partly-cloudy': 'Partly cloudy',
+      cloudy: 'Cloudy',
+      fog: 'Fog',
+      drizzle: 'Drizzle',
+      rain: 'Rain',
+      snow: 'Snow',
+      thunder: 'Thunderstorm',
+    },
+    inPlace: (place: string): string => `in ${place}`,
+    nearYou: 'near you',
+    yourLocation: 'at your location',
+    useLocation: 'Use my exact location',
+    locating: 'Finding your location…',
+    locationFailed: "We couldn't use your location. Showing an approximate one.",
+    approxNote: 'Approximate location, no data stored. Weather by',
+    preciseNote: 'Your location is only used for this request (rounded to ~10 km). Weather by',
+  },
+
   assistant: {
     launcher: 'Ask my CV',
     title: 'Ask my CV',

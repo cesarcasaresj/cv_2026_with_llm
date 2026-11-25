@@ -38,6 +38,9 @@ import { AskAboutCv } from './core/usecases/AskAboutCv';
 import { ClaudeCvAssistant } from './infrastructure/ai/ClaudeCvAssistant';
 import { MemoryQuestionQuota } from './infrastructure/ai/MemoryQuestionQuota';
 import { assistantRoutes } from './infrastructure/controllers/assistantRoutes';
+import { GetWeather } from './core/usecases/GetWeather';
+import { CachedWeatherSource, OpenMeteoWeatherSource } from './infrastructure/weather/OpenMeteoWeatherSource';
+import { weatherRoutes } from './infrastructure/controllers/weatherRoutes';
 import { portfolioRoutes } from './infrastructure/controllers/portfolioRoutes';
 
 const GITHUB_CACHE_MS = 60 * 60 * 1000; // 1 hora: muy por debajo del límite de 60 peticiones/hora sin token
@@ -175,6 +178,8 @@ async function start(): Promise<void> {
     portfolioRoutes(getProfile, listProjects, new ListUpdates(profiles), links),
   );
   app.use('/api/v1/assistant', assistantRoutes(askAboutCv));
+  // Clima del visitante para la cabecera (spec.md, HU-25)
+  app.use('/api/v1/weather', weatherRoutes(new GetWeather(new CachedWeatherSource(new OpenMeteoWeatherSource()))));
   app.use(seoRoutes(new ListSitemapEntries(posts), siteUrl));
   app.use(errorHandler);
 

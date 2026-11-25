@@ -1,0 +1,35 @@
+<div class="scene__stage">
+  @if (showSky()) {
+    @if (isDay()) {
+      <span class="sun"><span class="sun__rays"></span></span>
+    } @else {
+      <span class="moon"></span>
+      <span class="star star--1"></span>
+      <span class="star star--2"></span>
+    }
+  }
+
+  @if (clouds() >= 2) {
+    <span class="cloud cloud--back"></span>
+  }
+  @if (clouds() >= 1) {
+    <span class="cloud cloud--front"></span>
+  }
+
+  @if (bolt()) {
+    <span class="bolt"></span>
+  }
+
+  @for (drop of drops(); track drop) {
+    <span class="drop" [style.--i]="drop"></span>
+  }
+  @for (flake of flakes(); track flake) {
+    <span class="flake" [style.--i]="flake"></span>
+  }
+
+  @if (fog()) {
+    <span class="fog fog--1"></span>
+    <span class="fog fog--2"></span>
+    <span class="fog fog--3"></span>
+  }
+</div>

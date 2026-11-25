@@ -49,13 +49,34 @@
   transform: rotate(135deg) scale(1.1);
 }
 
-/* En móvil el selector de idioma queda arriba a la derecha, junto a la marca, y la navegación baja a su fila */
-.site-header__language {
+/* En móvil, clima, idioma y tema quedan arriba a la derecha, junto a la marca; la navegación baja a su fila */
+.site-header__weather {
+  display: inline-flex;
   margin-left: auto;
 }
 
 .site-header__theme {
   display: inline-flex;
+}
+
+/* Móvil: la primera fila lleva marca, clima, idioma y tema; se aprieta un poco para que quepan */
+@media (max-width: 30rem) {
+  .site-header__inner {
+    column-gap: 0.5rem;
+    padding-inline: 1rem;
+  }
+}
+
+/* En pantallas muy estrechas queda solo el logo: el nombre ya está en grande en la portada */
+@media (max-width: 23.5rem) {
+  .site-header__brand-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
 }
 
 .site-header__nav {
@@ -192,7 +213,7 @@
     font-size: 0.95rem;
   }
 
-  .site-header__language {
+  .site-header__weather {
     margin-left: 0.75rem;
   }
 }

@@ -1,0 +1,158 @@
+:host {
+  position: relative;
+  display: inline-flex;
+}
+
+.weather__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.5rem;
+  padding: 0.15rem 0.6rem 0.15rem 0.3rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: 999px;
+  background: var(--color-surface-soft);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: transform 0.3s var(--ease-spring);
+}
+
+.weather__button:hover {
+  transform: translateY(-1px);
+}
+
+.weather__button:focus-visible {
+  outline: 3px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Panel con el detalle, colgado del botón */
+.weather__panel {
+  position: absolute;
+  top: calc(100% + 0.6rem);
+  right: 0;
+  z-index: 30;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  width: min(19rem, calc(100vw - 2rem));
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-hairline);
+  border-radius: 1rem;
+  background: var(--color-background);
+  color: var(--color-text);
+  box-shadow: 0 24px 48px -24px rgb(11 16 32 / 0.55);
+  animation: weather-in 0.3s var(--ease-spring) both;
+  transform-origin: top right;
+}
+
+@keyframes weather-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.96);
+  }
+}
+
+.weather__panel:focus {
+  outline: none;
+}
+
+.weather__details > * {
+  margin: 0;
+}
+
+.weather__title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.weather__condition {
+  margin-top: 0.3rem;
+  font-weight: 700;
+}
+
+.weather__place {
+  margin-top: 0.2rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.weather__locate {
+  grid-column: 1 / -1;
+  justify-self: start;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-accent);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.weather__locate:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+}
+
+.weather__locate:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.weather__note {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+
+.weather__note a {
+  color: var(--color-link);
+}
+
+/* En móvil, el botón muestra solo la escena y la temperatura, sin borde */
+@media (max-width: 30rem) {
+  .weather__button {
+    gap: 0.15rem;
+    padding-inline: 0 0.2rem;
+    border-color: transparent;
+    background: transparent;
+    font-size: 0.8rem;
+  }
+
+  .weather__icon {
+    /* Por encima del tamaño en línea que fija la entrada size */
+    --scene-size: 1.6rem !important;
+  }
+
+  /* La cabecera es fija arriba: el panel se abre bajo su primera fila, a todo el ancho */
+  .weather__panel {
+    position: fixed;
+    top: 3.4rem;
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .weather__button,
+  .weather__button:hover {
+    transition: none;
+    transform: none;
+  }
+
+  .weather__panel {
+    animation: none;
+  }
+}
