@@ -116,6 +116,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ApiError'
+        '429':
+          description: Demasiados intentos fallidos seguidos desde el mismo visitante. Retry-After indica cuántos segundos esperar.
+          headers:
+            Retry-After:
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiError'
         '422':
           description: Datos de entrada no válidos.
           content:

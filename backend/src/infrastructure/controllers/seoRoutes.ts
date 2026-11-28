@@ -26,10 +26,9 @@ export function seoRoutes(listSitemapEntries: ListSitemapEntries, siteUrl: strin
   });
 
   router.get('/robots.txt', (_request, response) => {
-    // Login y cuenta no aportan nada a los buscadores
-    response
-      .type('text/plain')
-      .send(`User-agent: *\nAllow: /\nDisallow: /login\nDisallow: /cuenta\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
+    // Sin "Disallow: /login": solo le enseñaría a un atacante dónde está el panel. Login y cuenta ya
+    // llevan <meta name="robots" content="noindex">, y su protección real está en el servidor (401 sin sesión).
+    response.type('text/plain').send(`User-agent: *\nAllow: /\n\nSitemap: ${siteUrl}/sitemap.xml\n`);
   });
 
   return router;

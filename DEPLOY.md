@@ -155,6 +155,31 @@ Para cambiar tus datos, edita `content/perfil/perfil.json` o los artículos y re
 - **Avisos oficiales:** suscripción a nodejs.org/en/blog/vulnerability y postgresql.org/support/security.
 - **Sistema operativo:** `unattended-upgrades` instala solo los parches de seguridad de Ubuntu.
 
+## Cabeceras de seguridad y endurecimiento
+
+Lo que pone el código (llega con cada despliegue):
+- **Páginas** (`frontend/src/security-headers.ts`): Content-Security-Policy con un *nonce* nuevo en cada respuesta
+  (solo se ejecutan los scripts que Angular escribe; uno inyectado por un XSS no), `frame-ancestors 'none'` y
+  `X-Frame-Options: DENY` contra el clickjacking, `Referrer-Policy`, `Permissions-Policy` y `nosniff`.
+- **API** (`backend/src/main.ts`, helmet): `default-src 'none'`, anti-iframe y `nosniff`. Ninguno de los dos envía `X-Powered-By`.
+- **Login**: tras 5 fallos seguidos desde la misma IP, cada intento fallido bloquea más tiempo (1, 2, 4… hasta 60 minutos)
+  y responde 429 con `Retry-After`. No se bloquea por correo: cualquiera podría dejar al autor fuera a propósito.
+- **Caddy** (`deploy/vps/Caddyfile`): HSTS de un año, quita `Server`, `Via` y `X-Powered-By`, y solo acepta
+  `CF-Connecting-IP` (la IP real del visitante) cuando la petición viene de un rango de Cloudflare.
+  Si Cloudflare publica rangos nuevos (https://www.cloudflare.com/ips/), hay que añadirlos ahí.
+
+Lo que se hace a mano, una vez:
+1. **Correo del dominio** (no se usa correo en `cesarcasares.com`): Cloudflare → DNS → Records, dos registros TXT
+   para que nadie pueda enviar correos que parezcan tuyos:
+   - `TXT  cesarcasares.com  "v=spf1 -all"`
+   - `TXT  _dmarc  "v=DMARC1; p=reject; adkim=s; aspf=s"`
+2. **Origen solo por Cloudflare:** que el VPS rechace el 80 y el 443 si no vienen de Cloudflare, para que nadie se salte su
+   protección llamando a la IP directamente. Con `ufw` (como root), los mismos rangos del Caddyfile para 80/tcp, 443/tcp y 443/udp,
+   y después `ufw deny 80,443/tcp`. Ojo: Docker publica puertos saltándose `ufw`; la regla tiene que ir en la cadena
+   `DOCKER-USER` de iptables o hacerse con el firewall del panel de Contabo.
+3. **Opcional:** Cloudflare → Security → WAF → Rate limiting rules, una regla para `/api/v1/auth/login` (por ejemplo 10 peticiones
+   por minuto por IP). Es una segunda capa por delante del freno del backend.
+
 ## Si algo falla
 
 - **Estado y errores:** `ssh deploy@<IP-del-VPS>`, luego `cd /opt/cv && docker compose ps` y `docker compose logs api --tail 50`

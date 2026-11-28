@@ -1,4 +1,6 @@
 import express from 'express';
+import helmet from 'helmet';
+import { LoginThrottle } from './infrastructure/security/LoginThrottle';
 import { resolve } from 'node:path';
 import { createSecretStore, secretPaths } from './infrastructure/security/SecretStore';
 import { runMigrations } from './infrastructure/database/migrations';
@@ -137,7 +139,18 @@ async function start(): Promise<void> {
   }
 
   const app = express();
-  // Detrás de Caddy y del frontend: request.ip es la del proxy; el visitante se identifica por X-Forwarded-For
+  // No anunciar el servidor ("X-Powered-By: Express")
+  app.disable('x-powered-by');
+  // Cabeceras de seguridad. La API solo devuelve JSON, XML y texto: no necesita cargar nada (default-src 'none')
+  // ni dejarse incrustar en un iframe. HSTS lo pone Caddy, que es quien sirve HTTPS.
+  app.use(
+    helmet({
+      contentSecurityPolicy: { useDefaults: false, directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+      strictTransportSecurity: false,
+      xFrameOptions: { action: 'deny' },
+    }),
+  );
+  // Detrás de Caddy y del frontend: request.ip es la del proxy; el visitante se identifica con visitorOf()
   app.use(express.json({ limit: '32kb' }));
   app.use(
     '/api/v1/posts',
@@ -159,6 +172,7 @@ async function start(): Promise<void> {
       new LoginUser(users, hasher, sessions, tokens),
       getCurrentUser,
       new LogoutUser(sessions, tokens),
+      new LoginThrottle(),
     ),
   );
   app.use(

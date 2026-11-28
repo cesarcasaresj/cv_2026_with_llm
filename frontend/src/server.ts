@@ -8,6 +8,7 @@ import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import { join } from 'node:path';
 import { negotiateLang } from './app/core/i18n/lang';
+import { addScriptNonce, securityHeaders } from './security-headers';
 
 const browserDistFolder = join(import.meta.dirname, '../browser');
 
@@ -23,6 +24,12 @@ const allowedHosts = (process.env['ALLOWED_HOSTS'] ?? 'localhost')
 
 const app = express();
 const angularApp = new AngularNodeAppEngine({ allowedHosts });
+
+// No anunciar el servidor ("X-Powered-By: Express")
+app.disable('x-powered-by');
+// CSP, anti-iframe, Referrer-Policy, Permissions-Policy… (security-headers.ts).
+// Va antes del proxy: las respuestas de la API llegan con las cabeceras del backend, que las reemplazan.
+app.use(securityHeaders({ dev: process.env['NODE_ENV'] !== 'production' }));
 
 /**
  * La API y los archivos de SEO los responde el backend (spec.md, HU-12).
@@ -65,7 +72,15 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
+    .then(async (response) => {
+      if (!response) return next();
+      // Los scripts en línea de Angular reciben el nonce de esta respuesta (Content-Security-Policy)
+      if (response.headers.get('content-type')?.includes('text/html')) {
+        const html = addScriptNonce(await response.text(), res.locals['cspNonce']);
+        response = new Response(html, { status: response.status, statusText: response.statusText, headers: response.headers });
+      }
+      return writeResponseToNodeResponse(response, res);
+    })
     .catch(next);
 });
 
