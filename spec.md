@@ -310,6 +310,12 @@ Criterios de aceptación:
 - [x] Solo en el navegador y cargado con `@defer`: no entra en el HTML del servidor ni en la carga inicial. Con "reducir movimiento", la escena queda quieta.
 - [x] Accesible: el botón dice el clima completo ("Clima: 25 °C, Parcialmente nublado, en Lima"); Esc y un clic fuera cierran el panel; el clima nuevo se anuncia. En móvil cabe en la primera fila de la cabecera.
 
+### HU-27: Tema según la hora del visitante
+- [x] Sin elección guardada, el sitio se ve en claro de 7:00 a 18:59 y en oscuro el resto, según la hora local del visitante.
+- [x] El servidor usa la zona horaria que envía Cloudflare (`cf-timezone`) para que la página llegue ya con su tema, sin parpadeo; el navegador lo confirma con la hora del dispositivo y cambia solo si cae la noche con la página abierta.
+- [x] La elección del visitante (botón sol / luna, cookie `theme`) siempre manda, también al recargar.
+- [x] Sin zona horaria conocida, manda el modo del sistema (`prefers-color-scheme`).
+
 ---
 
 ## 4. Requisitos transversales
