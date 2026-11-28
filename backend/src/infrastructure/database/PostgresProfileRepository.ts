@@ -1,5 +1,14 @@
 import type { Pool } from 'pg';
-import type { Lang, LevelScene, Position, Profile, ProfileRepository, ProfileUpdate } from '../../core/domain/Profile';
+import {
+  EMPTY_CV_DETAILS,
+  type CvDetails,
+  type Lang,
+  type LevelScene,
+  type Position,
+  type Profile,
+  type ProfileRepository,
+  type ProfileUpdate,
+} from '../../core/domain/Profile';
 
 /** DATE de Postgres → "AAAA-MM" (LinkedIn solo guarda año y mes). */
 const YEAR_MONTH = `'YYYY-MM'`;
@@ -22,11 +31,13 @@ export class PostgresProfileRepository implements ProfileRepository {
       headline: string;
       location: string | null;
       summary: string;
+      details: unknown;
       translated: boolean;
     }>(
       `SELECT full_name, location,
               ${localized('headline', lang)} AS headline,
               ${localized('summary', lang)} AS summary,
+              ${localized('details', lang)} AS details,
               (headline_en IS NOT NULL OR summary_en IS NOT NULL) AS translated
          FROM profile WHERE id = 1`,
     );
@@ -41,8 +52,12 @@ export class PostgresProfileRepository implements ProfileRepository {
       started_on: string;
       finished_on: string | null;
       scene: LevelScene | null;
+      client: string | null;
+      highlights: string[];
     }>(
       `SELECT company,
+              ${localized('client', lang)} AS client,
+              ${localized('highlights', lang)} AS highlights,
               ${localized('title', lang)} AS title,
               location,
               ${localized('description', lang)} AS description,
@@ -61,6 +76,8 @@ export class PostgresProfileRepository implements ProfileRepository {
       finishedOn: row.finished_on,
       description: row.description,
       scene: row.scene,
+      client: row.client,
+      highlights: row.highlights ?? [],
     }));
 
     return {
@@ -71,6 +88,7 @@ export class PostgresProfileRepository implements ProfileRepository {
       location: profile.location,
       summary: profile.summary,
       experience,
+      ...cvDetails(profile.details),
     };
   }
 
@@ -81,4 +99,20 @@ export class PostgresProfileRepository implements ProfileRepository {
     );
     return rows.map((row) => ({ publishedAt: row.published_at, text: row.text, url: row.url }));
   }
+}
+
+/** La columna JSONB la escribe load:profile ya validada; aquí solo se descarta lo que no tenga la forma esperada. */
+function cvDetails(raw: unknown): CvDetails {
+  if (typeof raw !== 'object' || raw === null) return EMPTY_CV_DETAILS;
+  const data = raw as Partial<Record<keyof CvDetails, unknown>>;
+  const list = <T>(value: unknown, valid: (item: Record<string, unknown>) => boolean): T[] =>
+    Array.isArray(value) ? (value.filter((item) => typeof item === 'object' && item !== null && valid(item)) as T[]) : [];
+  const isText = (value: unknown) => typeof value === 'string';
+  return {
+    skills: list(data.skills, (item) => isText(item['group']) && Array.isArray(item['items'])),
+    education: list(data.education, (item) => isText(item['degree']) && isText(item['school'])),
+    languages: list(data.languages, (item) => isText(item['name']) && isText(item['level'])),
+    facts: Array.isArray(data.facts) ? data.facts.filter(isText) : [],
+    availability: isText(data.availability) ? (data.availability as string) : null,
+  };
 }

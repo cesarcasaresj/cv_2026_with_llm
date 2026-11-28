@@ -12,6 +12,8 @@ function position(overrides: Partial<Position>): Position {
     finishedOn: null,
     description: null,
     scene: null,
+    client: null,
+    highlights: [],
     ...overrides,
   };
 }
@@ -54,6 +56,11 @@ describe('GetProfile', () => {
         lang: 'es',
         name: 'Persona',
         headline: 'Desarrolladora',
+        skills: [],
+        education: [],
+        languages: [],
+        facts: [],
+        availability: null,
         location: null,
         summary: 'Uno.\n\nDos.',
         experience: [
@@ -76,7 +83,7 @@ describe('GetProfile en otro idioma (HU-18)', () => {
     const repository: ProfileRepository = {
       getProfile: async (lang) => {
         asked.push(lang);
-        return { lang, name: 'Persona', headline: 'Developer', location: null, summary: 'One.', experience: [] };
+        return { lang, name: 'Persona', headline: 'Developer', location: null, summary: 'One.', experience: [], skills: [], education: [], languages: [], facts: [], availability: null };
       },
       listUpdates: async () => [],
     };

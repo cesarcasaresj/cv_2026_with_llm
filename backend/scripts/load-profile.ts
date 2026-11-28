@@ -38,20 +38,31 @@ async function main(): Promise<void> {
   try {
     await client.query('BEGIN');
     await client.query(
-      `INSERT INTO profile (id, full_name, location, headline, headline_en, summary, summary_en, updated_at)
-       VALUES (1, $1, $2, $3, $4, $5, $6, now())
+      `INSERT INTO profile (id, full_name, location, headline, headline_en, summary, summary_en, details, details_en, updated_at)
+       VALUES (1, $1, $2, $3, $4, $5, $6, $7, $8, now())
        ON CONFLICT (id) DO UPDATE SET full_name = EXCLUDED.full_name, location = EXCLUDED.location,
          headline = EXCLUDED.headline, headline_en = EXCLUDED.headline_en,
-         summary = EXCLUDED.summary, summary_en = EXCLUDED.summary_en, updated_at = now()`,
-      [profile.name, profile.location, profile.headline.es, profile.headline.en, profile.summary.es, profile.summary.en],
+         summary = EXCLUDED.summary, summary_en = EXCLUDED.summary_en,
+         details = EXCLUDED.details, details_en = EXCLUDED.details_en, updated_at = now()`,
+      [
+        profile.name,
+        profile.location,
+        profile.headline.es,
+        profile.headline.en,
+        profile.summary.es,
+        profile.summary.en,
+        JSON.stringify(profile.details.es),
+        profile.details.en ? JSON.stringify(profile.details.en) : null,
+      ],
     );
 
     if (profile.experience) {
       await client.query('DELETE FROM positions');
       for (const position of profile.experience) {
         await client.query(
-          `INSERT INTO positions (company, location, started_on, finished_on, title, title_en, description, description_en, scene)
-           VALUES ($1, $2, ($3 || '-01')::date, ($4 || '-01')::date, $5, $6, $7, $8, $9)`,
+          `INSERT INTO positions (company, location, started_on, finished_on, title, title_en, description, description_en, scene,
+                                  client, client_en, highlights, highlights_en)
+           VALUES ($1, $2, ($3 || '-01')::date, ($4 || '-01')::date, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
           [
             position.company,
             position.location,
@@ -62,6 +73,10 @@ async function main(): Promise<void> {
             position.description?.es ?? null,
             position.description?.en ?? null,
             position.scene,
+            position.client?.es ?? null,
+            position.client?.en ?? null,
+            position.highlights?.es ?? [],
+            position.highlights?.en ?? null,
           ],
         );
       }

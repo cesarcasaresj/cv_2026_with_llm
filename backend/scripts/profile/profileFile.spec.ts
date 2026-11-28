@@ -22,6 +22,7 @@ describe('readProfileFile', () => {
         headline: { es: 'Desarrolladora web', en: 'Web developer' },
         summary: { es: 'Uno.\n\nDos.', en: 'One.\n\nTwo.' },
         experience: null,
+        details: { es: { skills: [], education: [], languages: [], facts: [], availability: null }, en: null },
       },
     });
   });
@@ -57,8 +58,51 @@ describe('readProfileFile', () => {
         title: { es: 'Desarrolladora', en: 'Developer' },
         description: { es: 'Hago cosas.', en: null },
         scene: null,
+        client: null,
+        highlights: null,
       },
     ]);
+  });
+
+  it('lee cliente, logros, habilidades, educación e idiomas (HU-26)', () => {
+    const result = readProfileFile({
+      ...valid,
+      experience: [
+        {
+          company: 'Consultora',
+          location: null,
+          startedOn: '2021-06',
+          finishedOn: null,
+          title: { es: 'Frontend' },
+          client: { es: 'Un banco', en: 'A bank' },
+          highlights: { es: ['Logro uno.', 'Logro dos.'], en: ['First.'] },
+        },
+      ],
+      skills: { es: [{ group: 'Frontend', items: ['Angular'] }], en: [{ group: 'Frontend', items: ['Angular'] }] },
+      education: { es: [{ degree: 'Ingeniería', school: 'Universidad', year: 2015 }] },
+      languages: { es: [{ name: 'Inglés', level: 'B2' }] },
+    });
+
+    if (!result.ok) throw new Error(result.errors.join(' | '));
+    expect(result.profile.experience?.[0]).toMatchObject({
+      client: { es: 'Un banco', en: 'A bank' },
+      highlights: { es: ['Logro uno.', 'Logro dos.'], en: ['First.'] },
+    });
+    expect(result.profile.details.es).toEqual({
+      skills: [{ group: 'Frontend', items: ['Angular'] }],
+      education: [{ degree: 'Ingeniería', school: 'Universidad', year: 2015 }],
+      languages: [{ name: 'Inglés', level: 'B2' }],
+      facts: [],
+      availability: null,
+    });
+    // Con alguna sección en inglés se guarda el inglés
+    expect(result.profile.details.en?.skills).toHaveLength(1);
+  });
+
+  it('un año de estudios que no es un número es un error', () => {
+    const result = readProfileFile({ ...valid, education: { es: [{ degree: 'X', school: 'Y', year: 'hace mucho' }] } });
+
+    expect(result.ok).toBe(false);
   });
 
   it('junta todos los errores para corregirlos de una vez', () => {

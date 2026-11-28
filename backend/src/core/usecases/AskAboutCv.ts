@@ -46,6 +46,8 @@ export function validateConversation(conversation: unknown): ChatTurn[] {
 export function cvDocument(profile: PublicProfile, projects: Project[], links: PublicLinks): string {
   const lines = [`# ${profile.name}`, profile.headline];
   if (profile.location) lines.push(`Location: ${profile.location}`);
+  if (profile.availability) lines.push(`Availability: ${profile.availability}`);
+  if (profile.facts.length > 0) lines.push(`Key facts: ${profile.facts.join(' · ')}`);
   if (links.linkedin) lines.push(`LinkedIn: ${links.linkedin}`);
   if (links.github) lines.push(`GitHub: ${links.github}`);
 
@@ -55,8 +57,22 @@ export function cvDocument(profile: PublicProfile, projects: Project[], links: P
   for (const position of profile.experience) {
     const period = `${position.startedOn} – ${position.finishedOn ?? 'present'}`;
     lines.push('', `### ${position.title} · ${position.company} (${period})`);
+    if (position.client) lines.push(`Client: ${position.client}`);
     if (position.location) lines.push(`Location: ${position.location}`);
     if (position.description) lines.push(position.description);
+    for (const highlight of position.highlights) lines.push(`- ${highlight}`);
+  }
+
+  if (profile.skills.length > 0) {
+    lines.push('', '## Skills');
+    for (const skill of profile.skills) lines.push(`- ${skill.group}: ${skill.items.join(', ')}`);
+  }
+  if (profile.education.length > 0) {
+    lines.push('', '## Education');
+    for (const item of profile.education) lines.push(`- ${item.degree} — ${item.school}${item.year ? ` (${item.year})` : ''}`);
+  }
+  if (profile.languages.length > 0) {
+    lines.push('', '## Languages', profile.languages.map((item) => `${item.name} (${item.level})`).join(' · '));
   }
 
   if (projects.length > 0) {
