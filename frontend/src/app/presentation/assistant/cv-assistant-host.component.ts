@@ -2,6 +2,7 @@ import { Component, DestroyRef, afterNextRender, computed, inject, input, signal
 import { HttpErrorResponse } from '@angular/common/http';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { AssistantService, MAX_QUESTIONS, type AssistantMessage } from '../../core/assistant/assistant.service';
+import { AssistantUiService } from '../../core/assistant/assistant-ui.service';
 import { CvAssistantComponent } from '../components/organisms/cv-assistant/cv-assistant.component';
 
 /**
@@ -23,6 +24,8 @@ import { CvAssistantComponent } from '../components/organisms/cv-assistant/cv-as
         (openChange)="open.set($event)"
         (asked)="ask($event)"
         (restarted)="restart()"
+        [hideLauncher]="ui.heroButtonVisible()"
+        [linkedinUrl]="linkedinUrl()"
       />
     }
   `,
@@ -33,9 +36,13 @@ export class CvAssistantHostComponent {
 
   /** Nombre de pila del autor, para el saludo. */
   readonly name = input.required<string>();
+  /** Perfil de LinkedIn para el "siguiente paso" tras una respuesta. */
+  readonly linkedinUrl = input<string | null>(null);
 
-  protected readonly available = signal(false);
-  protected readonly open = signal(false);
+  // Compartidos con el inicio: su botón "Pregúntale a mi CV" abre este mismo panel
+  protected readonly ui = inject(AssistantUiService);
+  protected readonly available = this.ui.available;
+  protected readonly open = this.ui.open;
   protected readonly messages = signal<AssistantMessage[]>([]);
   protected readonly pending = signal(false);
   protected readonly error = signal<string | null>(null);

@@ -31,6 +31,11 @@ export class CvAssistantComponent {
   readonly error = input<string | null>(null);
   /** Preguntas que quedan en esta conversación. */
   readonly remaining = input(6);
+  /** true mientras se ve el botón del inicio: el flotante se esconde para no repetir el mismo llamado. */
+  readonly hideLauncher = input(false);
+  /** Enlaces del siguiente paso tras una respuesta: LinkedIn (si hay) y el PDF del CV. */
+  readonly linkedinUrl = input<string | null>(null);
+  readonly pdfUrl = input('/cv/Cesar_Casares_CV.pdf');
 
   readonly openChange = output<boolean>();
   readonly asked = output<string>();
@@ -39,6 +44,7 @@ export class CvAssistantComponent {
   /** Cursor o foco en el botón: la esfera se activa. */
   protected readonly excited = signal(false);
   protected readonly draft = signal('');
+  protected readonly hasAnswer = computed(() => this.messages().some((message) => message.role === 'assistant'));
   protected readonly canSend = computed(
     () => !this.pending() && this.remaining() > 0 && this.draft().trim().length > 0,
   );

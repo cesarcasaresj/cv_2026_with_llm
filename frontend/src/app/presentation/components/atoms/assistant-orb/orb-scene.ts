@@ -30,10 +30,10 @@ export interface OrbScene {
   dispose(): void;
 }
 
-const DEEP = new Color('#2a0f57');
-const VIOLET = new Color('#9a3ff0');
-const GOLD = new Color('#ffd166');
-const CYAN = new Color('#7be0ff');
+const DEEP = new Color('#13213f');
+const VIOLET = new Color('#3a63d8');
+const GOLD = new Color('#d9a441');
+const CYAN = new Color('#8fb0f5');
 
 // Ruido simplex 3D (Ian McEwan, Ashima Arts; licencia MIT)
 const NOISE = /* glsl */ `

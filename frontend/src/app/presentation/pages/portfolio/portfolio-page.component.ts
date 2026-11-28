@@ -11,6 +11,7 @@ import { ExperienceJourneyComponent } from '../../components/organisms/experienc
 import { AboutSectionComponent } from '../../components/organisms/about-section/about-section.component';
 import { ProjectGridComponent } from '../../components/organisms/project-grid/project-grid.component';
 import { UpdateFeedComponent } from '../../components/organisms/update-feed/update-feed.component';
+import { CvDetailsComponent } from '../../components/organisms/cv-details/cv-details.component';
 import { RevealDirective } from '../../motion/reveal.directive';
 import { CvAssistantHostComponent } from '../../assistant/cv-assistant-host.component';
 
@@ -25,6 +26,7 @@ import { CvAssistantHostComponent } from '../../assistant/cv-assistant-host.comp
     HeroSectionComponent,
     ExperienceJourneyComponent,
     AboutSectionComponent,
+    CvDetailsComponent,
     ProjectGridComponent,
     UpdateFeedComponent,
     CvAssistantHostComponent,

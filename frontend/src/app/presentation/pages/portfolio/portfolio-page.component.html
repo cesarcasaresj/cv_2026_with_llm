@@ -1,8 +1,12 @@
 <app-hero-section [profile]="loadedProfile()" [state]="profileState()" />
 
+<!-- Primero quién soy; después la experiencia, que es lo que más busca un reclutador -->
+<app-about-section [profile]="loadedProfile()" [state]="profileState()" [projectCount]="loadedProjects()?.length ?? null" />
+
 <app-experience-journey [positions]="loadedProfile()?.experience ?? null" [state]="profileState()" />
 
-<app-about-section [profile]="loadedProfile()" [state]="profileState()" [projectCount]="loadedProjects()?.length ?? null" />
+<!-- Habilidades, educación, idiomas y el PDF: el resto del CV (HU-26) -->
+<app-cv-details [profile]="loadedProfile()" [state]="profileState()" />
 
 <app-project-grid [projects]="loadedProjects()" [state]="projectsState()" [githubUrl]="loadedProfile()?.links?.github ?? null" />
 
@@ -27,6 +31,6 @@
 @if (loadedProfile(); as current) {
   <!-- Se descarga cuando el navegador queda libre: no pesa en la carga inicial -->
   @defer (on idle) {
-    <app-cv-assistant-host [name]="current.name.split(' ')[0]" />
+    <app-cv-assistant-host [name]="current.name.split(' ')[0]" [linkedinUrl]="current.links.linkedin" />
   }
 }

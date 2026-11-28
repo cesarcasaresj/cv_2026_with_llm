@@ -47,7 +47,7 @@
   border-radius: 1rem;
   background: var(--color-background);
   color: var(--color-text);
-  box-shadow: 0 24px 48px -24px rgb(11 16 32 / 0.55);
+  box-shadow: 0 24px 48px -24px rgb(18 20 23 / 0.55);
   animation: weather-in 0.3s var(--ease-spring) both;
   transform-origin: top right;
 }

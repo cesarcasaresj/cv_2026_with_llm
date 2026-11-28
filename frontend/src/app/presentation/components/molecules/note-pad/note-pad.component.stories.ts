@@ -18,7 +18,7 @@ const meta: Meta<NotePadComponent> = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="padding: 2rem; background: #0b1020">
+      <div style="padding: 2rem; background: #121417">
         <app-note-pad [soundOn]="soundOn" [party]="party" [progress]="progress" [showStart]="showStart"
           (played)="played($event)" (soundChange)="soundChange($event)" (partyEnded)="partyEnded()" />
       </div>`,

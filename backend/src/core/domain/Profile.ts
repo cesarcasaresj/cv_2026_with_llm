@@ -28,7 +28,40 @@ export interface Position {
   description: string | null;
   /** Diorama del puesto; null si no se eligió. */
   scene: LevelScene | null;
+  /** Cliente para el que se trabajó (consultoras); null si no aplica. */
+  client: string | null;
+  /** Logros del puesto, en viñetas (HU-26). */
+  highlights: string[];
 }
+
+/** Habilidades por área, educación e idiomas: el resto del CV (spec.md, HU-26). */
+export interface SkillGroup {
+  group: string;
+  items: string[];
+}
+
+export interface Education {
+  degree: string;
+  school: string;
+  year: number | null;
+}
+
+export interface SpokenLanguage {
+  name: string;
+  level: string;
+}
+
+export interface CvDetails {
+  skills: SkillGroup[];
+  education: Education[];
+  languages: SpokenLanguage[];
+  /** Datos clave para el inicio (HU-28): cortos y con cifras, por ejemplo "7+ años". */
+  facts: string[];
+  /** Disponibilidad, por ejemplo "Remoto LATAM · horario compatible con EE. UU."; null si no se indica. */
+  availability: string | null;
+}
+
+export const EMPTY_CV_DETAILS: CvDetails = { skills: [], education: [], languages: [], facts: [], availability: null };
 
 /** Perfil público del autor (spec.md, HU-14 y HU-15). Nunca incluye el correo ni otros datos privados. */
 export interface Profile {
@@ -40,6 +73,11 @@ export interface Profile {
   /** Texto de "Acerca de mí"; los párrafos van separados por líneas en blanco. */
   summary: string;
   experience: Position[];
+  skills: SkillGroup[];
+  education: Education[];
+  languages: SpokenLanguage[];
+  facts: string[];
+  availability: string | null;
 }
 
 export interface ProfileUpdate {

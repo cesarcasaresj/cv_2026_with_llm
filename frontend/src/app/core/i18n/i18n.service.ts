@@ -30,7 +30,7 @@ export const INITIAL_LANG = new InjectionToken<Lang>('INITIAL_LANG');
 
 /**
  * Traducción de la interfaz hecha a mano (spec.md, HU-18), sin librerías:
- * - `lang` es una señal; `t` es el diccionario de ese idioma. Las plantillas leen `i18n.t().hero.greeting`:
+ * - `lang` es una señal; `t` es el diccionario de ese idioma. Las plantillas leen `i18n.t().hero.askCta`:
  *   con autocompletado, comprobado al compilar y actualizado al instante cuando cambia el idioma.
  * - El primer idioma lo decide la cookie `lang`, si no el idioma del navegador, si no el español.
  *   El servidor y el navegador usan la misma regla, así que el HTML hidratado coincide y no hay parpadeo.

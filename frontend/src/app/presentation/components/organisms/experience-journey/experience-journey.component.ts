@@ -63,6 +63,8 @@ export class ExperienceJourneyComponent {
   protected readonly lang = this.i18n.lang;
   protected readonly toDate = toDate;
   protected readonly duration = duration;
+  /** Logros visibles por puesto: un reclutador lee 3 o 4 y salta; el resto, a un clic. */
+  protected readonly visibleHighlights = 3;
 
   readonly positions = input<Position[] | null>(null);
   readonly state = input.required<ListState>();

@@ -72,7 +72,7 @@
 /* El texto pintado se gira para leerse en horizontal pese al giro del escenario */
 .cube__label {
   rotate: -45deg;
-  color: #0b1020;
+  color: #121417;
   font: 800 11px/1 var(--font-display);
 }
 
@@ -131,7 +131,7 @@
   transition: opacity 0.2s;
   color: #f5f7ff;
   font: 800 54px/1 var(--font-display);
-  text-shadow: 0 0 18px rgb(124 92 255 / 0.9);
+  text-shadow: 0 0 18px rgb(58 99 216 / 0.9);
 }
 
 /* ---------- Movimientos de la escena ---------- */

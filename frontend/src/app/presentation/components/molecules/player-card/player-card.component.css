@@ -60,7 +60,7 @@
   overflow: hidden;
   border: 5px solid #fff;
   border-radius: 1.25rem;
-  background: #2b1055;
+  background: #13213f;
   box-shadow:
     0 2px 0 rgb(0 0 0 / 0.08),
     0 34px 60px -30px rgb(43 16 85 / 0.75);
@@ -75,7 +75,7 @@
 .card__sky {
   --depth: 8;
   inset: -12%;
-  background: linear-gradient(180deg, #2b1055 0%, #6a2ccf 28%, #e0337f 58%, #ff8a3d 82%, #ffd166 100%);
+  background: linear-gradient(180deg, #13213f 0%, #1f3a78 32%, #3a63d8 62%, #8fb0f5 88%, #dbe6ff 100%);
 }
 
 /* Sol de atardecer con franjas, como en los pósters retro */
@@ -86,7 +86,7 @@
   width: 64%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: linear-gradient(180deg, #fff3b0 0%, #ffd166 40%, #ff8a3d 100%);
+  background: linear-gradient(180deg, #fff6df 0%, #e7c27a 45%, #c9a46a 100%);
   mask: linear-gradient(180deg, #000 52%, transparent 52% 56%, #000 56% 64%, transparent 64% 69%, #000 69% 77%, transparent 77% 83%, #000 83%);
   opacity: 0.95;
 }
@@ -106,7 +106,7 @@
 .card__city--near {
   --depth: 46;
   height: 28%;
-  fill: #1b0b33;
+  fill: #0f1a33;
 }
 
 /* Brillo que sigue al puntero */
@@ -156,7 +156,7 @@
   aspect-ratio: 1;
   border: 3px solid #1b0b33;
   border-radius: 50%;
-  background: #ffd166;
+  background: #d9a441;
   color: #1b0b33;
   line-height: 1;
   transform: translateZ(90px) rotate(10deg);
@@ -205,7 +205,7 @@
 .card__role {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #7a1e9c;
+  color: #1d4ed8;
 }
 
 @media (prefers-reduced-motion: reduce) {

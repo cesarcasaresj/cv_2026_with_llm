@@ -16,7 +16,7 @@ const meta: Meta<LanguageFlagComponent> = {
   },
   render: (args) => ({
     props: args,
-    template: `<div style="height: 420px; background: #0b1020"><app-language-flag [lang]="lang" [run]="run" /></div>`,
+    template: `<div style="height: 420px; background: #121417"><app-language-flag [lang]="lang" [run]="run" /></div>`,
   }),
 };
 export default meta;

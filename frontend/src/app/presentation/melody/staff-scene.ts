@@ -13,7 +13,7 @@
 // - Solo anima mientras la portada se ve y la pestaña está activa.
 // - Con "reducir movimiento": todo a un cuarto de velocidad, sin curva del puntero ni corcheas que suben.
 
-import { NOTES, noteById, type NoteId } from './melody';
+import { NOTES, noteById, noteColor, type NoteId } from './melody';
 
 export interface StaffSceneHandle {
   /** Dibuja la nota en el pentagrama. `inMelody`: forma parte de la melodía secreta (brilla dorada). */
@@ -65,7 +65,7 @@ const LINES = 5;
 const NOTE_LIFETIME = 9; // segundos en pantalla
 const SCORE_SPEED = 26; // px/s hacia la izquierda
 const PULSE_SPEED = 900; // px/s
-const GOLD = '#ffd166';
+const GOLD = '#d9a441';
 
 export function createStaffScene(canvas: HTMLCanvasElement, options: StaffSceneOptions): StaffSceneHandle | null {
   const context = canvas.getContext('2d');
@@ -133,12 +133,26 @@ export function createStaffScene(canvas: HTMLCanvasElement, options: StaffSceneO
 
   // ---------- Dibujo ----------
 
+  /** Dorado de las notas de la melodía secreta: más oscuro en modo claro para que se vea. */
+  const gold = () => (light ? '#9a6a00' : GOLD);
+
+  /** true en modo claro. Se lee de --is-dark (styles.css) como mucho dos veces por segundo. */
+  let light = false;
+  let themeCheckedAt = -Infinity;
+  function refreshTheme(): void {
+    const now = performance.now();
+    if (now - themeCheckedAt < 500) return;
+    themeCheckedAt = now;
+    light = getComputedStyle(document.documentElement).getPropertyValue('--is-dark').trim() !== '1';
+  }
+
   function lineColor(line: number, alpha: number): string {
     if (partyEnergy > 0.01) {
       const hue = (time * 40 + line * 50) % 360;
-      return `hsla(${hue}, 90%, 70%, ${alpha})`;
+      return light ? `hsla(${hue}, 80%, 38%, ${Math.min(alpha * 1.5, 1)})` : `hsla(${hue}, 90%, 70%, ${alpha})`;
     }
-    return `rgba(196, 204, 255, ${alpha})`;
+    // En claro, azul pizarra y más opaco: sobre gris claro, el lila de la noche no se distingue
+    return light ? `rgba(47, 62, 110, ${Math.min(alpha * 1.5, 1)})` : `rgba(196, 204, 255, ${alpha})`;
   }
 
   function drawStaff(): void {
@@ -172,7 +186,7 @@ export function createStaffScene(canvas: HTMLCanvasElement, options: StaffSceneO
       // Aparece creciendo y se desvanece al final de su vida
       const appear = Math.min(age * 4, 1);
       const alpha = Math.min(1, (NOTE_LIFETIME - age) / 2) * appear;
-      const color = note.golden ? GOLD : definition.color;
+      const color = note.golden ? gold() : noteColor(note.id, light);
       const spin = partyEnergy > 0.01 ? Math.sin(time * 3 + note.x) * 0.4 * partyEnergy : 0;
 
       ctx.save();
@@ -262,6 +276,7 @@ export function createStaffScene(canvas: HTMLCanvasElement, options: StaffSceneO
   }
 
   function render(): void {
+    refreshTheme();
     ctx.clearRect(0, 0, width, height);
     drawStaff();
     drawFloating();
@@ -349,7 +364,7 @@ export function createStaffScene(canvas: HTMLCanvasElement, options: StaffSceneO
           vy: Math.sin(angle) * speed,
           born: time,
           life: 0.8 + Math.random() * 0.8,
-          color: inMelody ? GOLD : definition.color,
+          color: inMelody ? gold() : noteColor(id, light),
           size: 1.2 + Math.random() * 2,
         });
       }

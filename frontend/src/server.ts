@@ -61,7 +61,8 @@ app.use(
  * o el idioma del navegador. Vary avisa a las cachés de que la respuesta depende de esas cabeceras.
  */
 app.use((req, res, next) => {
-  res.setHeader('Vary', 'Cookie, Accept-Language');
+  // CF-Timezone: sin elección guardada, el tema depende de la hora del visitante (HU-27)
+  res.setHeader('Vary', 'Cookie, Accept-Language, CF-Timezone');
   res.setHeader('Content-Language', negotiateLang(req.headers.cookie ?? null, req.headers['accept-language'] ?? null));
   next();
 });

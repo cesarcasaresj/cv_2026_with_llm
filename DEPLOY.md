@@ -93,6 +93,8 @@ El dominio está registrado en Namecheap, pero su DNS lo gestiona Cloudflare (pl
 5. **Clima del visitante (HU-25):** Cloudflare → Rules → Settings → Managed Transforms → activa
    **"Add visitor location headers"**. Así el backend recibe la ciudad aproximada del visitante (`cf-ipcity`,
    `cf-iplatitude`, `cf-iplongitude`) sin enviar su IP a nadie. Sin esto (o con la nube gris), el widget muestra Lima.
+   La misma opción envía `cf-timezone`: sin elección guardada, la página llega en modo claro de día (7:00–18:59)
+   y oscuro de noche según la hora del visitante (HU-27). Sin esa cabecera, manda el modo del sistema.
 6. **Aviso si se cae:** UptimeRobot (gratis) vigila `https://cesarcasares.com/` y `/api/v1/posts/count` cada 5 minutos
    y avisa por correo.
 

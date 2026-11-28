@@ -3,30 +3,17 @@ import type { Profile } from '../../../../core/portfolio/portfolio.types';
 import type { ListState } from '../../../../core/http/resource-state';
 import { SectionHeadingComponent } from '../../atoms/section-heading/section-heading.component';
 import { PlayerCardComponent } from '../../molecules/player-card/player-card.component';
-import { DialogueBoxComponent } from '../../molecules/dialogue-box/dialogue-box.component';
-import { LevelStatComponent } from '../../molecules/level-stat/level-stat.component';
 import { I18nService } from '../../../../core/i18n/i18n.service';
-import { yearsSince } from '../../../journey/dates';
 
 /** Retrato de la tarjeta (public/images/perfil): cesar-400.avif, cesar-800.webp… */
-const PORTRAIT = '/images/perfil/cesar';
-
-interface Stat {
-  value: number;
-  suffix: string;
-  label: string;
-  achievement: string;
-  badge: string;
-  variant: 'level' | 'open-source';
-  href: string | null;
-}
+export const PORTRAIT = '/images/perfil/cesar';
 
 /**
- * "Acerca de mí" como pantalla de personaje de videojuego (spec.md, HU-14 y HU-23):
- * tarjeta 3D de papel, el texto en una caja de diálogo y las cifras como subidas de nivel.
+ * "Acerca de mí" (spec.md, HU-14 y HU-23): la tarjeta con la foto y el resumen completo, a la vista.
+ * Las cifras (años, empresas) ya están en el inicio: aquí no se repiten.
  */
 @Component({
-  imports: [SectionHeadingComponent, PlayerCardComponent, DialogueBoxComponent, LevelStatComponent],
+  imports: [SectionHeadingComponent, PlayerCardComponent],
   selector: 'app-about-section',
   templateUrl: './about-section.component.html',
   styleUrl: './about-section.component.css',
@@ -37,69 +24,9 @@ export class AboutSectionComponent {
 
   readonly profile = input<Profile | null>(null);
   readonly state = input.required<ListState>();
-  /** Número de proyectos públicos, o null si aún no se conoce. */
+  /** Número de proyectos públicos, o null si aún no se conoce (se conserva por compatibilidad con la página). */
   readonly projectCount = input<number | null>(null);
 
-  /** Primer puesto ("AAAA-MM"), o null sin experiencia. */
-  private readonly firstStart = computed(() => this.profile()?.experience.map((p) => p.startedOn).sort()[0] ?? null);
-
-  /** Años desde el primer puesto (al menos 1): el mismo cálculo que el viaje de la experiencia. */
-  private readonly years = computed(() => {
-    const first = this.firstStart();
-    return first ? Math.max(yearsSince(first), 1) : null;
-  });
-
-  /** Clase del personaje: la primera parte del titular ("Frontend Engineer · Angular…" → "Frontend Engineer"). */
+  /** Cargo de la tarjeta: la primera parte del titular ("Frontend Engineer · Angular…" → "Frontend Engineer"). */
   protected readonly role = computed(() => this.profile()?.headline.split('·')[0].trim() ?? '');
-
-  protected readonly stats = computed<Stat[]>(() => {
-    const profile = this.profile();
-    if (!profile) return [];
-    const text = this.t().about;
-
-    const stats: Stat[] = [];
-    const years = this.years();
-    if (years) {
-      stats.push({
-        value: years,
-        suffix: '+',
-        label: text.years(years),
-        achievement: text.yearsAchievement(Number(this.firstStart()!.slice(0, 4))),
-        badge: text.levelUp,
-        variant: 'level',
-        href: null,
-      });
-    }
-    const companies = new Set(profile.experience.map((p) => p.company)).size;
-    if (companies) {
-      stats.push({
-        value: companies,
-        suffix: '',
-        label: text.companies(companies),
-        achievement: text.companiesAchievement(companies),
-        badge: text.levelUp,
-        variant: 'level',
-        href: null,
-      });
-    }
-    const projects = this.projectCount();
-    if (projects) {
-      stats.push({
-        value: projects,
-        suffix: '',
-        label: text.projects(projects),
-        achievement: text.openSourceAchievement,
-        badge: text.openSource,
-        variant: 'open-source',
-        href: profile.links.github ?? null,
-      });
-    }
-    return stats;
-  });
-
-  /** Insignia de la tarjeta: la experiencia (XP), no un nivel, para no chocar con los niveles del viaje (uno por puesto). */
-  protected readonly xp = computed(() => {
-    const years = this.years();
-    return years ? `${years}+` : null;
-  });
 }

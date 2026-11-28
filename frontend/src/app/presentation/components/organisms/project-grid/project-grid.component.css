@@ -32,9 +32,9 @@
   border-radius: var(--radius-card);
   background:
     linear-gradient(var(--color-background), var(--color-background)) padding-box,
-    linear-gradient(135deg, rgb(124 92 255 / 0.35), rgb(0 209 178 / 0.25), rgb(255 107 154 / 0.3)) border-box;
+    linear-gradient(135deg, rgb(58 99 216 / 0.35), rgb(143 176 245 / 0.25), rgb(201 164 106 / 0.3)) border-box;
   border: 1px solid transparent;
-  box-shadow: 0 1px 2px rgb(11 16 32 / 0.05);
+  box-shadow: 0 1px 2px rgb(18 20 23 / 0.05);
   transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
   transform-style: preserve-3d;
   transition:
@@ -49,7 +49,7 @@
 
 .project-card:hover,
 .project-card:focus-within {
-  box-shadow: 0 30px 60px -30px rgb(91 63 214 / 0.55);
+  box-shadow: 0 30px 60px -30px rgb(29 78 216 / 0.55);
 }
 
 /* Brillo que sigue al puntero */
@@ -57,7 +57,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 0%), rgb(124 92 255 / 0.16), transparent 55%);
+  background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 0%), rgb(58 99 216 / 0.16), transparent 55%);
   opacity: 0;
   transition: opacity 0.3s;
 }

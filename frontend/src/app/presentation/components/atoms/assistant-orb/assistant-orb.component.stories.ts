@@ -12,7 +12,7 @@ const meta: Meta<AssistantOrbComponent> = {
   args: { excited: false },
   render: (args) => ({
     props: args,
-    template: `<div style="display: grid; place-items: center; padding: 2rem; background: #0b1020">
+    template: `<div style="display: grid; place-items: center; padding: 2rem; background: #121417">
       <app-assistant-orb [excited]="excited" style="--orb-size: 10rem" />
     </div>`,
   }),

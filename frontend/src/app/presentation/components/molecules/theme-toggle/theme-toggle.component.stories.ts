@@ -12,7 +12,7 @@ const meta: Meta<ThemeToggleComponent> = {
   render: (args) => ({
     props: args,
     template: `<div [style.--is-dark]="dark ? 1 : 0" [style.color-scheme]="dark ? 'dark' : 'light'"
-      [style.background]="dark ? '#0f1426' : '#fff'" style="display: inline-block; padding: 1rem; border-radius: 1rem">
+      [style.background]="dark ? '#121417' : '#fff'" style="display: inline-block; padding: 1rem; border-radius: 1rem">
       <app-theme-toggle [dark]="dark" (toggled)="toggled($event)" />
     </div>`,
   }),

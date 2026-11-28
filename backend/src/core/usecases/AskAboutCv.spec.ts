@@ -12,9 +12,14 @@ const profile: Profile = {
   location: 'Lima',
   summary: 'Primer párrafo.\n\nSegundo párrafo.',
   experience: [
-    { company: 'Banco', title: 'Frontend', location: null, startedOn: '2024-01', finishedOn: null, description: 'Capa de seguridad.', scene: null },
-    { company: 'Agencia', title: 'Web', location: 'Madrid', startedOn: '2016-06', finishedOn: '2017-04', description: null, scene: null },
+    { company: 'Banco', title: 'Frontend', location: null, startedOn: '2024-01', finishedOn: null, description: 'Capa de seguridad.', scene: null, client: null, highlights: [] },
+    { company: 'Agencia', title: 'Web', location: 'Madrid', startedOn: '2016-06', finishedOn: '2017-04', description: null, scene: null, client: null, highlights: [] },
   ],
+  skills: [{ group: 'Frontend', items: ['Angular', 'TypeScript'] }],
+  education: [{ degree: 'Ingeniería de Sistemas', school: 'Universidad', year: 2015 }],
+  languages: [{ name: 'Inglés', level: 'B2' }],
+  facts: ['7+ años'],
+  availability: 'Remoto',
 };
 
 const repo: Project = {

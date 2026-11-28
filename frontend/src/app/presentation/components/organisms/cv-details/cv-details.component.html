@@ -1,0 +1,63 @@
+@if (state() === 'ready' && profile(); as current) {
+  @if (current.skills.length || current.education.length || current.languages.length) {
+    <section id="habilidades" class="cv-details l-container" tabindex="-1" aria-labelledby="habilidades-title">
+      <app-section-heading index="03" [title]="t().cv.title" headingId="habilidades-title" />
+
+      <div class="cv-details__layout">
+        @if (current.skills.length) {
+          <div class="cv-details__block cv-details__block--skills" appReveal>
+            <h3 class="cv-details__heading">{{ t().cv.skills }}</h3>
+            <dl class="cv-details__skills">
+              @for (group of current.skills; track group.group) {
+                <div class="cv-details__skill-row">
+                  <dt class="cv-details__group">{{ group.group }}</dt>
+                  <dd class="cv-details__items">
+                    <ul class="cv-details__chips">
+                      @for (item of group.items; track item) {
+                        <li class="cv-details__chip">{{ item }}</li>
+                      }
+                    </ul>
+                  </dd>
+                </div>
+              }
+            </dl>
+          </div>
+        }
+
+        <div class="cv-details__side">
+          @if (current.education.length) {
+            <div class="cv-details__block" appReveal [revealDelay]="100">
+              <h3 class="cv-details__heading">{{ t().cv.education }}</h3>
+              <ul class="cv-details__list">
+                @for (item of current.education; track item.degree) {
+                  <li>
+                    <strong>{{ item.degree }}</strong>
+                    <span class="cv-details__meta">{{ item.school }}@if (item.year) { · {{ item.year }}}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          @if (current.languages.length) {
+            <div class="cv-details__block" appReveal [revealDelay]="180">
+              <h3 class="cv-details__heading">{{ t().cv.languages }}</h3>
+              <ul class="cv-details__list">
+                @for (item of current.languages; track item.name) {
+                  <li>
+                    <strong>{{ item.name }}</strong>
+                    <span class="cv-details__meta">{{ item.level }}</span>
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
+          <a class="cv-details__download" [href]="pdfUrl" download>
+            <span aria-hidden="true">↓</span> {{ t().cv.download }}
+          </a>
+        </div>
+      </div>
+    </section>
+  }
+}
