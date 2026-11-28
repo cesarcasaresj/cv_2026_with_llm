@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.9.0
+  version: 1.11.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -919,8 +919,16 @@ components:
 
     Position:
       type: object
-      required: [company, title, location, startedOn, finishedOn, description, scene]
+      required: [company, title, location, startedOn, finishedOn, description, scene, client, highlights]
       properties:
+        client:
+          type: [string, 'null']
+          description: Cliente para el que se trabajó (por ejemplo, en una consultora); null si no aplica.
+        highlights:
+          type: array
+          description: Logros del puesto, en viñetas (spec.md, HU-26). Puede estar vacía.
+          items:
+            type: string
         scene:
           description: Diorama del puesto; null si no se eligió (la portada usa el escritorio).
           oneOf:
@@ -944,8 +952,51 @@ components:
 
     Profile:
       type: object
-      required: [lang, name, headline, location, about, experience, links]
+      required: [lang, name, headline, location, about, experience, links, skills, education, languages, facts, availability]
       properties:
+        facts:
+          type: array
+          description: Datos clave para el inicio, cortos y con cifras (spec.md, HU-28).
+          items:
+            type: string
+        availability:
+          type: [string, 'null']
+          description: Disponibilidad (modalidad y horario); null si no se indica.
+        skills:
+          type: array
+          description: Habilidades técnicas por área, como en el PDF del CV (HU-26).
+          items:
+            type: object
+            required: [group, items]
+            properties:
+              group:
+                type: string
+              items:
+                type: array
+                items:
+                  type: string
+        education:
+          type: array
+          items:
+            type: object
+            required: [degree, school, year]
+            properties:
+              degree:
+                type: string
+              school:
+                type: string
+              year:
+                type: [integer, 'null']
+        languages:
+          type: array
+          items:
+            type: object
+            required: [name, level]
+            properties:
+              name:
+                type: string
+              level:
+                type: string
         lang:
           $ref: '#/components/schemas/Lang'
           description: Idioma en que se sirvió el contenido; es "es" si se pidió "en" y no hay traducción.
