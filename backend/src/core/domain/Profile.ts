@@ -59,9 +59,18 @@ export interface CvDetails {
   facts: string[];
   /** Disponibilidad, por ejemplo "Remoto LATAM · horario compatible con EE. UU."; null si no se indica. */
   availability: string | null;
+  /** Stack principal (HU-29): las habilidades que más pesan, destacadas sobre el resto. */
+  coreSkills: string[];
 }
 
-export const EMPTY_CV_DETAILS: CvDetails = { skills: [], education: [], languages: [], facts: [], availability: null };
+export const EMPTY_CV_DETAILS: CvDetails = {
+  skills: [],
+  education: [],
+  languages: [],
+  facts: [],
+  availability: null,
+  coreSkills: [],
+};
 
 /** Perfil público del autor (spec.md, HU-14 y HU-15). Nunca incluye el correo ni otros datos privados. */
 export interface Profile {
@@ -78,6 +87,7 @@ export interface Profile {
   languages: SpokenLanguage[];
   facts: string[];
   availability: string | null;
+  coreSkills: string[];
 }
 
 export interface ProfileUpdate {

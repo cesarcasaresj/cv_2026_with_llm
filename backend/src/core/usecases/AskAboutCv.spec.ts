@@ -20,6 +20,7 @@ const profile: Profile = {
   languages: [{ name: 'Inglés', level: 'B2' }],
   facts: ['7+ años'],
   availability: 'Remoto',
+  coreSkills: ['Angular'],
 };
 
 const repo: Project = {

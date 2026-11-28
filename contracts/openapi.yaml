@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: CV 2026 API
-  version: 1.11.0
+  version: 1.12.0
   description: Contrato único entre el agente de frontend y el agente de backend.
 
 servers:
@@ -952,8 +952,13 @@ components:
 
     Profile:
       type: object
-      required: [lang, name, headline, location, about, experience, links, skills, education, languages, facts, availability]
+      required: [lang, name, headline, location, about, experience, links, skills, education, languages, facts, availability, coreSkills]
       properties:
+        coreSkills:
+          type: array
+          description: Stack principal, destacado sobre el resto de habilidades (spec.md, HU-29).
+          items:
+            type: string
         facts:
           type: array
           description: Datos clave para el inicio, cortos y con cifras (spec.md, HU-28).

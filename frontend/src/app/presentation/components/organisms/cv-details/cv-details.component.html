@@ -7,6 +7,19 @@
         @if (current.skills.length) {
           <div class="cv-details__block cv-details__block--skills" appReveal>
             <h3 class="cv-details__heading">{{ t().cv.skills }}</h3>
+
+            <!-- Stack principal: lo que un reclutador busca para cruzarlo con su vacante (HU-29) -->
+            @if (current.coreSkills.length) {
+              <div class="cv-details__core">
+                <p class="cv-details__core-label">{{ t().cv.coreStack }}</p>
+                <ul class="cv-details__chips">
+                  @for (item of current.coreSkills; track item) {
+                    <li class="cv-details__chip cv-details__chip--core">{{ item }}</li>
+                  }
+                </ul>
+              </div>
+            }
+
             <dl class="cv-details__skills">
               @for (group of current.skills; track group.group) {
                 <div class="cv-details__skill-row">
@@ -14,7 +27,13 @@
                   <dd class="cv-details__items">
                     <ul class="cv-details__chips">
                       @for (item of group.items; track item) {
-                        <li class="cv-details__chip">{{ item }}</li>
+                        <li
+                          class="cv-details__chip"
+                          [class.cv-details__chip--highlight]="current.coreSkills.includes(item)"
+                          [class.cv-details__chip--muted]="current.coreSkills.length && !current.coreSkills.includes(item)"
+                        >
+                          {{ item }}
+                        </li>
                       }
                     </ul>
                   </dd>

@@ -366,5 +366,23 @@
   "availability": {
     "es": "Remoto desde LATAM · horario compatible con EE. UU.",
     "en": "Remote from LATAM · US time-zone overlap"
+  },
+  "coreSkills": {
+    "es": [
+      "Angular (v11–v23)",
+      "TypeScript",
+      "RxJS",
+      "React",
+      "Integración de LLMs",
+      "Node.js"
+    ],
+    "en": [
+      "Angular (v11–v23)",
+      "TypeScript",
+      "RxJS",
+      "React",
+      "LLM integration",
+      "Node.js"
+    ]
   }
 }

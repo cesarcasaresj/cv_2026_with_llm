@@ -22,7 +22,7 @@ describe('readProfileFile', () => {
         headline: { es: 'Desarrolladora web', en: 'Web developer' },
         summary: { es: 'Uno.\n\nDos.', en: 'One.\n\nTwo.' },
         experience: null,
-        details: { es: { skills: [], education: [], languages: [], facts: [], availability: null }, en: null },
+        details: { es: { skills: [], education: [], languages: [], facts: [], availability: null, coreSkills: [] }, en: null },
       },
     });
   });
@@ -94,6 +94,7 @@ describe('readProfileFile', () => {
       languages: [{ name: 'Inglés', level: 'B2' }],
       facts: [],
       availability: null,
+      coreSkills: [],
     });
     // Con alguna sección en inglés se guarda el inglés
     expect(result.profile.details.en?.skills).toHaveLength(1);
