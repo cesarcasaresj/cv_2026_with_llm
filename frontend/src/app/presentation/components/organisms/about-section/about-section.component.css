@@ -14,7 +14,7 @@
   width: 70vmax;
   height: 70vmax;
   border-radius: 50%;
-  background: radial-gradient(circle, rgb(124 92 255 / 0.18), rgb(0 209 178 / 0.08) 45%, transparent 70%);
+  background: radial-gradient(circle, rgb(58 99 216 / 0.18), rgb(143 176 245 / 0.08) 45%, transparent 70%);
   animation: about-float 18s ease-in-out infinite alternate;
   pointer-events: none;
 }
@@ -32,18 +32,23 @@
 /* Tarjeta y diálogo: uno debajo del otro en móvil, lado a lado en pantallas anchas */
 .about__layout {
   display: grid;
-  gap: 3rem;
+  gap: 2rem;
   align-items: center;
 }
 
-.about__stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-  gap: 1.75rem 1.25rem;
-  margin: 3.5rem 0 0;
-  padding: 0;
-  list-style: none;
+/* En móvil y tablet, primero el texto (quién soy) y después la tarjeta, más pequeña y centrada.
+   Solo por debajo de 64rem: en escritorio la tarjeta conserva el tamaño que le da su columna. */
+@media (max-width: 63.99rem) {
+  .about__text {
+    order: -1;
+  }
+
+  .about__card {
+    justify-self: center;
+    width: min(100%, 17rem);
+  }
 }
+
 
 @media (min-width: 64rem) {
   .about {
@@ -54,4 +59,24 @@
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
     gap: 4rem;
   }
+}
+
+/* Texto de "Acerca de mí": completo, con el primer párrafo destacado */
+.about__text {
+  display: grid;
+  gap: 1rem;
+  max-width: 65ch;
+  align-self: center;
+}
+
+.about__paragraph {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.about__paragraph--lead {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4vw, 1.5rem);
+  font-weight: 600;
+  line-height: 1.4;
 }

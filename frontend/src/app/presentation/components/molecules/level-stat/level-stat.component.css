@@ -13,7 +13,7 @@
   border: 2px solid var(--color-hairline);
   border-radius: var(--radius-card);
   background: var(--color-background);
-  box-shadow: 0 20px 40px -28px rgb(91 63 214 / 0.55);
+  box-shadow: 0 20px 40px -28px rgb(29 78 216 / 0.55);
   transition: transform 0.4s var(--ease-spring);
 }
 
@@ -33,7 +33,7 @@
   padding: 0.2rem 0.65rem;
   border: 2px solid #1b0b33;
   border-radius: 999px;
-  background: #ffd166;
+  background: #d9a441;
   color: #1b0b33;
   font-size: 0.75rem;
   font-weight: 900;
@@ -127,7 +127,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #6a2ccf, #e0337f, #ffd166);
+  background: linear-gradient(90deg, #6a2ccf, #e0337f, #d9a441);
   transform-origin: left;
 }
 

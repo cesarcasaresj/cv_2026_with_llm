@@ -24,5 +24,5 @@ export const Ingles: Story = { args: { lang: 'en' } };
 
 export const SobreFondoOscuro: Story = {
   args: { onNight: true },
-  parameters: { backgrounds: { default: 'dark', values: [{ name: 'dark', value: '#0b1020' }] } },
+  parameters: { backgrounds: { default: 'dark', values: [{ name: 'dark', value: '#121417' }] } },
 };

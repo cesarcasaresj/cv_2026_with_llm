@@ -44,11 +44,21 @@ export const es = {
     },
   },
 
+  cv: {
+    title: 'Habilidades',
+    skills: 'Habilidades técnicas',
+    education: 'Educación',
+    languages: 'Idiomas',
+    download: 'Descargar CV (PDF)',
+  },
   hero: {
-    greeting: 'Hola, soy',
-    /** Lema personal, bajo el titular (HU-14). */
-    tagline: 'El arrullo de las ideas en el desarrollo web',
-    projectsCta: 'Ver proyectos',
+    /** Llamada principal: el asistente con IA responde sobre el CV (HU-24). */
+    askCta: 'Pregúntale a mi CV',
+    askHint: 'Un asistente con IA responde sobre mi experiencia',
+    factsLabel: 'Datos clave',
+    available: 'Disponible',
+    contactCta: 'Contáctame en LinkedIn',
+    companiesLabel: 'He trabajado con',
     blogCta: 'Leer el blog',
     profilesLabel: 'Perfiles',
     loading: 'Cargando el perfil…',
@@ -77,6 +87,8 @@ export const es = {
 
   experience: {
     title: 'Experiencia',
+    client: 'Cliente',
+    moreHighlights: (count: number): string => `Ver ${count} ${count === 1 ? 'logro más' : 'logros más'}`,
     loading: 'Cargando la experiencia…',
     error: 'No pudimos cargar la experiencia. Intenta de nuevo en unos minutos.',
     empty: 'Todavía no hay experiencia cargada.',
@@ -91,13 +103,13 @@ export const es = {
 
   /** El viaje de la experiencia (HU-20): un nivel por puesto, del presente al inicio. */
   journey: {
-    intro: 'Un viaje por mi trayectoria, del presente hasta donde empezó todo. Avanza con el scroll o con los botones.',
-    hud: (level: number, total: number) => `Nivel ${level} / ${total}`,
+    intro: 'Mi trayectoria, del puesto actual al primero: empresa, cliente y logros de cada etapa.',
+    hud: (level: number, total: number) => `Puesto ${level} de ${total}`,
     controlsLabel: 'Recorrer los niveles',
     previous: 'Nivel anterior',
     next: 'Siguiente nivel',
     goTo: (level: number) => `Ir al nivel ${level}`,
-    xp: (years: number): string => (years < 1 ? 'XP: el comienzo' : `XP: ${years} ${years === 1 ? 'año' : 'años'}`),
+    xp: (years: number): string => (years < 1 ? 'El comienzo' : `${years} ${years === 1 ? 'año' : 'años'} de experiencia`),
     start: '🏁 Aquí empezó todo',
     backToPresent: 'Volver al presente',
     announce: (level: number, total: number, title: string, company: string) => `Nivel ${level} de ${total}: ${title}, ${company}`,
@@ -151,12 +163,19 @@ export const es = {
     launcher: 'Pregúntale a mi CV',
     title: 'Pregúntale a mi CV',
     close: 'Cerrar',
-    greeting: (name: string): string =>
-      `¡Hola! 👋 Soy el asistente del CV de ${name}. Pregúntame por su experiencia, sus proyectos o las tecnologías con las que trabaja.`,
+    greeting: (name: string): string => `Hola 👋 Pregúntame lo que quieras saber de ${name}: respondo a partir de su CV.`,
     you: 'Tú',
     thinking: 'El asistente está escribiendo…',
     suggestionsLabel: 'Preguntas sugeridas',
-    suggestions: ['¿Qué hace en BBVA?', '¿Con qué tecnologías trabaja?', '¿Qué aportaría a mi equipo?'],
+    suggestions: [
+      'Resúmeme su perfil en 3 puntos',
+      '¿Tiene experiencia con IA en producción?',
+      '¿Por qué encajaría en mi equipo?',
+      '¿Disponibilidad y horario?',
+    ],
+    nextLabel: 'Siguiente paso',
+    contact: 'Contactar en LinkedIn',
+    download: 'Descargar CV',
     fieldLabel: 'Tu pregunta',
     placeholder: 'Escribe tu pregunta…',
     send: 'Enviar',

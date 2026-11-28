@@ -40,7 +40,7 @@
   color: var(--color-on-night);
   font-weight: 700;
   text-decoration: none;
-  background-image: linear-gradient(120deg, transparent 40%, rgb(124 92 255 / 0.6) 50%, transparent 60%);
+  background-image: linear-gradient(120deg, transparent 40%, rgb(58 99 216 / 0.6) 50%, transparent 60%);
   background-size: 250% 100%;
   background-position: 100% 0;
   transition:

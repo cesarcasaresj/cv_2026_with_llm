@@ -64,7 +64,7 @@ export class ProjectGridComponent {
   protected readonly updatedAgo = updatedAgo;
 
   protected languageColor(language: string | null): string {
-    return (language && LANGUAGE_COLORS[language]) || '#7c5cff';
+    return (language && LANGUAGE_COLORS[language]) || '#3a63d8';
   }
 
   /** "practice-node-api-express" → "practice node api express": se lee mejor en una tarjeta. */

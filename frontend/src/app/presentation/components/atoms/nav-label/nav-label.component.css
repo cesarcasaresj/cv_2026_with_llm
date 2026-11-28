@@ -24,7 +24,7 @@
   letter-spacing: 0.04em;
   white-space: nowrap;
   pointer-events: none;
-  animation: badge-float 1.3s var(--ease-out) both;
+  animation: badge-float 2.08s var(--ease-out) both;
 }
 
 @keyframes badge-float {
@@ -44,33 +44,33 @@
 
 /* ---------- Experiencia: las letras suben como niveles y brillan en dorado ---------- */
 [data-fx='experience'] .nav-label__letter {
-  animation: fx-level 0.9s var(--ease-spring) both;
-  animation-delay: calc(var(--i) * 0.05s);
+  animation: fx-level 1.44s var(--ease-spring) both;
+  animation-delay: calc(var(--i) * 0.08s);
 }
 
 @keyframes fx-level {
   30% {
-    color: light-dark(#e0a800, #ffd166);
+    color: light-dark(#e0a800, #d9a441);
     transform: translateY(calc(-3px - var(--i) * 1.2px));
-    text-shadow: 0 0 10px rgb(255 209 102 / 0.9);
+    text-shadow: 0 0 10px rgb(217 164 65 / 0.9);
   }
 }
 
 [data-fx='experience'] .nav-label__badge {
-  background: #ffd166;
+  background: #d9a441;
   color: #3b2a00;
 }
 
 /* ---------- Sobre mí: las letras nacen dispersas y se juntan; un corazón late ---------- */
 [data-fx='about'] .nav-label__letter {
-  animation: fx-born 0.8s var(--ease-out) both;
-  animation-delay: calc(var(--i) * 0.03s);
+  animation: fx-born 1.28s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 0.05s);
 }
 
 @keyframes fx-born {
   from {
     opacity: 0;
-    color: #ff6b9a;
+    color: #c9a46a;
     transform: translate(calc(sin(var(--i) * 2.3rad) * 26px), calc(cos(var(--i) * 1.7rad) * 18px)) scale(0.2) rotate(calc(var(--i) * 40deg));
   }
 }
@@ -79,8 +79,8 @@
   color: light-dark(#e11d48, #fb7185);
   font-size: 0.85rem;
   animation:
-    badge-float 1.3s var(--ease-out) both,
-    fx-heartbeat 0.45s ease-in-out 3;
+    badge-float 2.08s var(--ease-out) both,
+    fx-heartbeat 0.72s ease-in-out 3;
 }
 
 @keyframes fx-heartbeat {
@@ -91,8 +91,8 @@
 
 /* ---------- Proyectos: las letras caen como bloques y se apilan con rebote ---------- */
 [data-fx='projects'] .nav-label__letter {
-  animation: fx-drop 0.7s cubic-bezier(0.34, 1.8, 0.64, 1) both;
-  animation-delay: calc(var(--i) * 0.06s);
+  animation: fx-drop 1.12s cubic-bezier(0.34, 1.8, 0.64, 1) both;
+  animation-delay: calc(var(--i) * 0.1s);
 }
 
 @keyframes fx-drop {
@@ -113,8 +113,8 @@
 
 /* ---------- Actualidad: señal en directo, las letras parpadean como una emisión ---------- */
 [data-fx='updates'] .nav-label__letter {
-  animation: fx-signal 0.9s steps(6) both;
-  animation-delay: calc(var(--i) * 0.02s);
+  animation: fx-signal 1.44s steps(6) both;
+  animation-delay: calc(var(--i) * 0.03s);
 }
 
 @keyframes fx-signal {
@@ -136,8 +136,8 @@
   background: #dc2626;
   color: #fff;
   animation:
-    badge-float 1.6s var(--ease-out) both,
-    fx-blink 0.4s steps(2) 4;
+    badge-float 2.56s var(--ease-out) both,
+    fx-blink 0.64s steps(2) 4;
 }
 
 @keyframes fx-blink {
@@ -148,8 +148,8 @@
 
 /* ---------- Blog: el texto se escribe a máquina, con su cursor ---------- */
 [data-fx='blog'] .nav-label__letter {
-  animation: fx-type 0.01s linear both;
-  animation-delay: calc(var(--i) * 0.11s);
+  animation: fx-type 0.02s linear both;
+  animation-delay: calc(var(--i) * 0.18s);
 }
 
 @keyframes fx-type {
@@ -167,7 +167,7 @@
   padding: 0;
   color: var(--color-accent);
   font-size: 1em;
-  animation: fx-caret 0.5s steps(2) 5 both;
+  animation: fx-caret 0.8s steps(2) 5 both;
 }
 
 @keyframes fx-caret {
@@ -183,6 +183,6 @@
   }
 
   .nav-label__badge {
-    animation: fade-out 1.2s ease both !important;
+    animation: fade-out 1.92s ease both !important;
   }
 }

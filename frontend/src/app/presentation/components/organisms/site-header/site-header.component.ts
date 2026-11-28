@@ -6,6 +6,7 @@ import { I18nService } from '../../../../core/i18n/i18n.service';
 import { ThemeService } from '../../../../core/theme/theme.service';
 import { LANGS, type Lang } from '../../../../core/i18n/lang';
 import { SITE_NAME } from '../../../../core/seo/seo.service';
+import { CV_PDF_URL } from '../cv-details/cv-details.component';
 import { SectionPortalService, type PortalSection } from '../../../portal/section-portal.service';
 import { prefersReducedMotion } from '../../../motion/motion';
 import { LanguageSwitchComponent } from '../../molecules/language-switch/language-switch.component';
@@ -15,8 +16,8 @@ import { NavLabelComponent } from '../../atoms/nav-label/nav-label.component';
 import { NavPreviewComponent } from '../../atoms/nav-preview/nav-preview.component';
 
 /** Cuánto se ve la bandera y cuándo empieza el cambio de idioma (cuando la bandera ya entró). */
-const FLAG_MS = 1550;
-const LANG_SWITCH_DELAY_MS = 220;
+const FLAG_MS = 2300;
+const LANG_SWITCH_DELAY_MS = 350;
 
 interface NavItem {
   label: string;
@@ -54,6 +55,7 @@ export class SiteHeaderComponent {
   protected readonly theme = inject(ThemeService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   protected readonly siteName = SITE_NAME;
+  protected readonly pdfUrl = CV_PDF_URL;
   /** Icono de cada sección: en móvil va encima del texto, como en la barra de pestañas de una app. */
   protected readonly icons: Record<PortalSection, string> = { experience: '💼', about: '🙋', projects: '💻', updates: '📡', blog: '📖' };
 
@@ -75,8 +77,8 @@ export class SiteHeaderComponent {
   protected readonly items = computed<NavItem[]>(() => {
     const header = this.t().header;
     const items: NavItem[] = [
-      { label: header.experience, path: '/', fragment: 'experiencia', section: 'experience' },
       { label: header.about, path: '/', fragment: 'sobre-mi', section: 'about' },
+      { label: header.experience, path: '/', fragment: 'experiencia', section: 'experience' },
       { label: header.projects, path: '/', fragment: 'proyectos', section: 'projects' },
       { label: header.updates, path: '/', fragment: 'actualidad', section: 'updates' },
     ];

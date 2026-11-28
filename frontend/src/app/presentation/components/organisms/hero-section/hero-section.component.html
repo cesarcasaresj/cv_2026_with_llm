@@ -5,51 +5,92 @@
   <div class="hero__veil" aria-hidden="true"></div>
 
   <div class="hero__content l-container">
-    @switch (state()) {
-      @case ('ready') {
-        @let current = profile()!;
-        <p class="hero__eyebrow">{{ t().hero.greeting }}</p>
-        <h1 id="hero-title" class="hero__title">
-          @for (word of words(); track $index) {
-            <span class="hero__word" [style.--word-index]="$index">{{ word }}</span>&ngsp;
+    <!--
+      Jerarquía pensada para los primeros segundos (HU-28): quién (cara y nombre), qué hace (titular),
+      por qué fiarse (datos clave y empresas), si está disponible, y qué hacer después (botones).
+    -->
+    <div class="hero__main">
+      @switch (state()) {
+        @case ('ready') {
+          @let current = profile()!;
+          <h1 id="hero-title" class="hero__title">
+            @for (word of words(); track $index) {
+              <span class="hero__word" [style.--word-index]="$index">{{ word }}</span>&ngsp;
+            }
+          </h1>
+          <p class="hero__headline">{{ current.headline }}</p>
+
+          @if (current.facts.length) {
+            <ul class="hero__facts" [attr.aria-label]="t().hero.factsLabel">
+              @for (fact of current.facts; track fact) {
+                <li class="hero__fact">{{ fact }}</li>
+              }
+            </ul>
           }
-        </h1>
-        <p class="hero__headline">{{ current.headline }}</p>
-        <p class="hero__tagline">{{ t().hero.tagline }}</p>
-        @if (current.location) {
-          <p class="hero__location"><span aria-hidden="true">◉</span> {{ current.location }}</p>
-        }
 
-        <div class="hero__actions">
-          <a class="hero__cta hero__cta--primary" routerLink="/" fragment="proyectos">{{ t().hero.projectsCta }}</a>
-          <a class="hero__cta" routerLink="/blog">{{ t().hero.blogCta }}</a>
-        </div>
+          @if (current.availability || current.location) {
+            <p class="hero__availability">
+              <span class="hero__status-dot" aria-hidden="true"></span>
+              {{ t().hero.available }}
+              @if (current.availability) {
+                · {{ current.availability }}
+              } @else {
+                · {{ current.location }}
+              }
+            </p>
+          }
 
-        @if (current.links.github || current.links.linkedin) {
+          <div class="hero__actions">
+            @if (assistant.available()) {
+              <button
+                #askButton
+                type="button"
+                class="hero__cta hero__cta--primary hero__cta--ask"
+                (click)="assistant.open.set(true)"
+              >
+                <span class="hero__ai-badge" aria-hidden="true">IA</span>
+                {{ t().hero.askCta }}
+              </button>
+            }
+            <a class="hero__cta" [class.hero__cta--primary]="!assistant.available()" [href]="pdfUrl" download>
+              <span aria-hidden="true">↓</span>&nbsp;{{ t().cv.download }}
+            </a>
+            @if (current.links.linkedin) {
+              <a class="hero__cta hero__cta--quiet" [href]="current.links.linkedin" rel="me noopener">
+                {{ t().hero.contactCta }}
+              </a>
+            }
+          </div>
+
+          @if (companies().length) {
+            <p class="hero__companies">
+              <span class="hero__companies-label">{{ t().hero.companiesLabel }}</span>
+              {{ companies().join(' · ') }}
+            </p>
+          }
+
           <ul class="hero__social" [attr.aria-label]="t().hero.profilesLabel">
             @if (current.links.github) {
               <li><a class="hero__social-link" [href]="current.links.github" rel="me noopener">GitHub</a></li>
             }
-            @if (current.links.linkedin) {
-              <li><a class="hero__social-link" [href]="current.links.linkedin" rel="me noopener">LinkedIn</a></li>
-            }
+            <li><a class="hero__social-link" routerLink="/blog">{{ t().hero.blogCta }}</a></li>
           </ul>
         }
+        @case ('loading') {
+          <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
+          <p class="hero__headline">{{ t().hero.loading }}</p>
+        }
+        @default {
+          <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
+          <p class="hero__headline">{{ t().hero.error }}</p>
+          <div class="hero__actions">
+            <a class="hero__cta hero__cta--primary" routerLink="/blog">{{ t().hero.blogCta }}</a>
+          </div>
+        }
       }
-      @case ('loading') {
-        <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
-        <p class="hero__headline">{{ t().hero.loading }}</p>
-      }
-      @default {
-        <h1 id="hero-title" class="hero__title">{{ siteName }}</h1>
-        <p class="hero__headline">{{ t().hero.error }}</p>
-        <div class="hero__actions">
-          <a class="hero__cta hero__cta--primary" routerLink="/blog">{{ t().hero.blogCta }}</a>
-        </div>
-      }
-    }
+    </div>
 
-    <!-- La nana de las ideas: siempre disponible, también mientras carga el perfil -->
+    <!-- La nana de las ideas: compacta y al final, para que no compita con lo importante -->
     <app-note-pad
       class="hero__melody"
       [soundOn]="soundOn()"
@@ -61,6 +102,4 @@
       (partyEnded)="endParty()"
     />
   </div>
-
-  <span class="hero__scroll" aria-hidden="true"></span>
 </section>

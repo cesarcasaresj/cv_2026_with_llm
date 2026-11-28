@@ -50,6 +50,10 @@
     </div>
     <app-language-switch class="site-header__language" [lang]="i18n.lang()" (selected)="changeLang($event)" />
     <app-theme-toggle class="site-header__theme" [dark]="theme.theme() === 'dark'" (toggled)="theme.toggle($event)" />
+    <!-- El CV en PDF, siempre a mano arriba a la derecha (donde lo busca un reclutador) -->
+    <a class="site-header__cv" [href]="pdfUrl" download [attr.aria-label]="t().cv.download">
+      <span aria-hidden="true">↓</span>&nbsp;<span aria-hidden="true">CV</span>
+    </a>
   </div>
   <!-- Barra de progreso de lectura: decorativa, solo en navegadores con animaciones ligadas al scroll -->
   <span class="site-header__progress" aria-hidden="true"></span>

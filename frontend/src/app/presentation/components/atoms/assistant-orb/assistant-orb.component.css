@@ -23,10 +23,10 @@
   position: absolute;
   inset: 27%;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 30%, #d9c2ff 0%, #7a35e8 38%, #1d0b4a 100%);
+  background: radial-gradient(circle at 35% 30%, #dbe6ff 0%, #3a63d8 38%, #13213f 100%);
   box-shadow:
-    0 0 0.6rem rgb(123 224 255 / 0.55),
-    0 0 1.4rem rgb(255 209 102 / 0.35);
+    0 0 0.6rem rgb(143 176 245 / 0.55),
+    0 0 1.4rem rgb(217 164 65 / 0.35);
   animation: orb-breathe 2.8s ease-in-out infinite;
   transition:
     opacity 0.6s ease,
@@ -40,8 +40,8 @@
 @keyframes orb-breathe {
   50% {
     box-shadow:
-      0 0 0.9rem rgb(123 224 255 / 0.7),
-      0 0 2rem rgb(255 209 102 / 0.5);
+      0 0 0.9rem rgb(143 176 245 / 0.7),
+      0 0 2rem rgb(217 164 65 / 0.5);
   }
 }
 

@@ -1,6 +1,6 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { I18nService } from '../../../../core/i18n/i18n.service';
-import { NOTES, SECRET_MELODY, noteById, type NoteId } from '../../../melody/melody';
+import { LIGHT_NOTE_COLORS, NOTES, SECRET_MELODY, noteById, type NoteId } from '../../../melody/melody';
 
 /**
  * Teclado de la nana de las ideas (spec.md, HU-19): cinco notas, el interruptor de sonido y la pista.
@@ -30,6 +30,11 @@ export class NotePadComponent {
   readonly partyEnded = output<void>();
 
   protected readonly notes = NOTES;
+
+  /** Color de la nota que sigue al tema: el de NOTES en oscuro y uno más oscuro en claro (contraste). */
+  protected noteCss(id: NoteId): string {
+    return `light-dark(${LIGHT_NOTE_COLORS[id]}, ${noteById(id).color})`;
+  }
   protected readonly steps = SECRET_MELODY.map((_, index) => index);
   /** Nota que acaba de sonar: su botón lanza una onda. El contador hace que se repita en cada pulsación. */
   protected readonly ringing = signal<{ id: NoteId; count: number } | null>(null);

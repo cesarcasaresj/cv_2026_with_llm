@@ -1,9 +1,24 @@
-import { Component, DOCUMENT, DestroyRef, computed, effect, inject, input, signal, viewChild } from '@angular/core';
+import {
+  Component,
+  DOCUMENT,
+  DestroyRef,
+  ElementRef,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import type { Profile } from '../../../../core/portfolio/portfolio.types';
 import type { ListState } from '../../../../core/http/resource-state';
 import { I18nService } from '../../../../core/i18n/i18n.service';
+import { CV_PDF_URL } from '../cv-details/cv-details.component';
+import { AssistantUiService } from '../../../../core/assistant/assistant-ui.service';
 import { SITE_NAME } from '../../../../core/seo/seo.service';
 import { StaffSceneComponent } from '../../../melody/staff-scene.component';
 import { NOTES, SECRET_MELODY, melodyProgress, noteById, type NoteId } from '../../../melody/melody';
@@ -30,6 +45,10 @@ const PARTY_CLASS = 'is-party';
 })
 export class HeroSectionComponent {
   protected readonly t = inject(I18nService).t;
+  /** "Pregúntale a mi CV": la llamada principal del inicio cuando el asistente está disponible. */
+  protected readonly assistant = inject(AssistantUiService);
+  protected readonly pdfUrl = CV_PDF_URL;
+  private readonly askButton = viewChild<ElementRef<HTMLButtonElement>>('askButton');
   /** Mientras carga el perfil (o si falla), el título es el nombre del sitio. */
   protected readonly siteName = SITE_NAME;
   private readonly announcer = inject(LiveAnnouncer);
@@ -42,6 +61,21 @@ export class HeroSectionComponent {
   readonly scene = input(true);
 
   private readonly sceneComponent = viewChild(StaffSceneComponent);
+
+  /**
+   * Empresas y clientes de la experiencia, sin repetir: "Globant · BBVA Argentina · Auna…" (HU-28).
+   * Del cliente se toma la marca: lo que va antes de " (" o de " · ".
+   */
+  protected readonly companies = computed(() => {
+    const names: string[] = [];
+    for (const position of this.profile()?.experience ?? []) {
+      const client = position.client?.split(/ \(| · /)[0]?.trim();
+      for (const name of [position.company, client]) {
+        if (name && !names.includes(name)) names.push(name);
+      }
+    }
+    return names.slice(0, 8);
+  });
 
   /** Cada palabra del nombre entra por separado (animación escalonada). */
   protected readonly words = computed(() => this.profile()?.name.split(/\s+/).filter(Boolean) ?? []);
@@ -66,6 +100,21 @@ export class HeroSectionComponent {
     inject(DestroyRef).onDestroy(() => {
       this.document.documentElement.classList.remove(PARTY_CLASS);
     });
+
+    // Mientras el botón del asistente del inicio se ve, el botón flotante se esconde: un solo llamado a la vez
+    if (isPlatformBrowser(inject(PLATFORM_ID)) && typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver(([entry]) => this.assistant.heroButtonVisible.set(entry.isIntersecting));
+      effect((onCleanup) => {
+        const button = this.askButton()?.nativeElement;
+        if (!button) return;
+        observer.observe(button);
+        onCleanup(() => observer.unobserve(button));
+      });
+      inject(DestroyRef).onDestroy(() => {
+        observer.disconnect();
+        this.assistant.heroButtonVisible.set(false);
+      });
+    }
   }
 
   protected play(id: NoteId): void {

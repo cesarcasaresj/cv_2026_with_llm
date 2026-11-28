@@ -3,9 +3,12 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { SectionPortalService, type PortalSection } from './section-portal.service';
 import type { PortalPlayer } from './portal-scenes';
 
-/** Duración de la escena (HU-21: portales cortos) y del fundido de salida. */
-const SCENE_MS = 1500;
-const FADE_MS = 400;
+/**
+ * Duración de la escena y del fundido de salida (HU-21). Lo bastante larga para disfrutarla
+ * (comentario de quienes la probaron); un clic o Esc la saltan en cualquier momento.
+ */
+const SCENE_MS = 2600;
+const FADE_MS = 600;
 
 /**
  * Capa a pantalla completa que reproduce el portal de una sección (spec.md, HU-21).

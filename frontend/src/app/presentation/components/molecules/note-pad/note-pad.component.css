@@ -19,14 +19,14 @@
   position: relative;
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1px solid color-mix(in srgb, var(--note-color) 60%, transparent);
   border-radius: 50%;
   background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.18), rgb(255 255 255 / 0.04) 60%);
   backdrop-filter: blur(6px);
   color: var(--note-color);
-  font: 700 1.15rem/1 var(--font-display);
+  font: 700 1rem/1 var(--font-display);
   cursor: pointer;
   transition:
     transform 0.35s var(--ease-spring),
@@ -98,9 +98,9 @@
 .note-pad__button {
   min-height: 2.25rem;
   padding: 0 0.9rem;
-  border: 1px solid rgb(245 247 255 / 0.35);
+  border: 1px solid color-mix(in srgb, var(--color-on-night) 35%, transparent);
   border-radius: 999px;
-  background: rgb(245 247 255 / 0.06);
+  background: color-mix(in srgb, var(--color-on-night) 6%, transparent);
   color: var(--color-on-night);
   font: inherit;
   font-size: 0.85rem;
@@ -110,7 +110,7 @@
 
 .note-pad__button[aria-pressed='true'] {
   border-color: var(--color-teal);
-  background: rgb(0 209 178 / 0.15);
+  background: rgb(143 176 245 / 0.15);
 }
 
 .note-pad__hint,
@@ -133,20 +133,20 @@
   width: 0.45rem;
   height: 0.45rem;
   border-radius: 50%;
-  background: rgb(245 247 255 / 0.25);
+  background: color-mix(in srgb, var(--color-on-night) 25%, transparent);
   transition:
     background-color 0.3s,
     transform 0.3s var(--ease-spring);
 }
 
 .note-pad__step--done {
-  background: #ffd166;
+  background: var(--color-gold);
   transform: scale(1.3);
 }
 
 /* Fiesta: el mensaje brilla con todos los colores */
 .note-pad__discovered {
-  background: linear-gradient(90deg, #ffd166, var(--color-pink), var(--color-teal), #ffd166);
+  background: linear-gradient(90deg, var(--color-gold), var(--color-pink), var(--color-teal), var(--color-gold));
   background-size: 300% 100%;
   background-clip: text;
   -webkit-background-clip: text;

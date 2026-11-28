@@ -1,7 +1,7 @@
 <section id="experiencia" class="journey" tabindex="-1" aria-labelledby="experiencia-title">
   <div class="journey__inner l-container">
     <app-section-heading
-      index="01"
+      index="02"
       [title]="t().experience.title"
       headingId="experiencia-title"
       [intro]="t().journey.intro"
@@ -122,8 +122,31 @@
                         <span class="journey__location">· {{ position.location }}</span>
                       }
                     </p>
+                    @if (position.client) {
+                      <p class="journey__client">{{ t().experience.client }}: {{ position.client }}</p>
+                    }
                     @if (position.description) {
                       <p class="journey__description">{{ position.description }}</p>
+                    }
+                    @if (position.highlights.length) {
+                      <!-- Los 3 primeros logros a la vista; el resto, a un clic (siguen en el HTML: buscadores y lectores) -->
+                      <ul class="journey__highlights">
+                        @for (highlight of position.highlights.slice(0, visibleHighlights); track $index) {
+                          <li>{{ highlight }}</li>
+                        }
+                      </ul>
+                      @if (position.highlights.length > visibleHighlights) {
+                        <details class="journey__more">
+                          <summary class="journey__more-summary">
+                            {{ t().experience.moreHighlights(position.highlights.length - visibleHighlights) }}
+                          </summary>
+                          <ul class="journey__highlights journey__highlights--more">
+                            @for (highlight of position.highlights.slice(visibleHighlights); track $index) {
+                              <li>{{ highlight }}</li>
+                            }
+                          </ul>
+                        </details>
+                      }
                     }
                     @if ($last) {
                       <p class="journey__start">{{ t().journey.start }}</p>

@@ -18,7 +18,7 @@ const meta: Meta<LevelDioramaComponent> = {
   render: (args) => ({
     props: args,
     template: `
-      <div style="height: 420px; background: #0b1020; perspective: 1400px; perspective-origin: 50% 20%; overflow: hidden; position: relative">
+      <div style="height: 420px; background: #121417; perspective: 1400px; perspective-origin: 50% 20%; overflow: hidden; position: relative">
         <div style="position: absolute; left: 50%; top: 40%; transform-style: preserve-3d; transform: rotateX(58deg) rotateZ(45deg) translate(-75px, -75px)">
           <app-level-diorama [scene]="scene" [level]="level" [year]="year" [open]="open" />
         </div>

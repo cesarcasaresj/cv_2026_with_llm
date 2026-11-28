@@ -1,7 +1,7 @@
 <section id="sobre-mi" class="about" tabindex="-1" aria-labelledby="sobre-mi-title">
   <div class="about__glow" aria-hidden="true"></div>
   <div class="about__inner l-container">
-    <app-section-heading index="02" [title]="t().about.title" headingId="sobre-mi-title" />
+    <app-section-heading index="01" [title]="t().about.title" headingId="sobre-mi-title" />
 
     @switch (state()) {
       @case ('loading') {
@@ -17,40 +17,18 @@
             class="about__card"
             [name]="current.name"
             [role]="role()"
-            [level]="xp()"
-            [levelLabel]="t().about.xpShort"
             [alt]="t().about.portraitAlt(current.name)"
             [image]="portrait"
           />
 
-          <app-dialogue-box
-            class="about__dialogue"
-            [speaker]="current.name.split(' ')[0]"
-            [paragraphs]="current.about"
-            [portrait]="portrait + '-400.webp'"
-            [nextLabel]="t().about.dialogueNext"
-            [restartLabel]="t().about.dialogueRestart"
-          />
+          <!-- Todo el texto a la vista: un reclutador no debería tener que pulsar "Siguiente" para leerlo -->
+          <div class="about__text">
+            @for (paragraph of current.about; track $index) {
+              <p class="about__paragraph" [class.about__paragraph--lead]="$first">{{ paragraph }}</p>
+            }
+          </div>
         </div>
 
-        @if (stats().length) {
-          <ul class="about__stats" role="list">
-            @for (stat of stats(); track stat.variant + stat.label) {
-              <li>
-                <app-level-stat
-                  [value]="stat.value"
-                  [suffix]="stat.suffix"
-                  [label]="stat.label"
-                  [achievement]="stat.achievement"
-                  [badge]="stat.badge"
-                  [variant]="stat.variant"
-                  [href]="stat.href"
-                  [linkLabel]="t().about.openSourceLink"
-                />
-              </li>
-            }
-          </ul>
-        }
       }
     }
   </div>

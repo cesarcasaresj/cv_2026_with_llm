@@ -6,8 +6,8 @@
   z-index: 100;
   overflow: hidden;
   background:
-    radial-gradient(60% 50% at 50% 40%, rgb(124 92 255 / 0.35), transparent 70%),
-    radial-gradient(40% 40% at 80% 80%, rgb(0 209 178 / 0.2), transparent 70%),
+    radial-gradient(60% 50% at 50% 40%, rgb(58 99 216 / 0.35), transparent 70%),
+    radial-gradient(40% 40% at 80% 80%, rgb(143 176 245 / 0.2), transparent 70%),
     var(--color-night);
   opacity: 0;
   visibility: hidden;
@@ -44,14 +44,14 @@
   font: 800 clamp(2.4rem, 9vw, 5.5rem) / 1 var(--font-display);
   letter-spacing: -0.03em;
   white-space: nowrap;
-  text-shadow: 0 0 40px rgb(124 92 255 / 0.8);
+  text-shadow: 0 0 40px rgb(58 99 216 / 0.8);
 }
 
 .portal__letter {
   display: inline-block;
   white-space: pre; /* los espacios entre palabras se conservan */
-  animation: portal-letter 0.6s var(--ease-spring) both;
-  animation-delay: calc(0.25s + var(--i) * 0.04s);
+  animation: portal-letter 0.9s var(--ease-spring) both;
+  animation-delay: calc(0.35s + var(--i) * 0.06s);
 }
 
 @keyframes portal-letter {

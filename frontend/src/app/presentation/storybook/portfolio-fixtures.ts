@@ -19,6 +19,11 @@ export const profileFixture: Profile = {
       finishedOn: null,
       description: 'Defino la arquitectura de los productos web: contratos OpenAPI y Clean Architecture.',
       scene: 'tower',
+      client: 'Un banco de ejemplo · banca digital',
+      highlights: [
+        'Desarrollo funcionalidades de banca digital con Angular y TypeScript para más de 400 000 clientes.',
+        'Integré LLMs en producción: chatbots, búsqueda inteligente y acciones automáticas.',
+      ],
     },
     {
       company: 'Estudio Ficticio',
@@ -28,8 +33,21 @@ export const profileFixture: Profile = {
       finishedOn: '2023-02',
       description: 'Aplicaciones Angular y Node.js para comercio y educación.',
       scene: 'phone',
+      client: null,
+      highlights: [],
     },
   ],
+  skills: [
+    { group: 'Frontend', items: ['Angular', 'React', 'TypeScript', 'RxJS'] },
+    { group: 'IA y LLM', items: ['Integración de LLMs', 'Tool calling'] },
+  ],
+  education: [{ degree: 'Ingeniería de Sistemas', school: 'Universidad de Ejemplo', year: 2015 }],
+  languages: [
+    { name: 'Español', level: 'Nativo' },
+    { name: 'Inglés', level: 'B2' },
+  ],
+  facts: ["7+ años en frontend", "Banca digital · 400 000+ clientes", "LLMs en producción"],
+  availability: "Remoto desde LATAM · horario compatible con EE. UU.",
   links: { github: 'https://github.com/ejemplo', linkedin: 'https://www.linkedin.com/in/ejemplo' },
 };
 

@@ -62,7 +62,7 @@ interface BuiltScene {
   update(t: number): void;
 }
 
-const PALETTE = [0x7c5cff, 0x00d1b2, 0xff6b9a, 0xffd166, 0x38bdf8];
+const PALETTE = [0x3a63d8, 0x8fb0f5, 0xc9a46a, 0xffd166, 0x38bdf8];
 const GOLD = 0xffd166;
 
 // ---------- Utilidades ----------
@@ -125,7 +125,7 @@ function lights(scene: Scene): void {
   const sun = new DirectionalLight(0xffffff, 1.4);
   sun.position.set(5, 8, 6);
   scene.add(sun);
-  const violet = new PointLight(0x7c5cff, 30, 30);
+  const violet = new PointLight(0x3a63d8, 30, 30);
   violet.position.set(-5, 3, 4);
   scene.add(violet);
 }
@@ -181,7 +181,7 @@ function experienceScene(aspect: number, options: PortalOptions): BuiltScene {
   const years = options.years.length ? [...new Set([...options.years, current])] : [current - 3, current - 2, current - 1, current];
   const yearSprites = years.map((year, index) => {
     const isPresent = index === years.length - 1;
-    const sprite = textSprite(String(year), isPresent ? '#ffd166' : '#f5f7ff', isPresent ? 1.5 : 0.9);
+    const sprite = textSprite(String(year), isPresent ? '#d9a441' : '#f5f7ff', isPresent ? 1.5 : 0.9);
     sprite.position.set(isPresent ? 0 : (index % 2 ? 1.5 : -1.5), isPresent ? 0 : (index % 3) - 1, -8 - index * 9);
     scene.add(sprite);
     return sprite;
@@ -321,7 +321,7 @@ function updatesScene(aspect: number): BuiltScene {
   );
   mast.position.y = -0.7;
   scene.add(mast);
-  const beacon = new Mesh(new SphereGeometry(0.2, 24, 24), new MeshBasicMaterial({ color: 0xff6b9a }));
+  const beacon = new Mesh(new SphereGeometry(0.2, 24, 24), new MeshBasicMaterial({ color: 0xc9a46a }));
   beacon.position.y = 1.05;
   scene.add(beacon);
 
@@ -361,7 +361,7 @@ function blogScene(aspect: number): BuiltScene {
   lights(scene);
   const view = camera(aspect, 6.5);
 
-  const coverMaterial = new MeshStandardMaterial({ color: 0x7c5cff, roughness: 0.5 });
+  const coverMaterial = new MeshStandardMaterial({ color: 0x3a63d8, roughness: 0.5 });
   const left = new Group();
   const right = new Group();
   for (const [group, side] of [[left, -1], [right, 1]] as const) {

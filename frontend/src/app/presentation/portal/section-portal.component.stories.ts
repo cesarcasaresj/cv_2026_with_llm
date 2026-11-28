@@ -8,7 +8,7 @@ import { SectionPortalService, type PortalSection } from './section-portal.servi
   selector: 'app-section-portal-demo',
   imports: [SectionPortalComponent],
   template: `
-    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 2rem; min-height: 300px; background: #0b1020">
+    <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 2rem; min-height: 300px; background: #121417">
       @for (section of sections; track section) {
         <button type="button" (click)="portals.play(section)">{{ section }}</button>
       }

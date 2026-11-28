@@ -26,6 +26,16 @@
       }
     </div>
 
+    <!-- Tras la primera respuesta, el siguiente paso natural: contactar o llevarse el CV (HU-28) -->
+    @if (hasAnswer()) {
+      <nav class="panel__next" [attr.aria-label]="text.nextLabel">
+        @if (linkedinUrl(); as url) {
+          <a class="panel__next-link panel__next-link--primary" [href]="url" rel="me noopener">{{ text.contact }}</a>
+        }
+        <a class="panel__next-link" [href]="pdfUrl()" download><span aria-hidden="true">↓</span> {{ text.download }}</a>
+      </nav>
+    }
+
     @if (error(); as message) {
       <p class="panel__error" role="alert">{{ message }}</p>
     }
@@ -72,6 +82,9 @@
   type="button"
   class="launcher"
   [class.launcher--open]="open()"
+  [class.launcher--hidden]="hideLauncher() && !open()"
+  [attr.tabindex]="hideLauncher() && !open() ? -1 : null"
+  [attr.aria-hidden]="hideLauncher() && !open() ? 'true' : null"
   [attr.aria-expanded]="open()"
   [attr.aria-controls]="open() ? 'cv-assistant-panel' : null"
   (click)="toggle()"

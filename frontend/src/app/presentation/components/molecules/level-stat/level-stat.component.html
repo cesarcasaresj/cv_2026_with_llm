@@ -1,5 +1,7 @@
 <div class="stat">
-  <span class="stat__badge" aria-hidden="true">{{ badge() }}</span>
+  @if (badge()) {
+    <span class="stat__badge" aria-hidden="true">{{ badge() }}</span>
+  }
 
   <p class="stat__value">
     <span aria-hidden="true">{{ display() }}</span>

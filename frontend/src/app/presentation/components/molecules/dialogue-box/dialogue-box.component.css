@@ -15,7 +15,7 @@
   box-shadow:
     0 0 0 4px var(--color-night),
     0 0 0 7px var(--color-accent),
-    0 30px 60px -30px rgb(11 16 32 / 0.8);
+    0 30px 60px -30px color-mix(in srgb, var(--color-night) 80%, transparent);
 }
 
 /* Etiqueta con quien habla, montada sobre el borde superior */
@@ -29,7 +29,7 @@
   padding: 0.25rem 0.9rem 0.25rem 0.3rem;
   border: 3px solid var(--color-on-night);
   border-radius: 999px;
-  background: #ffd166;
+  background: var(--color-gold);
   color: #1b0b33;
   transform: translateY(-55%);
 }
@@ -70,7 +70,7 @@
 .dialogue__typed.is-typing::after {
   content: '▌';
   margin-left: 0.1em;
-  color: #ffd166;
+  color: var(--color-gold);
   animation: dialogue-caret 0.7s steps(1) infinite;
 }
 
@@ -98,10 +98,10 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  border: 2px solid #ffd166;
+  border: 2px solid var(--color-gold);
   border-radius: 999px;
   background: transparent;
-  color: #ffd166;
+  color: var(--color-gold);
   font: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -111,7 +111,7 @@
 }
 
 .dialogue__next:hover {
-  background: #ffd166;
+  background: var(--color-gold);
   color: #1b0b33;
 }
 
