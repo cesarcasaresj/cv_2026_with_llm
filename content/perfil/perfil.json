@@ -1,146 +1,370 @@
 {
   "name": "Cesar Casares",
-  "location": null,
+  "location": "Lima, Perú",
   "headline": {
-    "es": "Frontend Engineer · Construyo interfaces seguras para banca a gran escala",
-    "en": "Frontend Engineer · I build secure interfaces for large-scale banking"
+    "es": "Senior Frontend Engineer · Angular · TypeScript · Integración de IA/LLM",
+    "en": "Senior Frontend Engineer · Angular · TypeScript · AI/LLM Integration"
   },
   "about": {
     "es": [
-      "Soy Frontend Engineer y he construido aplicaciones con Angular en muchos proyectos. En cada uno pongo mis habilidades y mis ideas, y me encanta darles vida, también en productos para el Internet de las cosas.",
-      "La web y el móvil nunca se quedan quietos: cambian cada día. Eso es justo lo que disfruto: aprender tecnologías nuevas y ser una pieza útil dentro del equipo. Como desarrollador, mi inspiración viene de la música y el arte; me acompañan mientras escribo código.",
-      "Eso es parte de quien soy.",
-      "Trabajo con HTML, CSS y JavaScript. El panorama no deja de cambiar y hoy mi foco está en Angular, React, Node.js y Express, con experiencia en PHP, Laravel y Ruby on Rails.",
-      "He trabajado con empresas como Globant, Indra, Cheil, Humantech y Webcreek, y sigo abierto a nuevos equipos en cualquier lugar, en remoto o de forma presencial."
+      "Frontend Engineer con más de 7 años construyendo aplicaciones web y móviles empresariales con Angular (v11–v23), React y TypeScript.",
+      "Hoy estoy en Globant, en la plataforma de banca digital de BBVA Argentina (más de 400 000 clientes), integrando LLMs en producción: chatbots con IA, búsqueda inteligente y automatización de acciones del usuario.",
+      "Vengo de fintech, salud (Auna) y electrónica de consumo (Samsung). Uso a diario el desarrollo asistido por IA (GitHub Copilot, Claude). Inglés B2: trabajo cada día con equipos distribuidos, con horario compatible con EE. UU."
     ],
     "en": [
-      "I'm a Frontend Engineer who has built Angular applications across many projects. I put my skills and ideas into every one of them, and I love bringing them to life, including products for the Internet of Things.",
-      "Web and mobile never stand still: they change every day. That's exactly what I enjoy: learning new technologies and being a useful part of the team. As a developer, my inspiration comes from music and art; they're with me while I write code.",
-      "That's part of who I am.",
-      "I work with HTML, CSS and JavaScript. The landscape keeps changing, and today my focus is on Angular, React, Node.js and Express, with experience in PHP, Laravel and Ruby on Rails.",
-      "I've worked with companies such as Globant, Indra, Cheil, Humantech and Webcreek, and I'm open to new teams anywhere, remotely or on site."
+      "Frontend Engineer with 7+ years of experience building enterprise web and mobile applications with Angular (v11–v23), React and TypeScript.",
+      "Currently at Globant on BBVA Argentina’s digital-banking platform (400K+ customers), integrating LLMs into production: AI chatbots, intelligent search and automated user actions.",
+      "Background across fintech, healthcare (Auna) and consumer electronics (Samsung). Daily user of AI-assisted development (GitHub Copilot, Claude). English B2, working daily with distributed teams, with US time-zone overlap."
     ]
   },
   "experience": [
     {
       "company": "Globant",
       "location": "Lima, Perú",
-      "startedOn": "2025-02",
+      "startedOn": "2021-06",
       "finishedOn": null,
+      "scene": "tower",
       "title": {
-        "es": "Frontend Engineer · Capa de seguridad (BBVA)",
-        "en": "Frontend Engineer · Security layer (BBVA)"
+        "es": "Frontend Engineer (nivel Globant: Semi-Senior Advanced)",
+        "en": "Frontend Engineer (Globant level: Semi-Senior Advanced)"
       },
-      "description": {
-        "es": "Desarrollo la capa de seguridad de la app de BBVA, por la que pasan más de 50 flujos del banco: verifica token, biometría, certificados y dispositivo antes de cada transferencia o consulta sensible. Son web components con Lit dentro de la app, comunicados con las bibliotecas nativas de Android e iOS mediante Cells, el framework de BBVA. Migré componentes de Polymer a Lit mejorando el rendimiento, con un índice de aceptación del cliente del 76 %, y resolví incidencias críticas de producción.",
-        "en": "I build the security layer of BBVA's app, which 50+ banking flows go through: it verifies token, biometrics, certificates and device before every transfer or sensitive operation. It is made of Lit web components inside the app, communicating with native Android and iOS libraries through Cells, BBVA's framework. I migrated components from Polymer to Lit, improving performance, reached a 76% customer acceptance rate and resolved critical production issues."
+      "client": {
+        "es": "BBVA Argentina (antes BBVA Francés) · banca digital",
+        "en": "BBVA Argentina (formerly BBVA Francés) · digital banking"
       },
-      "scene": "tower"
+      "description": null,
+      "highlights": {
+        "es": [
+          "Desarrollo funcionalidades de la plataforma de banca digital de BBVA Argentina con Angular, TypeScript y RxJS, para más de 400 000 clientes.",
+          "Integré LLMs en funcionalidades en producción: chatbots con IA, búsqueda inteligente y automatización de acciones del usuario mediante tool/function calling.",
+          "Reduje un 20 % los tiempos de entrega optimizando flujos de trabajo e infraestructura y adoptando un proceso más ágil alineado con el negocio, con menos carga para el equipo.",
+          "Lideré a un equipo de desarrolladores en la implantación de Google Tag Manager y la analítica en varias aplicaciones.",
+          "Uso desarrollo asistido por IA (GitHub Copilot, Claude) para generar código, refactorizar y escribir pruebas.",
+          "Mantuve las aplicaciones al día con el framework, de Angular v11 a v23.",
+          "Construí apps móviles multiplataforma con NativeScript e interfaces responsive con React y Angular."
+        ],
+        "en": [
+          "Develop features for BBVA Argentina’s digital-banking platform with Angular, TypeScript and RxJS, serving 400K+ customers.",
+          "Integrated LLMs into production features: AI chatbots, intelligent search and automation of user actions via tool/function calling.",
+          "Cut project delivery times by 20% by streamlining workflows, restructuring and optimizing infrastructure, and adopting a more agile delivery process aligned with business priorities — while reducing team workload.",
+          "Led a team of developers implementing Google Tag Manager and analytics tracking across multiple applications.",
+          "Leverage AI-assisted development (GitHub Copilot, Claude) for code generation, refactoring and test writing.",
+          "Maintained applications across Angular versions (v11 → v23), keeping them current with the framework.",
+          "Built cross-platform mobile apps with NativeScript and responsive interfaces with React and Angular."
+        ]
+      }
     },
     {
-      "company": "Globant",
-      "location": "Lima, Perú",
-      "startedOn": "2024-07",
-      "finishedOn": "2024-11",
-      "title": {
-        "es": "Frontend Engineer · Yanbal",
-        "en": "Frontend Engineer · Yanbal"
-      },
-      "description": {
-        "es": "Proyecto para Yanbal Unique: interfaces con Angular construidas sobre patrones de diseño, en remoto.",
-        "en": "Project for Yanbal Unique: Angular interfaces built on solid design patterns, working remotely."
-      },
-      "scene": "vanity"
-    },
-    {
-      "company": "Globant",
-      "location": "Lima, Perú",
-      "startedOn": "2022-05",
-      "finishedOn": "2024-06",
-      "title": {
-        "es": "Frontend Engineer · Pagos y transferencias (BCP)",
-        "en": "Frontend Engineer · Payments and transfers (BCP)"
-      },
-      "description": {
-        "es": "Frontend en Angular de Cocos y Lucas, la plataforma del BCP para cambiar soles y dólares en línea. Integré las transferencias interbancarias y el pago con Visa y Mastercard, y optimicé su rendimiento y SEO, siempre bajo los estándares de seguridad del banco. En 2024 sus funcionalidades pasaron a Yape.",
-        "en": "Angular frontend for Cocos y Lucas, BCP's platform for exchanging soles and dollars online. I integrated interbank transfers and Visa and Mastercard payments, and optimized its performance and SEO, always under the bank's security standards. In 2024 its features moved into Yape."
-      },
-      "scene": "exchange"
-    },
-    {
-      "company": "Humantech Innovation & Technology Agency",
+      "company": "Humantech",
       "location": "Lima, Perú",
       "startedOn": "2020-08",
       "finishedOn": "2021-06",
+      "scene": "lab",
       "title": {
-        "es": "Ingeniero de Sistemas",
-        "en": "Systems Engineer"
+        "es": "Senior Frontend Developer",
+        "en": "Senior Frontend Developer"
       },
-      "description": {
-        "es": "Agencia de innovación y tecnología: desarrollo frontend con SASS y patrones de diseño.",
-        "en": "Innovation and technology agency: frontend development with SASS and design patterns."
+      "client": {
+        "es": "Auna · salud",
+        "en": "Auna · healthcare"
       },
-      "scene": "lab"
+      "description": null,
+      "highlights": {
+        "es": [
+          "Construí la plataforma de teleconsulta de Auna para web, iOS y Android con Angular 10, Ionic, TypeScript, NGXS y SASS, para citas médicas a distancia.",
+          "Integré el SDK de Zoom para videoconsultas en tiempo real entre médico y paciente.",
+          "Apliqué Clean Architecture, lo que mejoró el mantenimiento y la incorporación de nuevos desarrolladores.",
+          "Publiqué las apps en Google Play y en la App Store."
+        ],
+        "en": [
+          "Built Auna’s teleconsultation platform for web, iOS and Android with Angular 10, Ionic, TypeScript, NGXS and SASS, enabling remote medical appointments.",
+          "Integrated the Zoom SDK for real-time doctor–patient video consultations.",
+          "Applied clean-architecture principles, improving maintainability and onboarding of new developers.",
+          "Shipped the apps to Google Play and the App Store."
+        ]
+      }
     },
     {
       "company": "Indra",
       "location": "Lima, Perú",
       "startedOn": "2020-12",
       "finishedOn": "2021-03",
+      "scene": "antenna",
       "title": {
-        "es": "Analista de Sistemas · Telefónica",
-        "en": "Systems Analyst · Telefónica"
+        "es": "Analista de Sistemas",
+        "en": "Systems Analyst"
       },
-      "description": {
-        "es": "Nuevos módulos y submódulos para Telefónica, siguiendo sus procesos y cumpliendo los plazos de entrega. Stack: PHP con Laravel, Node.js, JavaScript, HTML5, CSS y SASS.",
-        "en": "New modules and submodules for Telefónica, following its processes and meeting delivery deadlines. Stack: PHP with Laravel, Node.js, JavaScript, HTML5, CSS and SASS."
-      },
-      "scene": "antenna"
+      "description": null,
+      "highlights": {
+        "es": [
+          "Desarrollé y refactoricé funcionalidades y bibliotecas con Vue, Node.js, PHP/Laravel, PostgreSQL y Redis.",
+          "Mejoré un 15 % la eficiencia del sistema optimizando el rendimiento.",
+          "Lideré despliegues y migraciones de software con el mínimo tiempo de inactividad."
+        ],
+        "en": [
+          "Developed and refactored features and libraries with Vue, Node.js, PHP/Laravel, PostgreSQL and Redis.",
+          "Improved system efficiency by 15% through performance optimization.",
+          "Led deployments and software migrations with minimal downtime."
+        ]
+      }
     },
     {
-      "company": "Cheil Worldwide",
-      "location": "Perú",
+      "company": "Cheil",
+      "location": "Lima, Perú",
       "startedOn": "2019-08",
       "finishedOn": "2020-08",
+      "scene": "billboard",
       "title": {
-        "es": "Web Developer",
-        "en": "Web Developer"
+        "es": "Senior Web Developer",
+        "en": "Senior Web Developer"
       },
-      "description": {
-        "es": "Desarrollo web con Angular 9, Ruby on Rails, JavaScript, jQuery, HTML y CSS con BEM y SASS. También análisis de marketing con Tableau, Google Analytics y Google Trends.",
-        "en": "Web development with Angular 9, Ruby on Rails, JavaScript, jQuery, HTML and CSS with BEM and SASS. Also marketing analysis with Tableau, Google Analytics and Google Trends."
+      "client": {
+        "es": "Samsung · agencia",
+        "en": "Samsung · agency"
       },
-      "scene": "billboard"
+      "description": null,
+      "highlights": {
+        "es": [
+          "Desarrollé las webs de lanzamiento del Samsung Galaxy Note 10 y del Galaxy S20 con HTML5, SCSS, jQuery y Ruby on Rails.",
+          "Entregué lanzamientos con fecha fija, en coordinación con diseño, marketing y QA.",
+          "Hice QA y corrección de errores para que los días de lanzamiento fueran estables."
+        ],
+        "en": [
+          "Developed launch websites for Samsung Galaxy Note 10 and Galaxy S20 with HTML5, SCSS, jQuery and Ruby on Rails.",
+          "Delivered fixed-date launches in coordination with design, marketing and QA teams.",
+          "Performed QA and bug fixing to ensure stable launch days."
+        ]
+      }
     },
     {
-      "company": "WebCreek",
+      "company": "Webcreek",
       "location": "Lima, Perú",
-      "startedOn": "2019-02",
+      "startedOn": "2019-01",
       "finishedOn": "2019-06",
+      "scene": "phone",
       "title": {
         "es": "Software Engineer",
         "en": "Software Engineer"
       },
-      "description": {
-        "es": "Desarrollo web y móvil.",
-        "en": "Web and mobile development."
-      },
-      "scene": "phone"
-    },
-    {
-      "company": "Teractive Consulting",
-      "location": "Madrid, España",
-      "startedOn": "2016-06",
-      "finishedOn": "2017-04",
-      "title": {
-        "es": "Programador Frontend Angular",
-        "en": "Angular Frontend Developer"
-      },
-      "description": {
-        "es": "Aplicación móvil con pasarela de pago, construida con Ionic 2 y Angular 2.",
-        "en": "Mobile app with a payment gateway, built with Ionic 2 and Angular 2."
-      },
-      "scene": "payment"
+      "description": null,
+      "highlights": {
+        "es": [
+          "Construí temas y plugins de WordPress a medida y APIs REST para proyectos de clientes.",
+          "Mejoré el rendimiento y la seguridad de los sitios optimizando y manteniendo los plugins."
+        ],
+        "en": [
+          "Built custom WordPress themes, plugins and REST APIs for client projects.",
+          "Improved site performance and security through plugin optimization and maintenance."
+        ]
+      }
     }
-  ]
+  ],
+  "skills": {
+    "es": [
+      {
+        "group": "IA y LLM",
+        "items": [
+          "Integración de LLMs",
+          "Chatbots con IA",
+          "Búsqueda inteligente",
+          "Tool/function calling",
+          "Prompt engineering",
+          "GitHub Copilot",
+          "Claude"
+        ]
+      },
+      {
+        "group": "Frontend",
+        "items": [
+          "Angular (v11–v23)",
+          "React",
+          "TypeScript",
+          "JavaScript (ES6+)",
+          "RxJS",
+          "NGXS",
+          "Redux",
+          "HTML5",
+          "CSS3",
+          "SCSS",
+          "Tailwind CSS",
+          "Bootstrap"
+        ]
+      },
+      {
+        "group": "Móvil",
+        "items": [
+          "NativeScript",
+          "Ionic"
+        ]
+      },
+      {
+        "group": "Backend y datos",
+        "items": [
+          "Node.js",
+          "PHP",
+          "Laravel",
+          "Ruby on Rails",
+          "PostgreSQL",
+          "MySQL",
+          "MongoDB",
+          "Redis"
+        ]
+      },
+      {
+        "group": "DevOps y herramientas",
+        "items": [
+          "Git",
+          "Docker",
+          "Jenkins",
+          "AWS",
+          "Azure",
+          "JIRA",
+          "Google Tag Manager"
+        ]
+      },
+      {
+        "group": "Prácticas",
+        "items": [
+          "Clean Architecture",
+          "Diseño responsive",
+          "Agile/Scrum",
+          "Code review"
+        ]
+      }
+    ],
+    "en": [
+      {
+        "group": "AI & LLM",
+        "items": [
+          "LLM integration",
+          "AI chatbots",
+          "Intelligent search",
+          "Tool/function calling",
+          "Prompt engineering",
+          "GitHub Copilot",
+          "Claude"
+        ]
+      },
+      {
+        "group": "Frontend",
+        "items": [
+          "Angular (v11–v23)",
+          "React",
+          "TypeScript",
+          "JavaScript (ES6+)",
+          "RxJS",
+          "NGXS",
+          "Redux",
+          "HTML5",
+          "CSS3",
+          "SCSS",
+          "Tailwind CSS",
+          "Bootstrap"
+        ]
+      },
+      {
+        "group": "Mobile",
+        "items": [
+          "NativeScript",
+          "Ionic"
+        ]
+      },
+      {
+        "group": "Backend & Data",
+        "items": [
+          "Node.js",
+          "PHP",
+          "Laravel",
+          "Ruby on Rails",
+          "PostgreSQL",
+          "MySQL",
+          "MongoDB",
+          "Redis"
+        ]
+      },
+      {
+        "group": "DevOps & Tools",
+        "items": [
+          "Git",
+          "Docker",
+          "Jenkins",
+          "AWS",
+          "Azure",
+          "JIRA",
+          "Google Tag Manager"
+        ]
+      },
+      {
+        "group": "Practices",
+        "items": [
+          "Clean Architecture",
+          "Responsive Design",
+          "Agile/Scrum",
+          "Code Review"
+        ]
+      }
+    ]
+  },
+  "education": {
+    "es": [
+      {
+        "degree": "Ingeniería de Sistemas",
+        "school": "Universidad UGMA, Venezuela",
+        "year": 2015
+      }
+    ],
+    "en": [
+      {
+        "degree": "B.S. in Systems Engineering",
+        "school": "UGMA University, Venezuela",
+        "year": 2015
+      }
+    ]
+  },
+  "languages": {
+    "es": [
+      {
+        "name": "Español",
+        "level": "Nativo"
+      },
+      {
+        "name": "Inglés",
+        "level": "B2 · uso profesional diario"
+      },
+      {
+        "name": "Portugués",
+        "level": "Básico"
+      }
+    ],
+    "en": [
+      {
+        "name": "Spanish",
+        "level": "Native"
+      },
+      {
+        "name": "English",
+        "level": "B2 · professional working proficiency"
+      },
+      {
+        "name": "Portuguese",
+        "level": "Basic"
+      }
+    ]
+  },
+  "facts": {
+    "es": [
+      "7+ años en frontend",
+      "Banca digital BBVA · 400 000+ clientes",
+      "LLMs en producción"
+    ],
+    "en": [
+      "7+ years in frontend",
+      "BBVA digital banking · 400K+ customers",
+      "LLMs in production"
+    ]
+  },
+  "availability": {
+    "es": "Remoto desde LATAM · horario compatible con EE. UU.",
+    "en": "Remote from LATAM · US time-zone overlap"
+  }
 }
