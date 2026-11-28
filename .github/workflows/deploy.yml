@@ -106,7 +106,10 @@ jobs:
           # --delete quita los archivos de la versión anterior
           rsync -az --delete -e "$SSH" release/api/ "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/release/api/"
           rsync -az --delete -e "$SSH" release/web/ "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/release/web/"
-          rsync -az -e "$SSH" release/compose.yml release/Caddyfile release/backup.sh "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/"
+          rsync -az -e "$SSH" release/compose.yml release/backup.sh "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/"
+          # --inplace: el contenedor de Caddy monta el Caddyfile como archivo suelto. rsync normal escribe uno nuevo
+          # y lo renombra (otro inodo), y el contenedor seguiría viendo el viejo: "caddy reload" no cambiaría nada.
+          rsync -az --inplace -e "$SSH" release/Caddyfile "$SSH_USER@$SSH_HOST:$DEPLOY_DIR/Caddyfile"
 
       - name: Reiniciar las aplicaciones
         run: |
