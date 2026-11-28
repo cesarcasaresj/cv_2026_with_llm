@@ -1,12 +1,38 @@
 # Caddy: HTTPS automático (Let's Encrypt) y reenvío al frontend, que a su vez reenvía /api al backend.
 # SITE_DOMAIN viene de /opt/cv/.env (por ejemplo, cesarcasares.com).
 
+{
+	servers {
+		# El sitio está detrás de Cloudflare. Solo se cree la IP del visitante (CF-Connecting-IP) cuando la
+		# petición llega desde un rango de Cloudflare; si alguien llama al servidor directamente, {client_ip}
+		# es su propia IP y no puede falsificarla. Rangos: https://www.cloudflare.com/ips/ (revisar cada año).
+		trusted_proxies static 173.245.48.0/20 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 141.101.64.0/18 108.162.192.0/18 190.93.240.0/20 188.114.96.0/20 197.234.240.0/22 198.41.128.0/17 162.158.0.0/15 104.16.0.0/13 104.24.0.0/14 172.64.0.0/13 131.0.72.0/22 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
+		client_ip_headers CF-Connecting-IP
+	}
+}
+
 {$SITE_DOMAIN} {
 	encode zstd gzip
-	reverse_proxy web:4000
+
+	# HSTS: el navegador solo vuelve a entrar por HTTPS (un año, también los subdominios).
+	# El resto de cabeceras de seguridad (CSP, anti-iframe…) las ponen el frontend y el backend.
+	# Sin pistas del software del servidor (defer: se aplica después de que reverse_proxy añada Via)
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+		-Via
+		-X-Powered-By
+		defer
+	}
+
+	reverse_proxy web:4000 {
+		# La IP real del visitante, ya validada arriba: la usan los límites del login y del asistente
+		header_up CF-Connecting-IP {client_ip}
+	}
 }
 
 # www → dominio principal
 www.{$SITE_DOMAIN} {
+	header Strict-Transport-Security "max-age=31536000; includeSubDomains"
 	redir https://{$SITE_DOMAIN}{uri} permanent
 }

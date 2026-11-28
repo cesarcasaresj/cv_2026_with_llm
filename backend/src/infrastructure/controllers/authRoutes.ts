@@ -2,7 +2,9 @@ import { Router } from 'express';
 import type { LoginUser } from '../../core/usecases/LoginUser';
 import type { GetCurrentUser } from '../../core/usecases/GetCurrentUser';
 import type { LogoutUser } from '../../core/usecases/LogoutUser';
-import { ValidationError } from '../../core/domain/errors';
+import { TooManyRequestsError, UnauthorizedError, ValidationError } from '../../core/domain/errors';
+import type { LoginThrottle } from '../security/LoginThrottle';
+import { visitorOf } from './visitor';
 import type { components } from '../../generated/api';
 import { buildSessionCookie, clearSessionCookie, readSessionToken } from './sessionCookie';
 import { requireSession, sessionUser } from './requireSession';
@@ -14,6 +16,7 @@ export function authRoutes(
   loginUser: LoginUser,
   getCurrentUser: GetCurrentUser,
   logoutUser: LogoutUser,
+  throttle: LoginThrottle,
 ): Router {
   const router = Router();
 
@@ -23,7 +26,23 @@ export function authRoutes(
       throw new ValidationError('Revisa el correo y la contraseña.');
     }
 
-    const result = await loginUser.execute({ email: body.email, password: body.password });
+    // Fuerza bruta: tras varios fallos seguidos, el visitante espera cada vez más (LoginThrottle)
+    const visitor = visitorOf(request);
+    const waitMs = throttle.retryAfterMs(visitor);
+    if (waitMs > 0) {
+      const seconds = Math.ceil(waitMs / 1000);
+      response.setHeader('Retry-After', String(seconds));
+      throw new TooManyRequestsError(`Demasiados intentos. Espera ${seconds} segundos antes de volver a intentarlo.`);
+    }
+
+    let result;
+    try {
+      result = await loginUser.execute({ email: body.email, password: body.password });
+    } catch (error) {
+      if (error instanceof UnauthorizedError) throttle.recordFailure(visitor);
+      throw error;
+    }
+    throttle.recordSuccess(visitor);
     // El token solo viaja en la cookie HttpOnly; nunca en el cuerpo de la respuesta
     response.setHeader('Set-Cookie', buildSessionCookie(result.token));
     const user: UserResponse = result.user;
