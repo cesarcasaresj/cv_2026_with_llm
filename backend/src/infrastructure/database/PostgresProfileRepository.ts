@@ -114,5 +114,6 @@ function cvDetails(raw: unknown): CvDetails {
     languages: list(data.languages, (item) => isText(item['name']) && isText(item['level'])),
     facts: Array.isArray(data.facts) ? data.facts.filter(isText) : [],
     availability: isText(data.availability) ? (data.availability as string) : null,
+    coreSkills: Array.isArray(data.coreSkills) ? data.coreSkills.filter(isText) : [],
   };
 }

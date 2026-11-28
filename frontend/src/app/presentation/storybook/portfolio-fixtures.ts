@@ -48,6 +48,7 @@ export const profileFixture: Profile = {
   ],
   facts: ["7+ años en frontend", "Banca digital · 400 000+ clientes", "LLMs en producción"],
   availability: "Remoto desde LATAM · horario compatible con EE. UU.",
+  coreSkills: ["Angular", "TypeScript"],
   links: { github: 'https://github.com/ejemplo', linkedin: 'https://www.linkedin.com/in/ejemplo' },
 };
 

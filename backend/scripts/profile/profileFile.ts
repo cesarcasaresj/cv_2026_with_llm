@@ -18,7 +18,8 @@
 //   "education": { "es": [{ "degree": "…", "school": "…", "year": 2015 }], "en": […] },
 //   "languages": { "es": [{ "name": "Inglés", "level": "B2" }], "en": […] },
 //   "facts":     { "es": ["7+ años", …], "en": ["7+ years", …] },   ← datos clave del inicio, opcionales (HU-28)
-//   "availability": { "es": "Remoto LATAM · …", "en": "Remote LATAM · …" }   ← opcional
+//   "availability": { "es": "Remoto LATAM · …", "en": "Remote LATAM · …" },  ← opcional
+//   "coreSkills": { "es": ["Angular", …], "en": ["Angular", …] }   ← stack principal, opcional (HU-29)
 // }
 // "en" es opcional en cada texto: si falta, la portada en inglés muestra el español.
 
@@ -183,6 +184,7 @@ export function readProfileFile(data: unknown): ProfileFileResult {
         pick('availability') === undefined || pick('availability') === null
           ? null
           : text(pick('availability'), `availability.${lang}`, { max: 160 }),
+      coreSkills: pick('coreSkills') === undefined || pick('coreSkills') === null ? [] : textList(pick('coreSkills'), `coreSkills.${lang}`, 80),
     };
   }
 
@@ -202,7 +204,7 @@ export function readProfileFile(data: unknown): ProfileFileResult {
     details: { es: cvDetails(data, 'es'), en: null },
   };
   // El inglés solo se guarda si el archivo trae alguna sección en inglés; si no, la portada en inglés usa el español
-  const hasEnglish = ['skills', 'education', 'languages', 'facts', 'availability'].some((key) => isObject(data[key]) && (data[key] as Json)['en'] !== undefined);
+  const hasEnglish = ['skills', 'education', 'languages', 'facts', 'availability', 'coreSkills'].some((key) => isObject(data[key]) && (data[key] as Json)['en'] !== undefined);
   if (hasEnglish) profile.details.en = cvDetails(data, 'en');
 
   return errors.length ? { ok: false, errors } : { ok: true, profile };

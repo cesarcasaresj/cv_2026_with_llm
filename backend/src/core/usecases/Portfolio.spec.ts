@@ -61,6 +61,7 @@ describe('GetProfile', () => {
         languages: [],
         facts: [],
         availability: null,
+        coreSkills: [],
         location: null,
         summary: 'Uno.\n\nDos.',
         experience: [
@@ -83,7 +84,7 @@ describe('GetProfile en otro idioma (HU-18)', () => {
     const repository: ProfileRepository = {
       getProfile: async (lang) => {
         asked.push(lang);
-        return { lang, name: 'Persona', headline: 'Developer', location: null, summary: 'One.', experience: [], skills: [], education: [], languages: [], facts: [], availability: null };
+        return { lang, name: 'Persona', headline: 'Developer', location: null, summary: 'One.', experience: [], skills: [], education: [], languages: [], facts: [], availability: null, coreSkills: [] };
       },
       listUpdates: async () => [],
     };

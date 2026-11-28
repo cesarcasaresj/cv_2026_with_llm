@@ -40,6 +40,7 @@ export const en: Messages = {
   cv: {
     title: 'Skills',
     skills: 'Technical skills',
+    coreStack: 'Core stack',
     education: 'Education',
     languages: 'Languages',
     download: 'Download CV (PDF)',

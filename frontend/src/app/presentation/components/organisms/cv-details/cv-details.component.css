@@ -140,3 +140,38 @@
     gap: 1.5rem;
   }
 }
+
+/* Stack principal (HU-29): primero y con más peso; el resto, más tenue */
+.cv-details__core {
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-hairline);
+}
+
+.cv-details__core-label {
+  margin: 0;
+  font-weight: 700;
+}
+
+.cv-details__chip--core {
+  padding: 0.35rem 0.85rem;
+  border-color: transparent;
+  background: var(--color-text);
+  color: var(--color-background);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.cv-details__chip--highlight {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* Tenue pero legible: el texto conserva el contraste AA */
+.cv-details__chip--muted {
+  background: transparent;
+  color: var(--color-text-muted);
+}

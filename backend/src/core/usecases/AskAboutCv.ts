@@ -65,6 +65,7 @@ export function cvDocument(profile: PublicProfile, projects: Project[], links: P
 
   if (profile.skills.length > 0) {
     lines.push('', '## Skills');
+    if (profile.coreSkills.length > 0) lines.push(`- Core stack: ${profile.coreSkills.join(', ')}`);
     for (const skill of profile.skills) lines.push(`- ${skill.group}: ${skill.items.join(', ')}`);
   }
   if (profile.education.length > 0) {

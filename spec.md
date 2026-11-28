@@ -316,6 +316,9 @@ Criterios de aceptación:
 - [x] La elección del visitante (botón sol / luna, cookie `theme`) siempre manda, también al recargar.
 - [x] Sin zona horaria conocida, manda el modo del sistema (`prefers-color-scheme`).
 
+### HU-29: Stack principal
+- [x] En Habilidades, una fila "Stack principal" con las 6 tecnologías que más pesan (`coreSkills` en perfil.json), destacadas; dentro de cada área se resaltan las mismas y el resto queda más tenue, sin perder contraste.
+
 ---
 
 ## 4. Requisitos transversales

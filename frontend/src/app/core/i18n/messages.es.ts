@@ -47,6 +47,7 @@ export const es = {
   cv: {
     title: 'Habilidades',
     skills: 'Habilidades técnicas',
+    coreStack: 'Stack principal',
     education: 'Educación',
     languages: 'Idiomas',
     download: 'Descargar CV (PDF)',
